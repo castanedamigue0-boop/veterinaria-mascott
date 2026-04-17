@@ -1,6 +1,6 @@
 // ===== CREDENCIALES =====
 var ADMIN_USER = 'admin';
-var ADMIN_PASS = 'macott2026';
+var ADMIN_PASS = 'mascott2026';
 
 // ===== STORAGE =====
 var Storage = {
@@ -40,7 +40,7 @@ document.getElementById('adminLoginForm').addEventListener('submit', function(e)
     setTimeout(function() { mostrarPanel(); }, 600);
   } else {
     msg.className   = 'form-msg error';
-    msg.textContent = '❌ Incorrecto. Usuario: admin | Clave: macott2026';
+    msg.textContent = '❌ Usuario o contraseña incorrectos.';
   }
 });
 
