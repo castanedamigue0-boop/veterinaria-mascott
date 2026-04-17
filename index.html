@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Clínica Veterinaria Mascott</title>
+  <meta name="description" content="Clínica Veterinaria Mascott – Consultas, vacunación, estética canina y tienda de mascotas." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="logoo.png"/>
+  <style>
+    #splash {
+      position:fixed; inset:0;
+      background:linear-gradient(135deg,#0a2e6e 0%,#1565c0 50%,#0d47a1 100%);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      z-index:9999; transition:opacity .8s ease, visibility .8s ease;
+      overflow:hidden;
+    }
+    #splash.hide { opacity:0; visibility:hidden; }
+    .splash-orb { position:absolute; border-radius:50%; filter:blur(60px); pointer-events:none; }
+    .splash-orb1 { width:400px; height:400px; background:rgba(66,165,245,.25); top:-100px; left:-100px; animation:orbFloat1 6s ease-in-out infinite; }
+    .splash-orb2 { width:300px; height:300px; background:rgba(255,111,0,.18); bottom:-80px; right:-80px; animation:orbFloat2 7s ease-in-out infinite; }
+    .splash-orb3 { width:200px; height:200px; background:rgba(255,255,255,.08); top:40%; left:60%; animation:orbFloat1 5s ease-in-out infinite reverse; }
+    @keyframes orbFloat1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(30px,-30px) scale(1.1)} }
+    @keyframes orbFloat2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-20px,20px) scale(1.08)} }
+    .splash-paw { position:absolute; font-size:1.4rem; opacity:0; animation:pawFloat 3s ease-in-out forwards; pointer-events:none; user-select:none; }
+    @keyframes pawFloat { 0%{opacity:0;transform:translateY(20px) rotate(var(--r,0deg)) scale(.6)} 30%{opacity:.5} 70%{opacity:.3} 100%{opacity:0;transform:translateY(-80px) rotate(var(--r,0deg)) scale(1)} }
+    .splash-logo-wrap { position:relative; display:flex; align-items:center; justify-content:center; width:120px; height:120px; opacity:0; animation:splashPopIn .6s cubic-bezier(.34,1.56,.64,1) .2s forwards; }
+    .splash-ring  { position:absolute; inset:-12px; border-radius:50%; border:3px solid rgba(255,255,255,.3); animation:ringPulse 2s ease-in-out .8s infinite; }
+    .splash-ring2 { position:absolute; inset:-24px; border-radius:50%; border:2px solid rgba(255,255,255,.12); animation:ringPulse 2s ease-in-out 1.2s infinite; }
+    @keyframes ringPulse { 0%,100%{transform:scale(1);opacity:.6} 50%{transform:scale(1.12);opacity:.15} }
+    .splash-logo { width:90px; height:90px; object-fit:contain; position:relative; z-index:1; filter:drop-shadow(0 0 20px rgba(255,255,255,.4)); animation:logoBob 2s ease-in-out 1s infinite; }
+    @keyframes logoBob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    @keyframes splashPopIn { from{opacity:0;transform:scale(.4) rotate(-10deg)} to{opacity:1;transform:scale(1) rotate(0deg)} }
+    .splash-title { color:#fff; font-size:2.4rem; font-weight:900; margin-top:1.25rem; letter-spacing:4px; text-transform:uppercase; opacity:0; animation:splashSlideUp .5s ease .7s forwards; text-shadow:0 2px 20px rgba(0,0,0,.3); }
+    .splash-title span { color:#90caf9; }
+    .splash-sub { color:rgba(255,255,255,.65); font-size:.9rem; margin-top:.3rem; letter-spacing:2px; text-transform:uppercase; opacity:0; animation:splashSlideUp .5s ease .95s forwards; }
+    @keyframes splashSlideUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+    .splash-divider { width:0; height:2px; margin-top:1.5rem; background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent); border-radius:2px; animation:dividerGrow .6s ease 1.1s forwards; }
+    @keyframes dividerGrow { to{width:180px} }
+    .splash-bar { width:200px; height:5px; background:rgba(255,255,255,.15); border-radius:10px; margin-top:1.5rem; overflow:hidden; opacity:0; animation:splashSlideUp .4s ease 1.2s forwards; }
+    .splash-bar-fill { height:100%; width:0; border-radius:10px; background:linear-gradient(90deg,#42a5f5,#fff,#ff6f00); background-size:200% 100%; animation:barLoad 1.6s cubic-bezier(.4,0,.2,1) 1.3s forwards, barShimmer 1s linear 1.3s infinite; }
+    @keyframes barLoad    { from{width:0} to{width:100%} }
+    @keyframes barShimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    .splash-loading-text { color:rgba(255,255,255,.45); font-size:.72rem; letter-spacing:2px; margin-top:.75rem; text-transform:uppercase; opacity:0; animation:splashSlideUp .4s ease 1.4s forwards; }
+  </style>
+</head>
+<body>
+
+  <!-- SPLASH DE BIENVENIDA -->
+  <div id="splash">
+    <div class="splash-orb splash-orb1"></div>
+    <div class="splash-orb splash-orb2"></div>
+    <div class="splash-orb splash-orb3"></div>
+    <div class="splash-logo-wrap">
+      <div class="splash-ring"></div>
+      <div class="splash-ring2"></div>
+      <img src="logoo.png" alt="Logo Mascott" class="splash-logo"/>
+    </div>
+    <p class="splash-title">Mas<span>cott</span></p>
+    <p class="splash-sub">Clínica Veterinaria</p>
+    <div class="splash-divider"></div>
+    <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+    <p class="splash-loading-text">Cargando experiencia...</p>
+  </div>
+
+  <script>
+    (function() {
+      var splash = document.getElementById('splash');
+      function spawnPaw() {
+        var el = document.createElement('span');
+        el.className = 'splash-paw';
+        el.textContent = '🐾';
+        el.style.left = (10 + Math.random() * 80) + '%';
+        el.style.top  = (20 + Math.random() * 60) + '%';
+        el.style.setProperty('--r', (Math.random() * 60 - 30) + 'deg');
+        el.style.animationDelay = (Math.random() * 1.5) + 's';
+        el.style.fontSize = (.8 + Math.random() * 1.2) + 'rem';
+        splash.appendChild(el);
+        setTimeout(function(){ el.remove(); }, 3500);
+      }
+      for (var i = 0; i < 8; i++) setTimeout(spawnPaw, i * 200);
+    })();
+    window.addEventListener('load', function() {
+      setTimeout(function() { document.getElementById('splash').classList.add('hide'); }, 2800);
+    });
+  </script>
+
+  <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
+  <!-- OVERLAY sidebar móvil -->
+  <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar" role="navigation" aria-label="Menú lateral">
+    <div class="sidebar-header">
+      <a href="#inicio" class="logo" aria-label="Clínica Veterinaria Mascott">
+        <img src="logoo.png" alt="Mascott" style="width:32px;height:32px;object-fit:contain;"/>
+        <span>Mascott</span>
+      </a>
+    </div>
+
+    <nav>
+      <ul class="sidebar-links" role="list">
+        <li><a href="#inicio"    class="sidebar-link active"><span aria-hidden="true">🏠</span> Inicio</a></li>
+        <li><a href="#servicios" class="sidebar-link"><span aria-hidden="true">🩺</span> Servicios</a></li>
+        <li><a href="tienda.html" class="sidebar-link"><span aria-hidden="true">🛒</span> Tienda</a></li>
+        <li><a href="#resenas"   class="sidebar-link"><span aria-hidden="true">⭐</span> Reseñas</a></li>
+        <li>
+          <button class="sidebar-link sidebar-link-btn" id="btnCitaSidebar" aria-haspopup="dialog">
+            <span aria-hidden="true">📅</span> Agendar Cita
+          </button>
+        </li>
+        <li><a href="#ubicacion" class="sidebar-link"><span aria-hidden="true">📍</span> Ubicación</a></li>
+        <li><a href="#contacto"  class="sidebar-link"><span aria-hidden="true">📞</span> Contacto</a></li>
+      </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a href="tienda.html" class="btn-carrito-sidebar">
+        <span aria-hidden="true">🛒</span> Ver carrito
+      </a>
+      <button class="btn-login" id="btnLogin" aria-haspopup="dialog">
+        <span aria-hidden="true">👤</span> Iniciar Sesión
+      </button>
+      <button class="btn-admin" id="btnAdmin" aria-haspopup="dialog">
+        <span aria-hidden="true">🔐</span> Admin
+      </button>
+    </div>
+  </aside>
+
+  <!-- TOPBAR móvil -->
+  <header class="topbar" role="banner">
+    <button class="menu-toggle" id="menuToggle"
+      aria-controls="sidebar"
+      aria-expanded="false"
+      aria-label="Abrir menú">
+      <span class="hamburger" aria-hidden="true"></span>
+    </button>
+    <a href="#inicio" class="logo topbar-logo" aria-label="Mascott inicio">
+      <img src="logoo.png" alt="Mascott" style="width:28px;height:28px;object-fit:contain;"/> Mascott
+    </a>
+    <button class="btn-login-top" id="btnLoginTop" aria-haspopup="dialog">
+      <span aria-hidden="true">👤</span>
+    </button>
+    <a href="tienda.html" class="btn-carrito-top" aria-label="Ir al carrito">
+      🛒
+    </a>
+  </header>
+
+  <!-- MAIN -->
+  <main class="main-content" id="main-content">
+
+    <!-- HERO -->
+    <section class="hero" id="inicio" aria-label="Bienvenida">
+      <div class="hero-overlay" aria-hidden="true"></div>
+      <div class="hero-bg-img" aria-hidden="true"></div>
+      <div class="blob blob1" aria-hidden="true"></div>
+      <div class="blob blob2" aria-hidden="true"></div>
+      <div class="paw-float" aria-hidden="true">🐾</div>
+      <div class="paw-float paw2" aria-hidden="true">🐾</div>
+      <div class="paw-float paw3" aria-hidden="true">🐾</div>
+
+      <div class="hero-content">
+        <span class="hero-badge">Tu mascota merece lo mejor</span>
+        <h1>Clínica Veterinaria<br><strong>Mascott</strong></h1>
+        <p>Cuidamos a tu mascota con amor, experiencia y tecnología de punta.</p>
+        <div class="hero-btns">
+          <button class="btn-cita" id="btnCitaHero" aria-haspopup="dialog">
+            <span aria-hidden="true">📅</span> Agendar Cita
+          </button>
+          <a href="#servicios" class="btn-outline">Ver Servicios</a>
+        </div>
+      </div>
+
+      <div class="hero-card" aria-label="Información de disponibilidad">
+        <div class="hcard-top">
+          <span class="hcard-icon" aria-hidden="true">🐾</span>
+          <div>
+            <p class="hcard-label">Próxima cita disponible</p>
+            <p class="hcard-date" id="heroFecha">Cargando...</p>
+          </div>
+          <span class="hcard-badge">HOY</span>
+        </div>
+
+        <div class="hcard-divider" aria-hidden="true"></div>
+
+        <ul class="hcard-stats" role="list">
+          <li>
+            <span class="hcard-stat-icon" aria-hidden="true">🩺</span>
+            <div>
+              <span class="hcard-stat-val" data-target="12">0</span>
+              <span class="hcard-stat-unit">citas hoy</span>
+            </div>
+          </li>
+          <li>
+            <span class="hcard-stat-icon" aria-hidden="true">⏱️</span>
+            <div>
+              <span class="hcard-stat-val" data-target="20">0</span>
+              <span class="hcard-stat-unit">min espera</span>
+            </div>
+          </li>
+          <li>
+            <span class="hcard-stat-icon" aria-hidden="true">👨‍⚕️</span>
+            <div>
+              <span class="hcard-stat-val" data-target="3">0</span>
+              <span class="hcard-stat-unit">vets disponibles</span>
+            </div>
+          </li>
+        </ul>
+
+        <button class="hcard-btn" id="btnCitaCard" aria-haspopup="dialog">
+          <span aria-hidden="true">📅</span> Reservar ahora
+        </button>
+
+        <div class="hcard-pulse" aria-hidden="true"></div>
+      </div>
+
+    </section>
+
+    <!-- STATS -->
+    <section class="stats" aria-label="Estadísticas de la clínica">
+      <div class="stat reveal"><span class="stat-num" data-target="1200">0</span><span>+</span><p>Mascotas atendidas</p></div>
+      <div class="stat reveal"><span class="stat-num" data-target="8">0</span><span>+</span><p>Años de experiencia</p></div>
+      <div class="stat reveal"><span class="stat-num" data-target="5">0</span><span></span><p>Veterinarios especializados</p></div>
+      <div class="stat reveal"><span class="stat-num" data-target="98">0</span><span>%</span><p>Clientes satisfechos</p></div>
+    </section>
+
+    <!-- SERVICIOS -->
+    <section class="section" id="servicios" aria-labelledby="tit-servicios">
+      <h2 class="section-title reveal" id="tit-servicios">Nuestros Servicios</h2>
+      <div class="cards" role="list">
+        <article class="card reveal" role="listitem">
+          <div class="card-icon-wrap" aria-hidden="true">🩺</div>
+          <h3>Consulta Médica</h3>
+          <p>Atención veterinaria general y especializada para tu mascota.</p>
+        </article>
+        <article class="card reveal" role="listitem">
+          <div class="card-icon-wrap" aria-hidden="true">💉</div>
+          <h3>Vacunación</h3>
+          <p>Plan de vacunas completo para perros y gatos.</p>
+        </article>
+        <article class="card reveal" role="listitem">
+          <div class="card-icon-wrap" aria-hidden="true">✂️</div>
+          <h3>Estética Canina</h3>
+          <p>Baño, corte y arreglo profesional para tu perro.</p>
+        </article>
+        <article class="card reveal" role="listitem">
+          <div class="card-icon-wrap" aria-hidden="true">🛒</div>
+          <h3>Tienda de Mascotas</h3>
+          <p>Alimentos, accesorios y medicamentos de calidad.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- PRODUCTOS -->
+    <section class="section section-alt" id="productos" aria-labelledby="tit-productos">
+      <h2 class="section-title reveal" id="tit-productos">Productos Destacados</h2>
+      <div class="cards" role="list">
+        <article class="card reveal" role="listitem">
+          <div class="card-icon-wrap" aria-hidden="true">🦴</div>
+          <h3>Alimento Premium</h3>
+          <p>Nutrición balanceada para todas las razas y edades.</p>
+          <span class="price" aria-label="Precio 250 pesos">$250 MXN</span>
+        </article>
+        <article class="card reveal" role="listitem">
+          <div class="card-icon-wrap" aria-hidden="true">🪮</div>
+          <h3>Kit de Grooming</h3>
+          <p>Todo lo que necesitas para el cuidado en casa.</p>
+          <span class="price" aria-label="Precio 180 pesos">$180 MXN</span>
+        </article>
+        <article class="card reveal" role="listitem">
+          <div class="card-icon-wrap" aria-hidden="true">🎾</div>
+          <h3>Juguetes</h3>
+          <p>Variedad de juguetes para mantener activa a tu mascota.</p>
+          <span class="price" aria-label="Precio 90 pesos">$90 MXN</span>
+        </article>
+      </div>
+    </section>
+
+    <!-- RESEÑAS -->
+    <section class="section" id="resenas" aria-labelledby="tit-resenas">
+      <h2 class="section-title reveal" id="tit-resenas">Lo que dicen nuestros clientes</h2>
+      <div class="reviews-grid">
+        <article class="review-card reveal" aria-label="Reseña de cliente">
+          <div class="stars" aria-label="5 estrellas">★★★★★</div>
+          <p>"Excelente atención, el Dr. fue muy amable con mi perrito Toby. Lo recomiendo al 100%."</p>
+          <div class="reviewer">
+            <div class="reviewer-avatar" aria-hidden="true">🧑</div>
+            <div>
+              <strong>Carlos M.</strong>
+              <span>Dueño de Toby 🐕</span>
+            </div>
+          </div>
+        </article>
+        <article class="review-card reveal" aria-label="Reseña de cliente">
+          <div class="stars" aria-label="5 estrellas">★★★★★</div>
+          <p>"El servicio de estética dejó a mi gata preciosa. El personal es muy profesional y cariñoso."</p>
+          <div class="reviewer">
+            <div class="reviewer-avatar" aria-hidden="true">👩</div>
+            <div>
+              <strong>Laura P.</strong>
+              <span>Dueña de Mishi 🐱</span>
+            </div>
+          </div>
+        </article>
+        <article class="review-card reveal" aria-label="Reseña de cliente">
+          <div class="stars" aria-label="4 estrellas">★★★★☆</div>
+          <p>"Muy buena clínica, precios accesibles y atención rápida. Ya es nuestra veterinaria de confianza."</p>
+          <div class="reviewer">
+            <div class="reviewer-avatar" aria-hidden="true">🧔</div>
+            <div>
+              <strong>Roberto S.</strong>
+              <span>Dueño de Rocky 🐶</span>
+            </div>
+          </div>
+        </article>
+        <article class="review-card reveal" aria-label="Reseña de cliente">
+          <div class="stars" aria-label="5 estrellas">★★★★★</div>
+          <p>"Las vacunas de mis dos perros quedaron al día. El proceso fue rápido y sin estrés para ellos."</p>
+          <div class="reviewer">
+            <div class="reviewer-avatar" aria-hidden="true">👩‍🦱</div>
+            <div>
+              <strong>Ana G.</strong>
+              <span>Dueña de Luna y Sol 🐕🐕</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- MAPA -->
+    <section class="section" id="ubicacion" aria-labelledby="tit-ubicacion">
+      <h2 class="section-title reveal" id="tit-ubicacion">Nuestra Ubicación</h2>
+      <div class="map-wrapper reveal">
+        <iframe
+          title="Ubicación Clínica Veterinaria Mascott"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3762.661!2d-99.1332!3d19.4326!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTnCsDI1JzU3LjQiTiA5OcKwMDcnNTkuNSJX!5e0!3m2!1ses!2smx!4v1234567890"
+          width="100%" height="400" style="border:0;" allowfullscreen=""
+          loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+        <div class="map-info">
+          <p><span aria-hidden="true">📍</span> Calle Principal #123, Col. Centro</p>
+          <p><span aria-hidden="true">🕐</span> Lun–Sáb: 9:00 am – 7:00 pm</p>
+          <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer"
+            class="btn-cita" style="margin-top:1rem; display:inline-flex;">
+            <span aria-hidden="true">🗺️</span> Cómo llegar
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section class="section section-alt" id="contacto" aria-labelledby="tit-contacto">
+      <h2 class="section-title reveal" id="tit-contacto">Contacto</h2>
+      <ul class="contacto-info reveal" role="list">
+        <li><span aria-hidden="true">📍</span> Calle Principal #123, Col. Centro</li>
+        <li><span aria-hidden="true">📞</span> <a href="tel:+525512345678">(55) 1234-5678</a></li>
+        <li><span aria-hidden="true">📧</span> <a href="mailto:contacto@mascott.com">contacto@mascott.com</a></li>
+        <li><span aria-hidden="true">🕐</span> Lun–Sáb: 9:00 am – 7:00 pm</li>
+      </ul>
+    </section>
+
+    <footer class="footer" role="contentinfo">
+      <p>© 2026 Clínica Veterinaria Mascott · Todos los derechos reservados</p>
+    </footer>
+
+  </main>
+
+  <!-- MODAL LOGIN -->
+  <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true"
+    aria-labelledby="modal-title" aria-hidden="true">
+    <div class="modal">
+      <button class="modal-close" id="modalClose" aria-label="Cerrar modal">✕</button>
+      <div class="modal-header">
+        <span aria-hidden="true">🐾</span>
+        <h2 id="modal-title">Iniciar Sesión</h2>
+        <p>Accede a tu cuenta Mascott</p>
+      </div>
+      <form class="modal-form" id="loginForm" novalidate aria-label="Formulario de inicio de sesión">
+        <div class="form-group">
+          <label for="login-email">Correo electrónico</label>
+          <input type="email" id="login-email" name="email" placeholder="correo@ejemplo.com"
+            required aria-required="true" autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label for="login-pass">Contraseña</label>
+          <div class="pass-wrap">
+            <input type="password" id="login-pass" name="password" placeholder="••••••••"
+              required aria-required="true" autocomplete="current-password" />
+            <button type="button" class="toggle-pass" id="togglePass" aria-label="Mostrar contraseña">👁</button>
+          </div>
+        </div>
+        <button type="submit" class="btn-cita" style="width:100%; justify-content:center;">
+          Entrar
+        </button>
+        <p class="modal-footer-text">
+          ¿No tienes cuenta? <a href="#" id="linkRegister">Regístrate</a>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL CITAS -->
+  <div class="modal-overlay" id="modalCita" role="dialog" aria-modal="true"
+    aria-labelledby="cita-title" aria-hidden="true">
+    <div class="modal modal-wide">
+      <button class="modal-close" id="citaClose" aria-label="Cerrar modal de cita">✕</button>
+      <div class="modal-header">
+        <span aria-hidden="true">📅</span>
+        <h2 id="cita-title">Agendar Cita</h2>
+        <p>Elige fecha, hora y servicio</p>
+      </div>
+      <form class="modal-form" id="formCita" novalidate aria-label="Formulario para agendar cita">
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="c-nombre">Tu nombre</label>
+            <input type="text" id="c-nombre" placeholder="Ej. María García"
+              required aria-required="true" autocomplete="name" />
+            <span class="field-error" id="err-nombre" role="alert" aria-live="polite"></span>
+          </div>
+          <div class="form-group">
+            <label for="c-mascota">Nombre de tu mascota</label>
+            <input type="text" id="c-mascota" placeholder="Ej. Firulais" required aria-required="true" />
+            <span class="field-error" id="err-mascota" role="alert" aria-live="polite"></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="c-servicio">Servicio</label>
+          <select id="c-servicio" required aria-required="true">
+            <option value="">Selecciona un servicio</option>
+            <optgroup label="🩺 Consultas">
+              <option value="consulta-general">🩺 Consulta General</option>
+              <option value="consulta-especializada">🔬 Consulta Especializada</option>
+            </optgroup>
+            <optgroup label="💉 Prevención">
+              <option value="vacuna">💉 Vacunación</option>
+              <option value="desparasitacion">🪱 Desparasitación</option>
+            </optgroup>
+            <optgroup label="✂️ Estética">
+              <option value="estetica">✂️ Estética Canina</option>
+              <option value="bano">🛁 Baño y Secado</option>
+            </optgroup>
+            <optgroup label="🔬 Diagnóstico">
+              <option value="radiografia">🩻 Radiografía</option>
+              <option value="ecografia">📡 Ecografía</option>
+              <option value="laboratorio">🧪 Análisis de Laboratorio</option>
+            </optgroup>
+            <optgroup label="🏥 Cirugías y Operaciones">
+              <option value="esterilizacion">✂️ Esterilización / Castración</option>
+              <option value="cirugia-general">🏥 Cirugía General</option>
+              <option value="cirugia-ortopedica">🦴 Cirugía Ortopédica</option>
+              <option value="cirugia-dental">🦷 Cirugía Dental</option>
+              <option value="cirugia-ojos">👁️ Cirugía de Ojos</option>
+              <option value="cirugia-tumor">🔪 Extirpación de Tumor</option>
+              <option value="cesarea">🐣 Cesárea</option>
+            </optgroup>
+            <optgroup label="🚑 Urgencias">
+              <option value="urgencia">🚨 Urgencia / Emergencia</option>
+              <option value="hospitalizacion">🏨 Hospitalización</option>
+            </optgroup>
+            <option value="otro">📋 Otro</option>
+          </select>
+          <span class="field-error" id="err-servicio" role="alert" aria-live="polite"></span>
+        </div>
+
+        <!-- FECHAS DISPONIBLES -->
+        <div class="form-group">
+          <label>Fecha disponible</label>
+          <div class="fechas-grid" id="fechasGrid" role="group" aria-label="Selecciona una fecha disponible"></div>
+          <span class="field-error" id="err-fecha" role="alert" aria-live="polite"></span>
+        </div>
+
+        <!-- HORARIOS -->
+        <div class="form-group" id="horariosWrap" style="display:none">
+          <label>Horario disponible</label>
+          <div class="horarios-grid" id="horariosGrid" role="group" aria-label="Selecciona un horario"></div>
+          <span class="field-error" id="err-hora" role="alert" aria-live="polite"></span>
+        </div>
+
+        <button type="submit" class="btn-cita" style="width:100%; justify-content:center; margin-top:.5rem;">
+          <span aria-hidden="true">✅</span> Confirmar Cita
+        </button>
+      </form>
+      <div class="form-msg" id="formMsg" role="status" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <!-- MODAL ADMIN -->
+  <div class="modal-overlay" id="modalAdmin" role="dialog" aria-modal="true"
+    aria-labelledby="admin-title" aria-hidden="true">
+    <div class="modal modal-admin">
+      <button class="modal-close" id="adminClose" aria-label="Cerrar modal admin">✕</button>
+      <div class="modal-header modal-header-admin">
+        <span aria-hidden="true">🔐</span>
+        <h2 id="admin-title">Panel Administrador</h2>
+        <p>Acceso exclusivo para personal Mascott</p>
+      </div>
+      <form class="modal-form" id="adminForm" novalidate aria-label="Formulario de acceso administrador">
+        <div class="form-group">
+          <label for="admin-user">Usuario</label>
+          <input type="text" id="admin-user" placeholder="admin" required aria-required="true" autocomplete="username" />
+        </div>
+        <div class="form-group">
+          <label for="admin-pass">Contraseña</label>
+          <div class="pass-wrap">
+            <input type="password" id="admin-pass" placeholder="••••••••"
+              required aria-required="true" autocomplete="current-password" />
+            <button type="button" class="toggle-pass" id="toggleAdminPass" aria-label="Mostrar contraseña">👁</button>
+          </div>
+        </div>
+        <button type="submit" class="btn-admin-submit">
+          <span aria-hidden="true">🔓</span> Acceder al Panel
+        </button>
+        <p class="modal-footer-text" style="text-align:center; margin-top:.5rem;">
+          Acceso restringido · Solo personal autorizado
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    ['btnLogin','btnLoginTop'].forEach(function(id){
+      var el = document.getElementById(id);
+      if(el){ el.replaceWith(el.cloneNode(true)); }
+      var fresh = document.getElementById(id);
+      if(fresh) fresh.addEventListener('click', function(){ window.location.href='auth.html'; });
+    });
+    var lr = document.getElementById('linkRegister');
+    if(lr) lr.addEventListener('click', function(e){ e.preventDefault(); window.location.href='auth.html?tab=register'; });
+    var btnAdmin = document.getElementById('btnAdmin');
+    if(btnAdmin) btnAdmin.addEventListener('click', function(){ window.location.href='admin.html'; });
+  </script>
+</body>
+</html>
+</html>
