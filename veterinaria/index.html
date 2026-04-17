@@ -81,10 +81,10 @@
       for (var i = 0; i < 8; i++) setTimeout(spawnPaw, i * 200);
     })();
     // Solo mostrar el splash la primera vez que se entra a la página
-    if (sessionStorage.getItem('splashShown')) {
+    if (localStorage.getItem('splashShown')) {
       document.getElementById('splash').classList.add('hide');
     } else {
-      sessionStorage.setItem('splashShown', '1');
+      localStorage.setItem('splashShown', '1');
       window.addEventListener('load', function() {
         setTimeout(function() { document.getElementById('splash').classList.add('hide'); }, 2800);
       });
