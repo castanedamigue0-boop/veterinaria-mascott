@@ -1,26 +1,25 @@
-// ===== STORAGE =====
-const Storage = {
-  getSession()       { return JSON.parse(localStorage.getItem('macott_session') || 'null'); },
-  clearSession()     { localStorage.removeItem('macott_session'); },
-  getUsers()         { return JSON.parse(localStorage.getItem('macott_users') || '[]'); },
-  saveUsers(u)       { localStorage.setItem('macott_users', JSON.stringify(u)); },
-  getUserData(email) { return Storage.getUsers().find(u => u.email === email) || null; },
-  updateUser(email, data) {
-    const users = Storage.getUsers();
-    const idx   = users.findIndex(u => u.email === email);
-    if (idx !== -1) { users[idx] = { ...users[idx], ...data }; Storage.saveUsers(users); }
-  }
-};
+import { obtenerUsuario, actualizarUsuario, getSession, clearSession } from './firebase.js';
 
 // ===== SESION =====
-const session = Storage.getSession();
+const session = getSession();
 if (!session) { window.location.href = 'auth.html'; }
 
-let userData = Storage.getUserData(session.email) || { ...session, citas: [], mascotas: [], carrito: [], pedidos: [] };
-if (!userData.citas)    userData.citas    = [];
-if (!userData.mascotas) userData.mascotas = [];
-if (!userData.carrito)  userData.carrito  = [];
-if (!userData.pedidos)  userData.pedidos  = [];
+let userData = null;
+
+async function cargarUsuario() {
+  userData = await obtenerUsuario(session.email);
+  if (!userData) { window.location.href = 'auth.html'; return; }
+  if (!userData.citas)    userData.citas    = [];
+  if (!userData.mascotas) userData.mascotas = [];
+  if (!userData.carrito)  userData.carrito  = [];
+  if (!userData.pedidos)  userData.pedidos  = [];
+  populateUserUI();
+  showSection('inicio');
+}
+
+async function guardarUsuario() {
+  await actualizarUsuario(session.email, userData);
+}
 
 // ===== CATALOGO (img: pon tu URL aqui) =====
 const PRODUCTOS = [
@@ -69,7 +68,15 @@ dashOverlay.addEventListener('click', () => {
 });
 
 // ===== LOGOUT =====
-function logout() { Storage.clearSession(); window.location.href = 'index.html'; }
+function logout() { clearSession(); window.location.href = 'index.html'; }
+document.getElementById('btnLogout').addEventListener('click', logout);
+document.getElementById('btnLogoutTop').addEventListener('click', logout);
+
+// Iniciar cargando datos del usuario desde Firebase
+cargarUsuario();
+
+// ===== LOGOUT =====
+function logout() { clearSession(); window.location.href = 'index.html'; }
 document.getElementById('btnLogout').addEventListener('click', logout);
 document.getElementById('btnLogoutTop').addEventListener('click', logout);
 
@@ -139,11 +146,11 @@ function renderInicio() {
 }
 
 // ===== CITAS =====
-function renderCitas() {
+async function renderCitas() {
   var list = document.getElementById('citasList');
 
-  // Recargar datos frescos del storage
-  userData = Storage.getUserData(session.email) || userData;
+  // Recargar datos frescos de Firebase
+  userData = await obtenerUsuario(session.email) || userData;
   if (!userData.citas) userData.citas = [];
 
   var citas = userData.citas;
@@ -169,7 +176,7 @@ function renderCitas() {
   list.querySelectorAll('[data-action="cancelar"]').forEach(function(btn) {
     btn.addEventListener('click', function() {
       userData.citas = userData.citas.filter(function(c) { return c.id !== btn.dataset.id; });
-      Storage.updateUser(userData.email, { citas: userData.citas });
+      guardarUsuario(); //  { citas: userData.citas });
       renderCitas(); renderInicio();
     });
   });
@@ -205,7 +212,7 @@ document.getElementById('formNuevaCita').addEventListener('submit', function(e) 
   valid = vld(hora,     'nce-hora',     'Selecciona un horario.')   && valid;
   if (!valid) return;
   userData.citas.push({ id: Date.now().toString(), mascota: mascota.value, servicio: servicio.value, fecha: fecha.value, hora: hora.value, notas: notas, estado: 'pendiente' });
-  Storage.updateUser(userData.email, { citas: userData.citas });
+  guardarUsuario(); //  { citas: userData.citas });
   msg.className = 'form-msg success'; msg.textContent = 'Cita agendada!';
   setTimeout(function() {
     document.getElementById('citaFormWrap').style.display = 'none';
@@ -226,7 +233,7 @@ function renderMascotas() {
   grid.querySelectorAll('[data-action="eliminar"]').forEach(function(btn) {
     btn.addEventListener('click', function() {
       userData.mascotas = userData.mascotas.filter(function(m) { return m.id !== btn.dataset.id; });
-      Storage.updateUser(userData.email, { mascotas: userData.mascotas });
+      guardarUsuario(); //  { mascotas: userData.mascotas });
       renderMascotas(); renderInicio();
     });
   });
@@ -248,7 +255,7 @@ document.getElementById('formMascota').addEventListener('submit', function(e) {
   valid = vld(especie, 'me-especie', 'Selecciona la especie.') && valid;
   if (!valid) return;
   userData.mascotas.push({ id: Date.now().toString(), nombre: nombre.value.trim(), especie: especie.value, raza: document.getElementById('m-raza').value.trim(), edad: document.getElementById('m-edad').value });
-  Storage.updateUser(userData.email, { mascotas: userData.mascotas });
+  guardarUsuario(); //  { mascotas: userData.mascotas });
   document.getElementById('mascotaFormWrap').style.display = 'none';
   e.target.reset(); renderMascotas(); renderInicio();
 });
@@ -311,7 +318,7 @@ function renderProductos() {
       } else {
         userData.carrito.push({ id: prod.id, nombre: prod.nombre, precio: prod.precio, img: prod.img, marca: prod.marca, qty: 1 });
       }
-      Storage.updateUser(userData.email, { carrito: userData.carrito });
+      guardarUsuario(); //  { carrito: userData.carrito });
       actualizarBadgeCarrito();
       btn.textContent = 'Agregado'; btn.disabled = true;
       setTimeout(function() { btn.textContent = '+ Agregar'; btn.disabled = false; }, 1200);
@@ -356,7 +363,7 @@ function renderCarrito() {
       if (btn.dataset.action === 'mas')    { userData.carrito[idx].qty++; }
       if (btn.dataset.action === 'menos')  { userData.carrito[idx].qty--; if (userData.carrito[idx].qty <= 0) userData.carrito.splice(idx, 1); }
       if (btn.dataset.action === 'quitar') { userData.carrito.splice(idx, 1); }
-      Storage.updateUser(userData.email, { carrito: userData.carrito });
+      guardarUsuario(); //  { carrito: userData.carrito });
       actualizarBadgeCarrito();
       renderCarrito();
     });
@@ -379,7 +386,7 @@ function confirmarPedido() {
   };
   userData.pedidos.push(pedido);
   userData.carrito = [];
-  Storage.updateUser(userData.email, { carrito: userData.carrito, pedidos: userData.pedidos });
+  guardarUsuario(); //  { carrito: userData.carrito, pedidos: userData.pedidos });
   actualizarBadgeCarrito();
   renderCarrito();
   msg.className = 'form-msg success'; msg.textContent = 'Pedido confirmado! Nos pondremos en contacto contigo.';
@@ -456,7 +463,7 @@ function renderInventario() {
       } else {
         userData.carrito.push({ id: prod.id, nombre: prod.nombre, precio: prod.precio, img: prod.img, marca: prod.marca, qty: 1 });
       }
-      Storage.updateUser(userData.email, { carrito: userData.carrito });
+      guardarUsuario(); //  { carrito: userData.carrito });
       actualizarBadgeCarrito();
       btn.textContent = 'Agregado!';
       setTimeout(function() { btn.textContent = '+ Carrito'; }, 1200);
@@ -507,9 +514,9 @@ document.getElementById('formPerfil').addEventListener('submit', function(e) {
   var msg      = document.getElementById('perfil-msg');
   var updates  = { nombre: nombre, apellido: apellido, email: email, tel: tel };
   if (pass.length >= 6) updates.password = pass;
-  Storage.updateUser(userData.email, updates);
+  guardarUsuario(); //  updates);
   userData = Object.assign({}, userData, updates);
-  localStorage.setItem('macott_session', JSON.stringify({ nombre: nombre, apellido: apellido, email: email, tel: tel }));
+  localStorage.setItem('macott_session', JSON.stringify({ nombre, apellido, email, tel }));
   populateUserUI();
   msg.className = 'form-msg success'; msg.textContent = 'Perfil actualizado.';
   setTimeout(function() { msg.textContent = ''; msg.className = 'form-msg'; }, 3000);

@@ -2,7 +2,20 @@
 var ADMIN_USER = 'admin';
 var ADMIN_PASS = 'mascott2026';
 
-// ===== STORAGE =====
+// ===== FIREBASE =====
+import { obtenerTodosUsuarios, actualizarUsuario } from './firebase.js';
+
+async function cargarDatosFirebase() {
+  try {
+    const users = await obtenerTodosUsuarios();
+    // Guardar en memoria para uso del panel
+    window._fbUsers = users;
+  } catch(e) {
+    window._fbUsers = [];
+  }
+}
+
+// ===== STORAGE (sesion admin local) =====
 var Storage = {
   getUsers:   function() { return JSON.parse(localStorage.getItem('macott_users') || '[]'); },
   saveUsers:  function(u) { localStorage.setItem('macott_users', JSON.stringify(u)); },
@@ -23,7 +36,7 @@ var adminPanel = document.getElementById('adminPanel');
 
 // Si ya estaba logueado
 if (Storage.isAdmin()) {
-  mostrarPanel();
+  cargarDatosFirebase().then(() => mostrarPanel());
 }
 
 // ===== LOGIN =====
@@ -40,15 +53,17 @@ document.getElementById('adminLoginForm').addEventListener('submit', function(e)
     setTimeout(function() { mostrarPanel(); }, 600);
   } else {
     msg.className   = 'form-msg error';
-    msg.textContent = '❌ Usuario o contraseña incorrectos.';
+    msg.textContent = '❌ Usuario o contraseña incorrectos.'; macott2026';
   }
 });
 
 function mostrarPanel() {
   loginWrap.style.display  = 'none';
   adminPanel.style.display = 'flex';
-  initNav();
-  renderDashboard();
+  cargarDatosFirebase().then(() => {
+    initNav();
+    renderDashboard();
+  });
 }
 
 // Toggle pass
@@ -96,9 +111,13 @@ function initNav() {
 }
 
 // ===== HELPERS =====
+function getUsers() {
+  return window._fbUsers || [];
+}
+
 function todasLasCitas() {
   var result = [];
-  Storage.getUsers().forEach(function(u) {
+  getUsers().forEach(function(u) {
     (u.citas || []).forEach(function(c) {
       result.push({
         id:        c.id,
@@ -117,21 +136,21 @@ function todasLasCitas() {
 }
 
 function cambiarEstado(userEmail, citaId, nuevoEstado) {
-  var users = Storage.getUsers();
-  users.forEach(function(u) {
-    if (u.email !== userEmail) return;
-    (u.citas || []).forEach(function(c) {
-      if (c.id !== citaId) return;
-      c.estado = nuevoEstado;
-      var emoji = nuevoEstado === 'confirmada' ? '✅' : '❌';
-      Storage.addNotif(userEmail,
-        emoji + ' Tu cita de ' + c.servicio + ' para ' + c.mascota +
-        ' el ' + c.fecha + ' a las ' + c.hora +
-        ' fue ' + nuevoEstado + ' por el veterinario.'
-      );
-    });
+  var users = getUsers();
+  var user  = users.find(function(u) { return u.email === userEmail; });
+  if (!user) return;
+  (user.citas || []).forEach(function(c) {
+    if (c.id !== citaId) return;
+    c.estado = nuevoEstado;
+    var emoji = nuevoEstado === 'confirmada' ? '✅' : '❌';
+    Storage.addNotif(userEmail,
+      emoji + ' Tu cita de ' + c.servicio + ' para ' + c.mascota +
+      ' el ' + c.fecha + ' a las ' + c.hora +
+      ' fue ' + nuevoEstado + ' por el veterinario.'
+    );
   });
-  Storage.saveUsers(users);
+  // Actualizar en Firebase
+  actualizarUsuario(userEmail, { citas: user.citas });
 }
 
 function toast(msg) {
@@ -156,7 +175,7 @@ function toast(msg) {
 
 // ===== DASHBOARD =====
 function renderDashboard() {
-  var users = Storage.getUsers();
+  var users = getUsers();
   var citas = todasLasCitas();
   var pend  = citas.filter(function(c) { return c.estado === 'pendiente'; });
   var conf  = citas.filter(function(c) { return c.estado === 'confirmada'; });
@@ -249,7 +268,7 @@ function bindBtns(cont) {
 
 // ===== CLIENTES =====
 function renderClientes() {
-  var users = Storage.getUsers();
+  var users = getUsers();
   var cont  = document.getElementById('clientesList');
   var inp   = document.getElementById('clienteSearch');
   var q     = inp ? inp.value.toLowerCase() : '';
@@ -434,7 +453,7 @@ function renderInventario() {
 
 // ===== VENTAS =====
 function renderVentas() {
-  var users = Storage.getUsers();
+  var users = getUsers();
   var pedidos = [];
   var totalIngresos = 0;
   var totalUnidades = 0;
