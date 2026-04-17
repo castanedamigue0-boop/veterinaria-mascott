@@ -80,9 +80,15 @@
       }
       for (var i = 0; i < 8; i++) setTimeout(spawnPaw, i * 200);
     })();
-    window.addEventListener('load', function() {
-      setTimeout(function() { document.getElementById('splash').classList.add('hide'); }, 2800);
-    });
+    // Solo mostrar el splash la primera vez que se entra a la página
+    if (localStorage.getItem('splashShown')) {
+      document.getElementById('splash').classList.add('hide');
+    } else {
+      localStorage.setItem('splashShown', '1');
+      window.addEventListener('load', function() {
+        setTimeout(function() { document.getElementById('splash').classList.add('hide'); }, 2800);
+      });
+    }
   </script>
 
   <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
