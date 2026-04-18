@@ -1259,3 +1259,17 @@ body {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* ===== BORDES BLANCOS CONTENEDORES Y MENU ===== */
+.sidebar {
+  border-right: 1.5px solid rgba(255,255,255,.25);
+}
+.card,
+.hero-card,
+.review-card,
+.stat,
+.modal,
+.modal-wide,
+.modal-admin {
+  border: 1.5px solid rgba(255,255,255,.2) !important;
+}
