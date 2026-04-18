@@ -14,7 +14,9 @@ async function cargarUsuario() {
   if (!userData.carrito)  userData.carrito  = [];
   if (!userData.pedidos)  userData.pedidos  = [];
   populateUserUI();
-  showSection('inicio');
+  // Si viene con #citas en la URL, abrir directo esa sección
+  const hash = window.location.hash.replace('#', '');
+  showSection(hash === 'citas' ? 'citas' : 'inicio');
 }
 
 async function guardarUsuario() {
@@ -73,12 +75,7 @@ document.getElementById('btnLogout').addEventListener('click', logout);
 document.getElementById('btnLogoutTop').addEventListener('click', logout);
 
 // Iniciar cargando datos del usuario desde Firebase
-cargarUsuario().then(function() {
-  // Si viene desde el botón Agendar Cita del inicio
-  if (window.location.hash === '#citas') {
-    showSection('citas');
-  }
-});
+cargarUsuario();
 
 // ===== NAVEGACION =====
 const allSections = document.querySelectorAll('.dash-section');
