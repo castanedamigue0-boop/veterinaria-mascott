@@ -569,6 +569,11 @@ async function renderNotificaciones() {
     badge.textContent = noLeidas;
     badge.style.display = noLeidas > 0 ? 'inline-flex' : 'none';
   }
+  var badgeSidebar = document.getElementById('notifBadgeSidebar');
+  if (badgeSidebar) {
+    badgeSidebar.textContent = noLeidas;
+    badgeSidebar.style.display = noLeidas > 0 ? 'inline-flex' : 'none';
+  }
 
   // Mostrar toast por cada notificación no leída
   var hayNuevas = false;
@@ -664,18 +669,16 @@ if (dashCarritoOverlay) {
 
 // ===== PANEL NOTIFICACIONES =====
 var notifBtn    = document.getElementById('notifBtn');
+var notifBtnSidebar = document.getElementById('notifBtnSidebar');
 var notifPanel  = document.getElementById('notifPanel');
 var notifCerrar = document.getElementById('notifCerrar');
 
-if (notifBtn) {
-  notifBtn.addEventListener('click', function() {
-    var open = notifPanel.hidden;
-    notifPanel.hidden = !open;
-    if (!open) return;
-    // Marcar como leídas al abrir
-    renderNotificaciones();
-  });
+function toggleNotifPanel() {
+  var open = notifPanel.hidden;
+  notifPanel.hidden = !open;
+  if (!open) renderNotificaciones();
 }
-if (notifCerrar) {
-  notifCerrar.addEventListener('click', function() { notifPanel.hidden = true; });
-}
+
+if (notifBtn) notifBtn.addEventListener('click', toggleNotifPanel);
+if (notifBtnSidebar) notifBtnSidebar.addEventListener('click', toggleNotifPanel);
+if (notifCerrar) notifCerrar.addEventListener('click', function() { notifPanel.hidden = true; });
