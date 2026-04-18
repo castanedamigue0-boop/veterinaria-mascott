@@ -1,4 +1,4 @@
-import { obtenerUsuario, actualizarUsuario, getSession, clearSession } from './firebase.js';
+import { obtenerUsuario, actualizarUsuario, getSession, clearSession, obtenerTodosUsuarios } from './firebase.js';
 
 // ===== SESION =====
 const session = getSession();
@@ -189,6 +189,37 @@ async function renderCitas() {
       document.getElementById('nc-fecha').min = manana.toISOString().split('T')[0];
     }
   };
+
+  // Bloquear horas ocupadas al seleccionar fecha
+  document.getElementById('nc-fecha').addEventListener('change', async function() {
+    var fechaVal = this.value;
+    var horaSelect = document.getElementById('nc-hora');
+    // Resetear opciones
+    Array.from(horaSelect.options).forEach(function(opt) {
+      opt.disabled = false;
+      opt.textContent = opt.textContent.replace(' (ocupado)', '');
+    });
+    if (!fechaVal) return;
+    // Obtener todas las citas de ese día
+    try {
+      var todosUsuarios = await obtenerTodosUsuarios();
+      var horasOcupadas = [];
+      todosUsuarios.forEach(function(u) {
+        (u.citas || []).forEach(function(c) {
+          if (c.fecha === fechaVal && c.estado !== 'cancelada') {
+            horasOcupadas.push(c.hora);
+          }
+        });
+      });
+      // Bloquear horas ocupadas
+      Array.from(horaSelect.options).forEach(function(opt) {
+        if (opt.value && horasOcupadas.includes(opt.value)) {
+          opt.disabled = true;
+          opt.textContent = opt.value + ' (ocupado)';
+        }
+      });
+    } catch(e) { console.log('Error cargando horas:', e); }
+  });
   document.getElementById('btnCancelarCita').onclick = function() {
     document.getElementById('citaFormWrap').style.display = 'none';
   };
