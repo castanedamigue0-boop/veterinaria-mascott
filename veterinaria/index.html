@@ -630,7 +630,14 @@
     .acc-reset:hover { background:#f5f5f5; }
 
     /* Efectos accesibilidad */
-    body.acc-contraste { filter:contrast(1.6) !important; }
+    body.acc-contraste { background:#000 !important; color:#fff !important; }
+    body.acc-contraste .sidebar, body.acc-contraste .topbar,
+    body.acc-contraste .hero, body.acc-contraste .stats,
+    body.acc-contraste .section, body.acc-contraste .section-alt { background:#000 !important; }
+    body.acc-contraste .card, body.acc-contraste .hero-card,
+    body.acc-contraste .review-card { background:#111 !important; color:#fff !important; border-color:#fff !important; }
+    body.acc-contraste p, body.acc-contraste h1, body.acc-contraste h2,
+    body.acc-contraste h3, body.acc-contraste span, body.acc-contraste li { color:#fff !important; }
     body.acc-oscuro { background:#111 !important; color:#eee !important; }
     body.acc-oscuro .sidebar, body.acc-oscuro .topbar { background:#1a1a1a !important; }
     body.acc-links a { text-decoration:underline !important; font-weight:700 !important; color:#ff6f00 !important; }
