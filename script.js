@@ -126,10 +126,9 @@ function estaLogueado() {
 
 function abrirCitaOLogin() {
   if (estaLogueado()) {
-    openModal('modalCita');
-    buildFechas();
+    // Redirigir al dashboard sección citas donde se guarda en Firebase
+    window.location.href = 'dashboard.html#citas';
   } else {
-    // Guardar intención para redirigir de vuelta
     sessionStorage.setItem('macott_redirect', 'cita');
     window.location.href = 'auth.html';
   }

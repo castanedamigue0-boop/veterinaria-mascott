@@ -73,7 +73,12 @@ document.getElementById('btnLogout').addEventListener('click', logout);
 document.getElementById('btnLogoutTop').addEventListener('click', logout);
 
 // Iniciar cargando datos del usuario desde Firebase
-cargarUsuario();
+cargarUsuario().then(function() {
+  // Si viene desde el botón Agendar Cita del inicio
+  if (window.location.hash === '#citas') {
+    showSection('citas');
+  }
+});
 
 // ===== NAVEGACION =====
 const allSections = document.querySelectorAll('.dash-section');
