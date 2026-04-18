@@ -652,13 +652,16 @@
     var guiaLine  = document.getElementById('accGuiaLine');
     var fontSize  = parseInt(localStorage.getItem('acc_font') || '100');
 
+    // Siempre cerrado al cargar
+    accPanel.hidden = true;
+    accBtn.setAttribute('aria-expanded', 'false');
+
     accBtn.addEventListener('click', function() {
       var open = accPanel.hidden;
       accPanel.hidden = !open;
       accBtn.setAttribute('aria-expanded', String(open));
     });
     accCerrar.addEventListener('click', function() { accPanel.hidden = true; accBtn.setAttribute('aria-expanded','false'); });
-
     // Slider texto
     slider.value = fontSize;
     document.documentElement.style.fontSize = fontSize + '%';
