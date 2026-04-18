@@ -547,114 +547,159 @@
   <div class="acc-wrap">
     <button class="acc-btn" id="accBtn" aria-label="Opciones de accesibilidad" aria-expanded="false">♿</button>
     <div class="acc-panel" id="accPanel" hidden>
-      <p class="acc-title">Accesibilidad</p>
-      <button onclick="cambiarFuente(1)" aria-label="Aumentar texto">A+</button>
-      <button onclick="cambiarFuente(-1)" aria-label="Disminuir texto">A-</button>
-      <button onclick="toggleContraste()" id="btnContraste" aria-label="Alto contraste">🌓 Contraste</button>
-      <button onclick="resetAcc()" aria-label="Restablecer">↺ Reset</button>
+      <div class="acc-header">
+        <h3>Preferencias de Accesibilidad</h3>
+        <button class="acc-cerrar" id="accCerrar">Cerrar</button>
+      </div>
+
+      <div class="acc-row">
+        <label>Tamaño del Texto</label>
+        <div class="acc-slider-row">
+          <span>A-</span>
+          <input type="range" id="accFontSlider" min="80" max="130" value="100" step="5" aria-label="Tamaño de texto"/>
+          <span>A+</span>
+        </div>
+      </div>
+
+      <div class="acc-row acc-toggle-row">
+        <label>Alto Contraste</label>
+        <button class="acc-toggle" id="accContraste" role="switch" aria-checked="false">
+          <span class="tog-no">No</span><span class="tog-si">Sí</span>
+        </button>
+      </div>
+
+      <div class="acc-row acc-toggle-row">
+        <label>Modo Oscuro</label>
+        <button class="acc-toggle" id="accOscuro" role="switch" aria-checked="false">
+          <span class="tog-no">No</span><span class="tog-si">Sí</span>
+        </button>
+      </div>
+
+      <div class="acc-row acc-toggle-row">
+        <label>Resaltar Enlaces</label>
+        <button class="acc-toggle" id="accLinks" role="switch" aria-checked="false">
+          <span class="tog-no">No</span><span class="tog-si">Sí</span>
+        </button>
+      </div>
+
+      <div class="acc-row acc-toggle-row">
+        <label>Guía de Lectura</label>
+        <button class="acc-toggle" id="accGuia" role="switch" aria-checked="false">
+          <span class="tog-no">No</span><span class="tog-si">Sí</span>
+        </button>
+      </div>
+
+      <button class="acc-reset" id="accReset">↺ Restablecer Ajustes</button>
     </div>
   </div>
 
+  <div class="acc-guia-line" id="accGuiaLine" style="display:none"></div>
+
   <style>
     .whatsapp-float {
-      position: fixed;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      width: 56px;
-      height: 56px;
-      background: #25d366;
-      color: #fff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 20px rgba(37,211,102,.5);
-      z-index: 9000;
-      transition: transform .2s, box-shadow .2s;
-      text-decoration: none;
+      position:fixed; bottom:1.5rem; right:1.5rem;
+      width:56px; height:56px; background:#25d366; color:#fff;
+      border-radius:50%; display:flex; align-items:center; justify-content:center;
+      box-shadow:0 4px 20px rgba(37,211,102,.5); z-index:9000;
+      transition:transform .2s; text-decoration:none;
     }
-    .whatsapp-float:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,.7); }
+    .whatsapp-float:hover { transform:scale(1.1); }
 
-    .acc-wrap {
-      position: fixed;
-      bottom: 5.5rem;
-      right: 1.5rem;
-      z-index: 9000;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: .5rem;
-    }
-    .acc-btn {
-      width: 48px; height: 48px;
-      background: #0d47a1; color: #fff;
-      border: none; border-radius: 50%;
-      font-size: 1.3rem; cursor: pointer;
-      box-shadow: 0 4px 16px rgba(13,71,161,.4);
-      transition: transform .2s;
-    }
-    .acc-btn:hover { transform: scale(1.1); }
-    .acc-panel {
-      background: #fff;
-      border-radius: 12px;
-      padding: .75rem;
-      box-shadow: 0 8px 30px rgba(0,0,0,.2);
-      display: flex;
-      flex-direction: column;
-      gap: .4rem;
-      min-width: 150px;
-    }
-    .acc-title { font-size: .75rem; font-weight: 700; color: #0d47a1; margin-bottom: .25rem; text-transform: uppercase; }
-    .acc-panel button {
-      padding: .5rem .75rem;
-      border: 1.5px solid #e0e0e0;
-      border-radius: 8px;
-      background: #f5f5f5;
-      cursor: pointer;
-      font-size: .88rem;
-      font-weight: 600;
-      text-align: left;
-      transition: background .2s;
-    }
-    .acc-panel button:hover { background: #e3f2fd; border-color: #0d47a1; }
-    body.alto-contraste { background: #000 !important; color: #fff !important; }
-    body.alto-contraste * { border-color: #fff !important; }
-    body.alto-contraste a { color: #ff0 !important; }
-    body.alto-contraste .whatsapp-float,
-    body.alto-contraste .acc-wrap { filter: none !important; }
+    .acc-wrap { position:fixed; bottom:5.5rem; right:1.5rem; z-index:9000; display:flex; flex-direction:column; align-items:flex-end; gap:.5rem; }
+    .acc-btn { width:48px; height:48px; background:#0d47a1; color:#fff; border:none; border-radius:50%; font-size:1.3rem; cursor:pointer; box-shadow:0 4px 16px rgba(13,71,161,.4); transition:transform .2s; }
+    .acc-btn:hover { transform:scale(1.1); }
+
+    .acc-panel { background:#fff; border-radius:16px; padding:1.25rem; box-shadow:0 12px 40px rgba(0,0,0,.2); width:300px; display:flex; flex-direction:column; gap:.9rem; }
+    .acc-header { display:flex; justify-content:space-between; align-items:flex-start; }
+    .acc-header h3 { font-size:.95rem; font-weight:800; color:#1a1a2e; line-height:1.3; }
+    .acc-cerrar { background:none; border:none; color:#1565c0; font-size:.85rem; font-weight:600; cursor:pointer; }
+
+    .acc-row label { font-size:.82rem; font-weight:600; color:#546e7a; display:block; margin-bottom:.4rem; }
+    .acc-slider-row { display:flex; align-items:center; gap:.5rem; }
+    .acc-slider-row span { font-size:.8rem; font-weight:700; color:#1a1a2e; }
+    .acc-slider-row input { flex:1; accent-color:#1b5e20; }
+
+    .acc-toggle-row { display:flex; justify-content:space-between; align-items:center; }
+    .acc-toggle-row label { margin:0; }
+    .acc-toggle { background:#e0e0e0; border:none; border-radius:20px; padding:.25rem .5rem; cursor:pointer; display:flex; gap:.25rem; font-size:.75rem; font-weight:700; transition:background .2s; }
+    .acc-toggle[aria-checked="true"] { background:#1b5e20; color:#fff; }
+    .acc-toggle[aria-checked="false"] .tog-si,
+    .acc-toggle[aria-checked="true"]  .tog-no { opacity:.5; }
+
+    .acc-reset { width:100%; padding:.65rem; border:1.5px solid #cfd8dc; border-radius:10px; background:#fff; font-size:.85rem; font-weight:600; cursor:pointer; transition:background .2s; }
+    .acc-reset:hover { background:#f5f5f5; }
+
+    /* Efectos accesibilidad */
+    body.acc-contraste { filter:contrast(1.6) !important; }
+    body.acc-oscuro { background:#111 !important; color:#eee !important; }
+    body.acc-oscuro .sidebar, body.acc-oscuro .topbar { background:#1a1a1a !important; }
+    body.acc-links a { text-decoration:underline !important; font-weight:700 !important; color:#ff6f00 !important; }
+    .acc-guia-line { position:fixed; left:0; right:0; height:3px; background:rgba(255,111,0,.6); pointer-events:none; z-index:8999; transition:top .05s; }
   </style>
 
   <script>
-    var accBtn   = document.getElementById('accBtn');
-    var accPanel = document.getElementById('accPanel');
-    var fontSize = 100;
+    var accBtn    = document.getElementById('accBtn');
+    var accPanel  = document.getElementById('accPanel');
+    var accCerrar = document.getElementById('accCerrar');
+    var slider    = document.getElementById('accFontSlider');
+    var guiaLine  = document.getElementById('accGuiaLine');
+    var fontSize  = parseInt(localStorage.getItem('acc_font') || '100');
 
     accBtn.addEventListener('click', function() {
       var open = accPanel.hidden;
       accPanel.hidden = !open;
       accBtn.setAttribute('aria-expanded', String(open));
     });
+    accCerrar.addEventListener('click', function() { accPanel.hidden = true; accBtn.setAttribute('aria-expanded','false'); });
 
-    function cambiarFuente(dir) {
-      fontSize = Math.min(130, Math.max(80, fontSize + dir * 10));
+    // Slider texto
+    slider.value = fontSize;
+    document.documentElement.style.fontSize = fontSize + '%';
+    slider.addEventListener('input', function() {
+      fontSize = parseInt(slider.value);
       document.documentElement.style.fontSize = fontSize + '%';
       localStorage.setItem('acc_font', fontSize);
+    });
+
+    // Toggles
+    function makeToggle(btnId, storageKey, cssClass, el) {
+      var btn = document.getElementById(btnId);
+      var on  = localStorage.getItem(storageKey) === '1';
+      if (on) { (el || document.body).classList.add(cssClass); btn.setAttribute('aria-checked','true'); }
+      btn.addEventListener('click', function() {
+        on = !on;
+        (el || document.body).classList.toggle(cssClass, on);
+        btn.setAttribute('aria-checked', String(on));
+        localStorage.setItem(storageKey, on ? '1' : '0');
+      });
     }
-    function toggleContraste() {
-      document.body.classList.toggle('alto-contraste');
-      localStorage.setItem('acc_contraste', document.body.classList.contains('alto-contraste') ? '1' : '0');
-    }
-    function resetAcc() {
-      fontSize = 100;
+    makeToggle('accContraste', 'acc_contraste', 'acc-contraste');
+    makeToggle('accOscuro',    'acc_oscuro',    'acc-oscuro');
+    makeToggle('accLinks',     'acc_links',     'acc-links');
+
+    // Guía de lectura
+    var guiaBtn = document.getElementById('accGuia');
+    var guiaOn  = localStorage.getItem('acc_guia') === '1';
+    if (guiaOn) { guiaLine.style.display = 'block'; guiaBtn.setAttribute('aria-checked','true'); }
+    guiaBtn.addEventListener('click', function() {
+      guiaOn = !guiaOn;
+      guiaLine.style.display = guiaOn ? 'block' : 'none';
+      guiaBtn.setAttribute('aria-checked', String(guiaOn));
+      localStorage.setItem('acc_guia', guiaOn ? '1' : '0');
+    });
+    document.addEventListener('mousemove', function(e) {
+      if (guiaOn) guiaLine.style.top = (e.clientY - 1) + 'px';
+    });
+
+    // Reset
+    document.getElementById('accReset').addEventListener('click', function() {
+      fontSize = 100; slider.value = 100;
       document.documentElement.style.fontSize = '100%';
-      document.body.classList.remove('alto-contraste');
-      localStorage.removeItem('acc_font');
-      localStorage.removeItem('acc_contraste');
-    }
-    // Restaurar preferencias
-    var savedFont = localStorage.getItem('acc_font');
-    if (savedFont) { fontSize = parseInt(savedFont); document.documentElement.style.fontSize = fontSize + '%'; }
-    if (localStorage.getItem('acc_contraste') === '1') document.body.classList.add('alto-contraste');
+      ['acc-contraste','acc-oscuro','acc-links'].forEach(function(c){ document.body.classList.remove(c); });
+      guiaOn = false; guiaLine.style.display = 'none';
+      ['accContraste','accOscuro','accLinks','accGuia'].forEach(function(id){ document.getElementById(id).setAttribute('aria-checked','false'); });
+      ['acc_font','acc_contraste','acc_oscuro','acc_links','acc_guia'].forEach(function(k){ localStorage.removeItem(k); });
+    });
   </script>
 </body>
 </html>
