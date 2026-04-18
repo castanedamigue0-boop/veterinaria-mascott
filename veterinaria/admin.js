@@ -175,7 +175,8 @@ function toast(msg) {
 
 // ===== DASHBOARD =====
 function renderDashboard() {
-  var users = getUsers();
+  cargarDatosFirebase().then(function() {
+    var users = getUsers();
   var citas = todasLasCitas();
   var pend  = citas.filter(function(c) { return c.estado === 'pendiente'; });
   var conf  = citas.filter(function(c) { return c.estado === 'confirmada'; });
@@ -201,6 +202,7 @@ function renderDashboard() {
           '<p class="cliente-email">' + u.email + '</p></div></div>';
       }).join('')
     : '<p class="empty-msg">Sin clientes aún.</p>';
+  }); // fin cargarDatosFirebase
 }
 
 function stat(icon, num, label) {
@@ -212,7 +214,9 @@ function stat(icon, num, label) {
 var filtroEstado = 'todas';
 
 function renderCitas() {
-  var todas    = todasLasCitas();
+  // Recargar datos frescos de Firebase antes de mostrar
+  cargarDatosFirebase().then(function() {
+    var todas    = todasLasCitas();
   var filtradas = filtroEstado === 'todas' ? todas : todas.filter(function(c) { return c.estado === filtroEstado; });
   var cont     = document.getElementById('adminCitasList');
 
@@ -229,6 +233,7 @@ function renderCitas() {
     ? filtradas.map(citaHtml).join('')
     : '<p class="empty-msg">No hay citas.</p>';
   bindBtns(cont);
+  }); // fin cargarDatosFirebase
 }
 
 function citaHtml(c) {
