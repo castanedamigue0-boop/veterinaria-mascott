@@ -543,6 +543,18 @@
     </svg>
   </a>
 
+  <!-- ACCESIBILIDAD FLOTANTE -->
+  <div class="acc-wrap">
+    <button class="acc-btn" id="accBtn" aria-label="Opciones de accesibilidad" aria-expanded="false">♿</button>
+    <div class="acc-panel" id="accPanel" hidden>
+      <p class="acc-title">Accesibilidad</p>
+      <button onclick="cambiarFuente(1)" aria-label="Aumentar texto">A+</button>
+      <button onclick="cambiarFuente(-1)" aria-label="Disminuir texto">A-</button>
+      <button onclick="toggleContraste()" id="btnContraste" aria-label="Alto contraste">🌓 Contraste</button>
+      <button onclick="resetAcc()" aria-label="Restablecer">↺ Reset</button>
+    </div>
+  </div>
+
   <style>
     .whatsapp-float {
       position: fixed;
@@ -561,11 +573,85 @@
       transition: transform .2s, box-shadow .2s;
       text-decoration: none;
     }
-    .whatsapp-float:hover {
-      transform: scale(1.1);
-      box-shadow: 0 6px 28px rgba(37,211,102,.7);
+    .whatsapp-float:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,.7); }
+
+    .acc-wrap {
+      position: fixed;
+      bottom: 5.5rem;
+      right: 1.5rem;
+      z-index: 9000;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: .5rem;
     }
+    .acc-btn {
+      width: 48px; height: 48px;
+      background: #0d47a1; color: #fff;
+      border: none; border-radius: 50%;
+      font-size: 1.3rem; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(13,71,161,.4);
+      transition: transform .2s;
+    }
+    .acc-btn:hover { transform: scale(1.1); }
+    .acc-panel {
+      background: #fff;
+      border-radius: 12px;
+      padding: .75rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,.2);
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+      min-width: 150px;
+    }
+    .acc-title { font-size: .75rem; font-weight: 700; color: #0d47a1; margin-bottom: .25rem; text-transform: uppercase; }
+    .acc-panel button {
+      padding: .5rem .75rem;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 8px;
+      background: #f5f5f5;
+      cursor: pointer;
+      font-size: .88rem;
+      font-weight: 600;
+      text-align: left;
+      transition: background .2s;
+    }
+    .acc-panel button:hover { background: #e3f2fd; border-color: #0d47a1; }
+    body.alto-contraste { filter: contrast(1.5) brightness(.9); }
   </style>
+
+  <script>
+    var accBtn   = document.getElementById('accBtn');
+    var accPanel = document.getElementById('accPanel');
+    var fontSize = 100;
+
+    accBtn.addEventListener('click', function() {
+      var open = accPanel.hidden;
+      accPanel.hidden = !open;
+      accBtn.setAttribute('aria-expanded', String(open));
+    });
+
+    function cambiarFuente(dir) {
+      fontSize = Math.min(130, Math.max(80, fontSize + dir * 10));
+      document.documentElement.style.fontSize = fontSize + '%';
+      localStorage.setItem('acc_font', fontSize);
+    }
+    function toggleContraste() {
+      document.body.classList.toggle('alto-contraste');
+      localStorage.setItem('acc_contraste', document.body.classList.contains('alto-contraste') ? '1' : '0');
+    }
+    function resetAcc() {
+      fontSize = 100;
+      document.documentElement.style.fontSize = '100%';
+      document.body.classList.remove('alto-contraste');
+      localStorage.removeItem('acc_font');
+      localStorage.removeItem('acc_contraste');
+    }
+    // Restaurar preferencias
+    var savedFont = localStorage.getItem('acc_font');
+    if (savedFont) { fontSize = parseInt(savedFont); document.documentElement.style.fontSize = fontSize + '%'; }
+    if (localStorage.getItem('acc_contraste') === '1') document.body.classList.add('alto-contraste');
+  </script>
 </body>
 </html>
 </html>
