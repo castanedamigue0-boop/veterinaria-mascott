@@ -53,7 +53,7 @@ document.getElementById('adminLoginForm').addEventListener('submit', function(e)
     setTimeout(function() { mostrarPanel(); }, 600);
   } else {
     msg.className   = 'form-msg error';
-    msg.textContent = '❌ Usuario o contraseña incorrectos.'; macott2026';
+    msg.textContent = '❌ Usuario o contraseña incorrectos.';
   }
 });
 
