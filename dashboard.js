@@ -75,11 +75,6 @@ document.getElementById('btnLogoutTop').addEventListener('click', logout);
 // Iniciar cargando datos del usuario desde Firebase
 cargarUsuario();
 
-// ===== LOGOUT =====
-function logout() { clearSession(); window.location.href = 'index.html'; }
-document.getElementById('btnLogout').addEventListener('click', logout);
-document.getElementById('btnLogoutTop').addEventListener('click', logout);
-
 // ===== NAVEGACION =====
 const allSections = document.querySelectorAll('.dash-section');
 const navBtns     = document.querySelectorAll('.ds-link[data-section]');
