@@ -1352,95 +1352,23 @@ body {
   color: #fff;
 }
 
-/* ===== DASHBOARD NAVBAR ARRIBA ===== */
-.dash-sidebar {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  width: 100%;
-  height: auto;
-  flex-direction: row;
-  align-items: center;
-  padding: 0 1.5rem;
-  box-shadow: 0 2px 16px rgba(0,0,0,.25);
-  border-right: none;
-  border-bottom: 1.5px solid rgba(255,255,255,.15);
-  transform: none !important;
-  z-index: 300;
-}
-
-.ds-header {
-  padding: .75rem 0;
-  border-bottom: none;
-  border-right: 1px solid rgba(255,255,255,.15);
-  padding-right: 1.5rem;
-  margin-right: .5rem;
-  flex-shrink: 0;
-}
-
-.ds-links {
-  flex-direction: row;
-  padding: 0;
-  gap: .1rem;
-  overflow-y: visible;
-  overflow-x: auto;
-  flex: 1;
-  align-items: center;
-}
-
-.ds-link {
-  padding: .6rem .85rem;
-  white-space: nowrap;
-  font-size: .85rem;
+/* ===== NOTIFICACIONES SIDEBAR ===== */
+.ds-notif-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,.85);
+  padding: .5rem .75rem;
   border-radius: 8px;
-}
-.ds-link.active::before {
-  left: 0; top: auto; bottom: 0;
-  width: 100%; height: 3px;
-  transform: none;
-  border-radius: 3px 3px 0 0;
-}
-
-.ds-footer {
-  flex-direction: row;
-  border-top: none;
-  border-left: 1px solid rgba(255,255,255,.15);
-  padding: .5rem 0 .5rem 1rem;
-  margin-left: .5rem;
-  gap: .5rem;
+  font-size: .9rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
   align-items: center;
-  flex-shrink: 0;
+  gap: .5rem;
+  width: 100%;
+  transition: background .2s, color .2s;
 }
-
-.ds-back-btn, .ds-logout {
-  padding: .5rem .85rem;
-  font-size: .82rem;
-  white-space: nowrap;
-}
-
-.dash-main {
-  margin-left: 0;
-  padding-top: 70px;
-}
-
-.dash-topbar { display: none !important; }
-.dash-overlay { display: none !important; }
-.dash-menu-btn { display: none !important; }
-
-@media (max-width: 900px) {
-  .dash-sidebar {
-    flex-wrap: wrap;
-    padding: .5rem 1rem;
-  }
-  .ds-links {
-    order: 3;
-    width: 100%;
-    padding: .25rem 0;
-    border-top: 1px solid rgba(255,255,255,.1);
-  }
-  .ds-footer {
-    border-left: none;
-    padding-left: 0;
-    margin-left: 0;
-  }
-  .dash-main { padding-top: 120px; }
+.ds-notif-btn:hover {
+  background: rgba(255,255,255,.1);
+  color: #fff;
 }
