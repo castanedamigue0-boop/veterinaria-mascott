@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8"/>
@@ -6,6 +6,17 @@
   <title>Acceso · Clínica Veterinaria Mascott</title>
   <meta name="description" content="Inicia sesión o regístrate en Clínica Veterinaria Mascott"/>
   <link rel="stylesheet" href="auth.css"/>
+  <style>body { visibility: hidden; }</style>
+  <script>
+    // Si ya hay sesión, redirigir antes de mostrar nada
+    if (localStorage.getItem('macott_session')) {
+      window.location.replace('dashboard.html');
+    } else {
+      document.addEventListener('DOMContentLoaded', function() {
+        document.body.style.visibility = 'visible';
+      });
+    }
+  </script>
 </head>
 <body>
 
