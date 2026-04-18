@@ -9,14 +9,16 @@ let userData = null;
 async function cargarUsuario() {
   userData = await obtenerUsuario(session.email);
   if (!userData) { window.location.href = 'auth.html'; return; }
-  if (!userData.citas)    userData.citas    = [];
-  if (!userData.mascotas) userData.mascotas = [];
-  if (!userData.carrito)  userData.carrito  = [];
-  if (!userData.pedidos)  userData.pedidos  = [];
+  if (!userData.citas)          userData.citas          = [];
+  if (!userData.mascotas)       userData.mascotas       = [];
+  if (!userData.carrito)        userData.carrito        = [];
+  if (!userData.pedidos)        userData.pedidos        = [];
+  if (!userData.notificaciones) userData.notificaciones = [];
   populateUserUI();
-  // Si viene con #citas en la URL, abrir directo esa sección
   const hash = window.location.hash.replace('#', '');
   showSection(hash === 'citas' ? 'citas' : 'inicio');
+  renderNotificaciones();
+  verificarRecordatorios();
 }
 
 async function guardarUsuario() {
@@ -653,12 +655,6 @@ function verificarRecordatorios() {
     if (msg) mostrarToastDash(msg, 6000);
   });
 }
-
-// ===== INIT =====
-populateUserUI();
-showSection('inicio');
-renderNotificaciones();
-verificarRecordatorios();
 
 // Cerrar carrito al click en overlay
 var dashCarritoOverlay = document.getElementById('dashCarritoOverlay');
