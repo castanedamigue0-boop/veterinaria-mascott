@@ -25,7 +25,8 @@ export async function obtenerUsuario(email) {
 }
 
 export async function actualizarUsuario(email, data) {
-  await updateDoc(doc(db, 'usuarios', email), data);
+  const { setDoc } = await import("https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js");
+  await setDoc(doc(db, 'usuarios', email), data, { merge: true });
 }
 
 export async function obtenerTodosUsuarios() {
