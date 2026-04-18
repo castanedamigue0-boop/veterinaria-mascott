@@ -617,7 +617,11 @@
       transition: background .2s;
     }
     .acc-panel button:hover { background: #e3f2fd; border-color: #0d47a1; }
-    body.alto-contraste { filter: contrast(1.5) brightness(.9); }
+    body.alto-contraste { background: #000 !important; color: #fff !important; }
+    body.alto-contraste * { border-color: #fff !important; }
+    body.alto-contraste a { color: #ff0 !important; }
+    body.alto-contraste .whatsapp-float,
+    body.alto-contraste .acc-wrap { filter: none !important; }
   </style>
 
   <script>
