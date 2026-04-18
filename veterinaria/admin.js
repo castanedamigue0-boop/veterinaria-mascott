@@ -3,7 +3,7 @@ var ADMIN_USER = 'admin';
 var ADMIN_PASS = 'mascott2026';
 
 // ===== FIREBASE =====
-import { obtenerTodosUsuarios, actualizarUsuario } from './firebase.js';
+import { obtenerTodosUsuarios, actualizarUsuario, agregarNotificacion } from './firebase.js';
 
 async function cargarDatosFirebase() {
   try {
@@ -143,13 +143,11 @@ function cambiarEstado(userEmail, citaId, nuevoEstado) {
     if (c.id !== citaId) return;
     c.estado = nuevoEstado;
     var emoji = nuevoEstado === 'confirmada' ? '✅' : '❌';
-    Storage.addNotif(userEmail,
-      emoji + ' Tu cita de ' + c.servicio + ' para ' + c.mascota +
+    var msg = emoji + ' Tu cita de ' + c.servicio + ' para ' + c.mascota +
       ' el ' + c.fecha + ' a las ' + c.hora +
-      ' fue ' + nuevoEstado + ' por el veterinario.'
-    );
+      ' fue ' + nuevoEstado + ' por el veterinario.';
+    agregarNotificacion(userEmail, msg);
   });
-  // Actualizar en Firebase
   actualizarUsuario(userEmail, { citas: user.citas });
 }
 

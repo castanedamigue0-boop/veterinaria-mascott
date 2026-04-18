@@ -33,6 +33,14 @@ export async function obtenerTodosUsuarios() {
   return snap.docs.map(d => d.data());
 }
 
+export async function agregarNotificacion(email, msg) {
+  const user = await obtenerUsuario(email);
+  if (!user) return;
+  const notifs = user.notificaciones || [];
+  notifs.unshift({ msg, fecha: new Date().toLocaleString('es-CO'), leida: false });
+  await setDoc(doc(db, 'usuarios', email), { notificaciones: notifs }, { merge: true });
+}
+
 // ===== SESION LOCAL =====
 export function setSession(user) { localStorage.setItem('macott_session', JSON.stringify(user)); }
 export function getSession()     { return JSON.parse(localStorage.getItem('macott_session') || 'null'); }

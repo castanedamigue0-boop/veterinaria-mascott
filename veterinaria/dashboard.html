@@ -41,8 +41,22 @@
   <header class="dash-topbar" role="banner">
     <button class="dash-menu-btn" id="dashMenuBtn" aria-label="Abrir menú" aria-expanded="false">☰</button>
     <span class="dash-topbar-title">🐾 Mascott</span>
-    <button class="ds-logout-top" id="btnLogoutTop" aria-label="Cerrar sesión">🚪</button>
+    <div style="display:flex;align-items:center;gap:.75rem">
+      <button class="notif-btn" id="notifBtn" aria-label="Notificaciones">
+        🔔 <span class="notif-badge" id="notifBadge" style="display:none">0</span>
+      </button>
+      <button class="ds-logout-top" id="btnLogoutTop" aria-label="Cerrar sesión">🚪</button>
+    </div>
   </header>
+
+  <!-- PANEL NOTIFICACIONES -->
+  <div class="notif-panel" id="notifPanel" hidden>
+    <div class="notif-header">
+      <h3>🔔 Notificaciones</h3>
+      <button id="notifCerrar">✕</button>
+    </div>
+    <div class="notif-list" id="notifList"></div>
+  </div>
 
   <div class="dash-overlay" id="dashOverlay" aria-hidden="true"></div>
 

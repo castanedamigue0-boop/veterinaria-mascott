@@ -553,34 +553,48 @@ function vld(input, errId, msg) {
 }
 
 // ===== NOTIFICACIONES =====
-function renderNotificaciones() {
-  var notifs = JSON.parse(localStorage.getItem('macott_notif_' + userData.email) || '[]');
-  if (!notifs.length) return;
+async function renderNotificaciones() {
+  var notifs = userData.notificaciones || [];
+  if (!notifs.length) {
+    var badge = document.getElementById('notifBadge');
+    if (badge) badge.style.display = 'none';
+    return;
+  }
 
-  // Mostrar badge en sidebar
-  var citasBtn = document.querySelector('.ds-link[data-section="citas"]');
   var noLeidas = notifs.filter(function(n) { return !n.leida; }).length;
-  if (citasBtn && noLeidas > 0) {
-    var badge = citasBtn.querySelector('.notif-badge');
-    if (!badge) {
-      badge = document.createElement('span');
-      badge.className = 'notif-badge';
-      badge.style.cssText = 'background:#e53935;color:#fff;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;margin-left:auto;';
-      citasBtn.appendChild(badge);
-    }
+  var badge = document.getElementById('notifBadge');
+  if (badge) {
     badge.textContent = noLeidas;
+    badge.style.display = noLeidas > 0 ? 'inline-flex' : 'none';
   }
 
   // Mostrar toast por cada notificación no leída
+  var hayNuevas = false;
   notifs.forEach(function(n, i) {
     if (!n.leida) {
-      setTimeout(function() {
-        mostrarToastDash(n.msg);
-      }, i * 500);
+      hayNuevas = true;
+      setTimeout(function() { mostrarToastDash(n.msg); }, i * 600);
       n.leida = true;
     }
   });
-  localStorage.setItem('macott_notif_' + userData.email, JSON.stringify(notifs));
+
+  if (hayNuevas) {
+    userData.notificaciones = notifs;
+    await guardarUsuario();
+  }
+
+  // Panel de notificaciones
+  var list = document.getElementById('notifList');
+  if (list) {
+    list.innerHTML = notifs.length
+      ? notifs.map(function(n) {
+          return '<div class="notif-item' + (n.leida ? '' : ' nueva') + '">' +
+            '<p>' + n.msg + '</p>' +
+            '<span class="notif-fecha">' + n.fecha + '</span>' +
+          '</div>';
+        }).join('')
+      : '<p class="empty-msg">Sin notificaciones.</p>';
+  }
 }
 
 function mostrarToastDash(msg, duracion) {
@@ -650,4 +664,22 @@ verificarRecordatorios();
 var dashCarritoOverlay = document.getElementById('dashCarritoOverlay');
 if (dashCarritoOverlay) {
   dashCarritoOverlay.addEventListener('click', cerrarCarritoDash);
+}
+
+// ===== PANEL NOTIFICACIONES =====
+var notifBtn    = document.getElementById('notifBtn');
+var notifPanel  = document.getElementById('notifPanel');
+var notifCerrar = document.getElementById('notifCerrar');
+
+if (notifBtn) {
+  notifBtn.addEventListener('click', function() {
+    var open = notifPanel.hidden;
+    notifPanel.hidden = !open;
+    if (!open) return;
+    // Marcar como leídas al abrir
+    renderNotificaciones();
+  });
+}
+if (notifCerrar) {
+  notifCerrar.addEventListener('click', function() { notifPanel.hidden = true; });
 }
