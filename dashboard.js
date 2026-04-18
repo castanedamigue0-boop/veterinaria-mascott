@@ -207,13 +207,18 @@ document.getElementById('formNuevaCita').addEventListener('submit', function(e) 
   valid = vld(hora,     'nce-hora',     'Selecciona un horario.')   && valid;
   if (!valid) return;
   userData.citas.push({ id: Date.now().toString(), mascota: mascota.value, servicio: servicio.value, fecha: fecha.value, hora: hora.value, notas: notas, estado: 'pendiente' });
-  guardarUsuario(); //  { citas: userData.citas });
-  msg.className = 'form-msg success'; msg.textContent = 'Cita agendada!';
-  setTimeout(function() {
-    document.getElementById('citaFormWrap').style.display = 'none';
-    e.target.reset(); msg.textContent = ''; msg.className = 'form-msg';
-    renderCitas(); renderInicio();
-  }, 1200);
+  msg.className = 'form-msg success'; msg.textContent = '⏳ Guardando cita...';
+  guardarUsuario().then(function() {
+    msg.textContent = '✅ Cita agendada!';
+    setTimeout(function() {
+      document.getElementById('citaFormWrap').style.display = 'none';
+      e.target.reset(); msg.textContent = ''; msg.className = 'form-msg';
+      renderCitas(); renderInicio();
+    }, 1200);
+  }).catch(function() {
+    msg.className = 'form-msg error';
+    msg.textContent = '❌ Error al guardar. Intenta de nuevo.';
+  });
 });
 
 // ===== MASCOTAS =====
