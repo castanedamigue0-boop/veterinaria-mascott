@@ -4,7 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Clínica Veterinaria Mascott</title>
-  <meta name="description" content="Clínica Veterinaria Mascott – Consultas, vacunación, estética canina y tienda de mascotas." />
+  <meta name="description" content="Clínica Veterinaria Mascott – Consultas, vacunación, estética canina y tienda de mascotas en CDMX." />
+  <meta name="keywords" content="veterinaria, clínica veterinaria, mascotas, vacunación, estética canina, tienda mascotas, CDMX"/>
+  <meta name="author" content="Clínica Veterinaria Mascott"/>
+  <meta name="robots" content="index, follow"/>
+  <!-- Open Graph -->
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="Clínica Veterinaria Mascott"/>
+  <meta property="og:description" content="Cuidamos a tu mascota con amor, experiencia y tecnología de punta. Consultas, vacunación, estética y tienda."/>
+  <meta property="og:image" content="logoo.png"/>
+  <meta property="og:locale" content="es_MX"/>
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary"/>
+  <meta name="twitter:title" content="Clínica Veterinaria Mascott"/>
+  <meta name="twitter:description" content="Cuidamos a tu mascota con amor y profesionalismo."/>
+  <meta name="twitter:image" content="logoo.png"/>
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json"/>
+  <meta name="theme-color" content="#1565c0"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Mascott"/>
+  <link rel="apple-touch-icon" href="logoo.png"/>
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="logoo.png"/>
   <style>
@@ -589,6 +611,14 @@
     }
     .whatsapp-float:hover { transform:scale(1.1); }
   </style>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('./sw.js')
+          .catch(function(e) { console.warn('SW no registrado:', e); });
+      });
+    }
+  </script>
 </body>
 </html>    // Reset
     document.getElementById('accReset').addEventListener('click', function() {
