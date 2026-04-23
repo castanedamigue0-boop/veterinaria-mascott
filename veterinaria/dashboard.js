@@ -91,7 +91,7 @@ function showSection(id) {
   if (sec) { sec.classList.add('active'); sec.hidden = false; }
   if (btn) { btn.classList.add('active'); btn.setAttribute('aria-current', 'page'); }
   if (window.innerWidth <= 900) { dashSidebar.classList.remove('open'); dashOverlay.classList.remove('active'); }
-  var renders = { inicio: renderInicio, citas: renderCitas, mascotas: renderMascotas, tienda: renderTienda, inventario: initInventario, historial: renderHistorial, perfil: renderPerfil };
+  var renders = { inicio: renderInicio, citas: renderCitas, mascotas: renderMascotas, tienda: renderTienda, historial: renderHistorial, perfil: renderPerfil };
   if (renders[id]) renders[id]();
   triggerReveal();
 }
@@ -145,6 +145,8 @@ function renderInicio() {
 }
 
 // ===== CITAS =====
+var filtroCitaEstado = 'todas';
+
 async function renderCitas() {
   var list = document.getElementById('citasList');
 
@@ -152,33 +154,17 @@ async function renderCitas() {
   userData = await obtenerUsuario(session.email) || userData;
   if (!userData.citas) userData.citas = [];
 
-  var citas = userData.citas;
-  list.innerHTML = citas.length
-    ? citas.map(function(c) {
-        var badgeClass = c.estado === 'confirmada' ? 'badge-completada' : c.estado === 'cancelada' ? 'badge-cancelada' : 'badge-pendiente';
-        var badgeText  = c.estado === 'confirmada' ? '✅ Confirmada' : c.estado === 'cancelada' ? '❌ Cancelada' : '⏳ Pendiente';
-        var cancelBtn  = c.estado === 'pendiente'
-          ? '<button class="btn-icon" data-action="cancelar" data-id="' + c.id + '">Cancelar</button>'
-          : '';
-        return '<div class="cita-item ' + (c.estado !== 'pendiente' ? c.estado : '') + '">' +
-          '<div class="cita-info">' +
-            '<h4>' + c.servicio + '</h4>' +
-            '<p>🐾 ' + c.mascota + ' &nbsp;|&nbsp; 📅 ' + c.fecha + ' &nbsp;·&nbsp; 🕐 ' + c.hora + (c.notas ? ' &nbsp;|&nbsp; 📝 ' + c.notas : '') + '</p>' +
-          '</div>' +
-          '<div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">' +
-            '<span class="cita-badge ' + badgeClass + '">' + badgeText + '</span>' +
-            cancelBtn +
-          '</div></div>';
-      }).join('')
-    : '<p class="empty-msg">No tienes citas registradas.</p>';
-
-  list.querySelectorAll('[data-action="cancelar"]').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      userData.citas = userData.citas.filter(function(c) { return c.id !== btn.dataset.id; });
-      guardarUsuario(); //  { citas: userData.citas });
-      renderCitas(); renderInicio();
-    });
+  // Bind filtros
+  document.querySelectorAll('.filtro-cita-btn').forEach(function(btn) {
+    btn.onclick = function() {
+      document.querySelectorAll('.filtro-cita-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      filtroCitaEstado = btn.dataset.estado;
+      _renderCitasList();
+    };
   });
+
+  _renderCitasList();
 
   document.getElementById('btnAbrirCita').onclick = function() {
     var wrap = document.getElementById('citaFormWrap');
@@ -194,13 +180,11 @@ async function renderCitas() {
   document.getElementById('nc-fecha').addEventListener('change', async function() {
     var fechaVal = this.value;
     var horaSelect = document.getElementById('nc-hora');
-    // Resetear opciones
     Array.from(horaSelect.options).forEach(function(opt) {
       opt.disabled = false;
       opt.textContent = opt.textContent.replace(' (ocupado)', '');
     });
     if (!fechaVal) return;
-    // Obtener todas las citas de ese día
     try {
       var todosUsuarios = await obtenerTodosUsuarios();
       var horasOcupadas = [];
@@ -211,7 +195,6 @@ async function renderCitas() {
           }
         });
       });
-      // Bloquear horas ocupadas
       Array.from(horaSelect.options).forEach(function(opt) {
         if (opt.value && horasOcupadas.includes(opt.value)) {
           opt.disabled = true;
@@ -223,6 +206,39 @@ async function renderCitas() {
   document.getElementById('btnCancelarCita').onclick = function() {
     document.getElementById('citaFormWrap').style.display = 'none';
   };
+}
+
+function _renderCitasList() {
+  var list = document.getElementById('citasList');
+  var citas = userData.citas || [];
+  var filtradas = filtroCitaEstado === 'todas' ? citas : citas.filter(function(c) { return c.estado === filtroCitaEstado; });
+
+  list.innerHTML = filtradas.length
+    ? filtradas.map(function(c) {
+        var badgeClass = c.estado === 'confirmada' ? 'badge-completada' : c.estado === 'cancelada' ? 'badge-cancelada' : 'badge-pendiente';
+        var badgeText  = c.estado === 'confirmada' ? '✅ Confirmada' : c.estado === 'cancelada' ? '❌ Cancelada' : '⏳ Pendiente';
+        var cancelBtn  = c.estado === 'pendiente'
+          ? '<button class="btn-icon" data-action="cancelar" data-id="' + c.id + '">Cancelar</button>'
+          : '';
+        return '<div class="cita-item ' + (c.estado !== 'pendiente' ? c.estado : '') + '">' +
+          '<div class="cita-info">' +
+            '<h4>' + c.servicio + '</h4>' +
+            '<p>🐾 ' + c.mascota + ' &nbsp;|&nbsp; 📅 ' + c.fecha + ' &nbsp;·&nbsp; 🕐 ' + c.hora + (c.notas ? ' &nbsp;|&nbsp; 📝 ' + c.notas : '') + '</p>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">' +
+            '<span class="cita-badge ' + badgeClass + '">' + badgeText + '</span>' +
+            cancelBtn +
+          '</div></div>';
+      }).join('')
+    : '<p class="empty-msg">No hay citas ' + (filtroCitaEstado !== 'todas' ? filtroCitaEstado + 's' : '') + '.</p>';
+
+  list.querySelectorAll('[data-action="cancelar"]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      userData.citas = userData.citas.filter(function(c) { return c.id !== btn.dataset.id; });
+      guardarUsuario();
+      _renderCitasList(); renderInicio();
+    });
+  });
 }
 
 // poblarSelectMascotas eliminado — campo es input de texto libre
@@ -257,21 +273,45 @@ document.getElementById('formNuevaCita').addEventListener('submit', function(e) 
 });
 
 // ===== MASCOTAS =====
+var _mascotaHistorialId = null;
+
 function renderMascotas() {
   var grid = document.getElementById('mascotasList');
+  document.getElementById('historialMedicoWrap').style.display = 'none';
+
   grid.innerHTML = userData.mascotas.length
     ? userData.mascotas.map(function(m) {
-        return '<div class="mascota-card"><span class="mascota-emoji">' + m.especie.split(' ')[0] + '</span><h4>' + m.nombre + '</h4><p>' + m.especie.split(' ').slice(1).join(' ') + (m.raza ? ' - ' + m.raza : '') + (m.edad ? ' - ' + m.edad + ' anos' : '') + '</p><button class="btn-icon" data-action="eliminar" data-id="' + m.id + '" style="margin-top:.75rem">Eliminar</button></div>';
+        return '<div class="mascota-card">'
+          + '<span class="mascota-emoji">' + m.especie.split(' ')[0] + '</span>'
+          + '<h4>' + m.nombre + '</h4>'
+          + '<p>' + m.especie.split(' ').slice(1).join(' ') + (m.raza ? ' · ' + m.raza : '') + (m.edad ? ' · ' + m.edad + ' años' : '') + '</p>'
+          + '<div style="display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap">'
+          + '<button class="btn-dash" data-action="historial" data-id="' + m.id + '" style="font-size:.8rem;padding:.4rem .85rem">📋 Historial</button>'
+          + '<button class="btn-icon" data-action="eliminar" data-id="' + m.id + '">Eliminar</button>'
+          + '</div></div>';
       }).join('')
     : '<p class="empty-msg">No tienes mascotas registradas.</p>';
 
   grid.querySelectorAll('[data-action="eliminar"]').forEach(function(btn) {
     btn.addEventListener('click', function() {
       userData.mascotas = userData.mascotas.filter(function(m) { return m.id !== btn.dataset.id; });
-      guardarUsuario(); //  { mascotas: userData.mascotas });
+      guardarUsuario();
       renderMascotas(); renderInicio();
     });
   });
+
+  grid.querySelectorAll('[data-action="historial"]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      _mascotaHistorialId = btn.dataset.id;
+      var mascota = userData.mascotas.find(function(m) { return m.id === _mascotaHistorialId; });
+      document.getElementById('historialMedicoTitulo').textContent = '📋 Historial médico — ' + mascota.nombre;
+      document.getElementById('historialMedicoWrap').style.display = 'block';
+      document.getElementById('registroFormWrap').style.display = 'none';
+      renderHistorialMedico();
+      document.getElementById('historialMedicoWrap').scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
   document.getElementById('btnAbrirMascota').onclick = function() {
     var wrap = document.getElementById('mascotaFormWrap');
     wrap.style.display = wrap.style.display === 'none' ? 'block' : 'none';
@@ -279,7 +319,71 @@ function renderMascotas() {
   document.getElementById('btnCancelarMascota').onclick = function() {
     document.getElementById('mascotaFormWrap').style.display = 'none';
   };
+  document.getElementById('btnCerrarHistorial').onclick = function() {
+    document.getElementById('historialMedicoWrap').style.display = 'none';
+    _mascotaHistorialId = null;
+  };
+  document.getElementById('btnAgregarRegistro').onclick = function() {
+    var wrap = document.getElementById('registroFormWrap');
+    wrap.style.display = wrap.style.display === 'none' ? 'block' : 'none';
+    if (wrap.style.display === 'block') {
+      document.getElementById('rm-fecha').value = new Date().toISOString().split('T')[0];
+    }
+  };
+  document.getElementById('btnCancelarRegistro').onclick = function() {
+    document.getElementById('registroFormWrap').style.display = 'none';
+  };
 }
+
+function renderHistorialMedico() {
+  var mascota = userData.mascotas.find(function(m) { return m.id === _mascotaHistorialId; });
+  var list    = document.getElementById('historialMedicoList');
+  if (!mascota) return;
+  var registros = mascota.historial || [];
+  list.innerHTML = registros.length
+    ? registros.slice().reverse().map(function(r) {
+        return '<div class="cita-item">'
+          + '<div class="cita-info">'
+          + '<h4>' + r.tipo + '</h4>'
+          + '<p>📅 ' + r.fecha + (r.vet ? ' &nbsp;·&nbsp; 👨‍⚕️ ' + r.vet : '') + '</p>'
+          + '<p style="margin-top:.2rem;color:var(--text)">' + r.descripcion + '</p>'
+          + '</div>'
+          + '<button class="btn-icon" data-action="eliminar-registro" data-rid="' + r.id + '" style="align-self:flex-start">🗑</button>'
+          + '</div>';
+      }).join('')
+    : '<p class="empty-msg">Sin registros médicos aún. Agrega el primero.</p>';
+
+  list.querySelectorAll('[data-action="eliminar-registro"]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var mascota2 = userData.mascotas.find(function(m) { return m.id === _mascotaHistorialId; });
+      mascota2.historial = (mascota2.historial || []).filter(function(r) { return r.id !== btn.dataset.rid; });
+      guardarUsuario();
+      renderHistorialMedico();
+    });
+  });
+}
+
+document.getElementById('formRegistroMedico').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var tipo  = document.getElementById('rm-tipo').value;
+  var fecha = document.getElementById('rm-fecha').value;
+  var desc  = document.getElementById('rm-descripcion').value.trim();
+  var vet   = document.getElementById('rm-vet').value.trim();
+  var msg   = document.getElementById('registro-msg');
+  if (!tipo || !fecha || !desc) {
+    msg.className = 'form-msg error'; msg.textContent = 'Completa los campos requeridos.'; return;
+  }
+  var mascota = userData.mascotas.find(function(m) { return m.id === _mascotaHistorialId; });
+  if (!mascota.historial) mascota.historial = [];
+  mascota.historial.push({ id: Date.now().toString(), tipo: tipo, fecha: fecha, descripcion: desc, vet: vet });
+  guardarUsuario();
+  msg.className = 'form-msg success'; msg.textContent = '✅ Registro guardado.';
+  setTimeout(function() {
+    document.getElementById('registroFormWrap').style.display = 'none';
+    e.target.reset(); msg.textContent = ''; msg.className = 'form-msg';
+    renderHistorialMedico();
+  }, 800);
+});
 
 document.getElementById('formMascota').addEventListener('submit', function(e) {
   e.preventDefault();

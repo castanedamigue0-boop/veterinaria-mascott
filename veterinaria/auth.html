@@ -81,7 +81,7 @@
             <label class="check-label">
               <input type="checkbox" id="l-remember"/> Recordarme
             </label>
-            <a href="#" class="link-small">¿Olvidaste tu contraseña?</a>
+            <a href="#" class="link-small" id="linkOlvide">¿Olvidaste tu contraseña?</a>
           </div>
 
           <button type="submit" class="btn-auth">
@@ -89,6 +89,18 @@
           </button>
 
           <div class="form-msg" id="login-msg" role="status" aria-live="polite"></div>
+
+          <!-- RECUPERAR CONTRASEÑA -->
+          <div class="recover-wrap" id="recoverWrap" style="display:none">
+            <p style="font-size:.85rem;color:#546e7a;margin-bottom:.5rem">Ingresa tu correo y te enviaremos una nueva contraseña temporal.</p>
+            <div class="form-group">
+              <input type="email" id="recover-email" placeholder="correo@ejemplo.com" autocomplete="email"/>
+            </div>
+            <button type="button" class="btn-auth" id="btnEnviarRecuperar" style="margin-top:.25rem">
+              <span>📧</span> Enviar contraseña temporal
+            </button>
+            <div class="form-msg" id="recover-msg" role="status" aria-live="polite"></div>
+          </div>
 
           <p class="auth-switch">
             ¿No tienes cuenta?

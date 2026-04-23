@@ -748,6 +748,21 @@ body {
   color: var(--white);
 }
 
+/* Filtros de citas */
+.filtro-cita-btn {
+  padding: .45rem 1rem;
+  border: 2px solid #cfd8dc;
+  border-radius: 50px;
+  background: var(--white);
+  font-size: .83rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all var(--t);
+}
+.filtro-cita-btn:hover { border-color: var(--blue-mid); color: var(--blue-mid); }
+.filtro-cita-btn.active { background: var(--blue); border-color: var(--blue); color: var(--white); }
+
 .productos-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px,1fr));

@@ -1,4 +1,4 @@
-import { crearUsuario, obtenerUsuario, setSession, getSession } from './firebase.js';
+import { crearUsuario, obtenerUsuario, actualizarUsuario, setSession, getSession } from './firebase.js';
 
 // Si ya hay sesión → dashboard
 if (getSession()) window.location.href = 'dashboard.html';
@@ -65,6 +65,45 @@ function validate(inputId, errId, check, msg) {
   input.classList.remove('invalid'); input.classList.add('valid');
   err.textContent = ''; return true;
 }
+
+// ===== RECUPERAR CONTRASEÑA =====
+document.getElementById('linkOlvide').addEventListener('click', function(e) {
+  e.preventDefault();
+  var wrap = document.getElementById('recoverWrap');
+  wrap.style.display = wrap.style.display === 'none' ? 'block' : 'none';
+  if (wrap.style.display === 'block') {
+    var emailVal = document.getElementById('l-email').value.trim();
+    if (emailVal) document.getElementById('recover-email').value = emailVal;
+  }
+});
+
+document.getElementById('btnEnviarRecuperar').addEventListener('click', async function() {
+  var email = document.getElementById('recover-email').value.trim();
+  var msg   = document.getElementById('recover-msg');
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    msg.className = 'form-msg error'; msg.textContent = '❌ Ingresa un correo válido.'; return;
+  }
+  this.disabled = true; this.textContent = 'Verificando...';
+  try {
+    var user = await obtenerUsuario(email);
+    if (!user) {
+      msg.className = 'form-msg error';
+      msg.textContent = '❌ No existe una cuenta con ese correo.';
+      this.disabled = false; this.innerHTML = '<span>📧</span> Enviar contraseña temporal';
+      return;
+    }
+    // Generar contraseña temporal
+    var chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+    var tempPass = Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    await actualizarUsuario(email, { password: tempPass });
+    msg.className = 'form-msg success';
+    msg.innerHTML = '✅ Contraseña temporal generada:<br><strong style="font-size:1.1rem;letter-spacing:2px">' + tempPass + '</strong><br><small>Cópiala y úsala para iniciar sesión. Cámbiala desde tu perfil.</small>';
+    this.disabled = false; this.innerHTML = '<span>📧</span> Enviar contraseña temporal';
+  } catch(err) {
+    msg.className = 'form-msg error'; msg.textContent = '❌ Error. Intenta de nuevo.';
+    this.disabled = false; this.innerHTML = '<span>📧</span> Enviar contraseña temporal';
+  }
+});
 
 // ===== LOGIN =====
 document.getElementById('loginForm').addEventListener('submit', async e => {

@@ -27,7 +27,6 @@
         <li><button class="ds-link" data-section="citas">          <span>📅</span> Mis Citas</button></li>
         <li><button class="ds-link" data-section="mascotas">       <span>🐾</span> Mis Mascotas</button></li>
         <li><button class="ds-link" data-section="tienda">         <span>🛒</span> Tienda</button></li>
-        <li><button class="ds-link" data-section="inventario">     <span>📦</span> Inventario</button></li>
         <li><button class="ds-link" data-section="historial">      <span>📋</span> Historial</button></li>
         <li><button class="ds-link" data-section="perfil">         <span>👤</span> Mi Perfil</button></li>
       </ul>
@@ -100,6 +99,12 @@
       <div class="section-header reveal">
         <h2>📅 Mis Citas</h2>
         <button class="btn-dash" id="btnAbrirCita">+ Nueva cita</button>
+      </div>
+      <div class="citas-filtros reveal" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem">
+        <button class="filtro-cita-btn active" data-estado="todas">Todas</button>
+        <button class="filtro-cita-btn" data-estado="pendiente">⏳ Pendientes</button>
+        <button class="filtro-cita-btn" data-estado="confirmada">✅ Confirmadas</button>
+        <button class="filtro-cita-btn" data-estado="cancelada">❌ Canceladas</button>
       </div>
       <div id="citasList" class="citas-list reveal"></div>
       <div class="form-wrap" id="citaFormWrap" style="display:none">
@@ -227,6 +232,55 @@
           </div>
         </form>
       </div>
+
+      <!-- HISTORIAL MÉDICO -->
+      <div id="historialMedicoWrap" style="display:none">
+        <div class="section-header" style="margin-top:2rem">
+          <h3 id="historialMedicoTitulo">📋 Historial médico</h3>
+          <div style="display:flex;gap:.5rem">
+            <button class="btn-dash" id="btnAgregarRegistro">+ Agregar registro</button>
+            <button class="btn-dash-outline" id="btnCerrarHistorial">✕ Cerrar</button>
+          </div>
+        </div>
+        <div id="historialMedicoList" class="citas-list" style="margin-top:1rem"></div>
+        <div class="form-wrap" id="registroFormWrap" style="display:none;margin-top:1rem">
+          <form class="dash-form" id="formRegistroMedico" novalidate>
+            <h3>Nuevo registro médico</h3>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="rm-tipo">Tipo</label>
+                <select id="rm-tipo" required>
+                  <option value="">Selecciona</option>
+                  <option value="💉 Vacuna">💉 Vacuna</option>
+                  <option value="🩺 Consulta">🩺 Consulta</option>
+                  <option value="🪱 Desparasitación">🪱 Desparasitación</option>
+                  <option value="✂️ Cirugía">✂️ Cirugía</option>
+                  <option value="🧪 Laboratorio">🧪 Laboratorio</option>
+                  <option value="💊 Medicamento">💊 Medicamento</option>
+                  <option value="📋 Otro">📋 Otro</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="rm-fecha">Fecha</label>
+                <input type="date" id="rm-fecha" required/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="rm-descripcion">Descripción</label>
+              <input type="text" id="rm-descripcion" placeholder="Ej. Vacuna antirrábica, dosis anual" required/>
+            </div>
+            <div class="form-group">
+              <label for="rm-vet">Veterinario (opcional)</label>
+              <input type="text" id="rm-vet" placeholder="Ej. Dr. García"/>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn-dash">Guardar registro</button>
+              <button type="button" class="btn-dash-outline" id="btnCancelarRegistro">Cancelar</button>
+            </div>
+            <div class="form-msg" id="registro-msg" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+      </div>
     </section>
 
     <!-- TIENDA -->
@@ -250,45 +304,6 @@
       <div id="productosGrid" class="productos-grid reveal"></div>
 
       <!-- carrito panel movido al final del body -->
-    </section>
-
-    <!-- INVENTARIO -->
-    <section class="dash-section" id="sec-inventario" hidden>
-      <div class="section-header reveal">
-        <h2>📦 Inventario</h2>
-        <button class="btn-dash" id="btnExportarInv">⬇ Exportar CSV</button>
-      </div>
-      <div class="inv-search reveal">
-        <input type="search" id="invSearch" placeholder="🔍 Buscar producto..." aria-label="Buscar en inventario"/>
-        <select id="invFiltroAnimal" aria-label="Filtrar por animal">
-          <option value="todos">Todos los animales</option>
-          <option value="perro">🐕 Perro</option>
-          <option value="gato">🐈 Gato</option>
-          <option value="conejo">🐇 Conejo</option>
-          <option value="ave">🐦 Ave</option>
-        </select>
-        <select id="invFiltroCat" aria-label="Filtrar por categoría">
-          <option value="todos">Todas las categorías</option>
-          <option value="alimento">🦴 Alimento</option>
-          <option value="snack">🍖 Snack</option>
-          <option value="accesorio">🎾 Accesorio</option>
-          <option value="higiene">🧴 Higiene</option>
-          <option value="salud">💊 Salud</option>
-          <option value="juguete">🧸 Juguete</option>
-        </select>
-      </div>
-      <div class="inv-table-wrap reveal">
-        <table class="inv-table" id="invTable" aria-label="Tabla de inventario">
-          <thead>
-            <tr>
-              <th>ID</th><th>Producto</th><th>Animal</th><th>Etapa</th>
-              <th>Categoría</th><th>Marca</th><th>Precio</th><th>Precio anterior</th><th>Badge</th>
-            </tr>
-          </thead>
-          <tbody id="invBody"></tbody>
-        </table>
-      </div>
-      <p class="inv-count" id="invCount"></p>
     </section>
 
     <!-- HISTORIAL -->

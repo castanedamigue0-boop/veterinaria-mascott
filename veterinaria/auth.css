@@ -400,3 +400,17 @@ form {
   .auth-card { padding: 2rem 1.25rem; }
   .form-row-2 { grid-template-columns: 1fr; }
 }
+
+/* ===== RECUPERAR CONTRASEÑA ===== */
+.recover-wrap {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f0f4ff;
+  border-radius: 12px;
+  border: 1px solid #c5cae9;
+}
+.recover-wrap .form-group { margin-bottom: .5rem; }
+.recover-wrap .btn-auth {
+  font-size: .88rem;
+  padding: .65rem 1.25rem;
+}
