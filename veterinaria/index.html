@@ -186,24 +186,24 @@
 
         <ul class="hcard-stats" role="list">
           <li>
-            <span class="hcard-stat-icon" aria-hidden="true">🩺</span>
+            <span class="hcard-stat-icon" aria-hidden="true">🕐</span>
             <div>
-              <span class="hcard-stat-val" data-target="12">0</span>
-              <span class="hcard-stat-unit">citas hoy</span>
+              <span class="hcard-stat-val" style="font-size:1rem">Lun – Sáb</span>
+              <span class="hcard-stat-unit">9:00 am – 7:00 pm</span>
             </div>
           </li>
           <li>
-            <span class="hcard-stat-icon" aria-hidden="true">⏱️</span>
+            <span class="hcard-stat-icon" aria-hidden="true">📍</span>
             <div>
-              <span class="hcard-stat-val" data-target="20">0</span>
-              <span class="hcard-stat-unit">min espera</span>
+              <span class="hcard-stat-val" style="font-size:.9rem">Calle Principal #123</span>
+              <span class="hcard-stat-unit">Col. Centro, CDMX</span>
             </div>
           </li>
           <li>
-            <span class="hcard-stat-icon" aria-hidden="true">👨‍⚕️</span>
+            <span class="hcard-stat-icon" aria-hidden="true">📞</span>
             <div>
-              <span class="hcard-stat-val" data-target="3">0</span>
-              <span class="hcard-stat-unit">vets disponibles</span>
+              <span class="hcard-stat-val" style="font-size:.95rem">(55) 1234-5678</span>
+              <span class="hcard-stat-unit" id="estadoClinica">Verificando estado...</span>
             </div>
           </li>
         </ul>
@@ -334,14 +334,15 @@
       <div class="map-wrapper reveal">
         <iframe
           title="Ubicación Clínica Veterinaria Mascott"
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3762.661!2d-99.1332!3d19.4326!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTnCsDI1JzU3LjQiTiA5OcKwMDcnNTkuNSJX!5e0!3m2!1ses!2smx!4v1234567890"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3762.6609!2d-99.13319999999999!3d19.432608!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d1ff35f5bd1563%3A0x6c366f0e2de02ff7!2sZócalo%2C%20Centro%20Histórico%20de%20la%20Cdad.%20de%20México!5e0!3m2!1ses!2smx!4v1714000000000"
           width="100%" height="400" style="border:0;" allowfullscreen=""
           loading="lazy" referrerpolicy="no-referrer-when-downgrade">
         </iframe>
         <div class="map-info">
-          <p><span aria-hidden="true">📍</span> Calle Principal #123, Col. Centro</p>
+          <p><span aria-hidden="true">📍</span> Calle Principal #123, Col. Centro, CDMX</p>
           <p><span aria-hidden="true">🕐</span> Lun–Sáb: 9:00 am – 7:00 pm</p>
-          <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer"
+          <p><span aria-hidden="true">📞</span> (55) 1234-5678</p>
+          <a href="https://maps.app.goo.gl/zocalo" target="_blank" rel="noopener noreferrer"
             class="btn-cita" style="margin-top:1rem; display:inline-flex;">
             <span aria-hidden="true">🗺️</span> Cómo llegar
           </a>
@@ -361,7 +362,42 @@
     </section>
 
     <footer class="footer" role="contentinfo">
-      <p>© 2026 Clínica Veterinaria Mascott · Todos los derechos reservados</p>
+      <div class="footer-grid">
+        <div class="footer-col">
+          <p class="footer-brand">🐾 Mascott</p>
+          <p>Clínica Veterinaria con más de 8 años cuidando a tus mascotas con amor y profesionalismo.</p>
+        </div>
+        <div class="footer-col">
+          <p class="footer-heading">Navegación</p>
+          <ul>
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#servicios">Servicios</a></li>
+            <li><a href="tienda.html">Tienda</a></li>
+            <li><a href="#resenas">Reseñas</a></li>
+            <li><a href="#ubicacion">Ubicación</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <p class="footer-heading">Contacto</p>
+          <ul>
+            <li>📍 Calle Principal #123, Col. Centro</li>
+            <li>📞 <a href="tel:+525512345678">(55) 1234-5678</a></li>
+            <li>📧 <a href="mailto:contacto@mascott.com">contacto@mascott.com</a></li>
+            <li>🕐 Lun–Sáb: 9:00 am – 7:00 pm</li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <p class="footer-heading">Síguenos</p>
+          <div class="footer-social">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">📘 Facebook</a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">📸 Instagram</a>
+            <a href="https://wa.me/573114569768" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">💬 WhatsApp</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Clínica Veterinaria Mascott · Todos los derechos reservados</p>
+      </div>
     </footer>
 
   </main>

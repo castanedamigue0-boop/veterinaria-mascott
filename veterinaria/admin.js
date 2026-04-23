@@ -36,7 +36,7 @@ var adminPanel = document.getElementById('adminPanel');
 
 // Si ya estaba logueado
 if (Storage.isAdmin()) {
-  cargarDatosFirebase().then(() => mostrarPanel());
+  mostrarPanel();
 }
 
 // ===== LOGIN =====
@@ -93,7 +93,10 @@ document.getElementById('adminOverlay').addEventListener('click', function() {
 });
 
 // ===== NAVEGACIÓN =====
+var _navInited = false;
 function initNav() {
+  if (_navInited) return;
+  _navInited = true;
   document.querySelectorAll('.as-link[data-section]').forEach(function(btn) {
     btn.addEventListener('click', function() {
       document.querySelectorAll('.as-link').forEach(function(b) { b.classList.remove('active'); });

@@ -193,14 +193,36 @@ document.getElementById('adminForm')?.addEventListener('submit', (e) => {
   const dias  = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
   const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
   const hoy   = new Date();
-  // Próxima hora disponible (simulada)
   const horas = ['9:00','9:30','10:00','10:30','11:00'];
   const hora  = horas[Math.floor(Math.random() * horas.length)];
   const el    = document.getElementById('heroFecha');
   if (el) el.textContent = `${dias[hoy.getDay()]} ${hoy.getDate()} ${meses[hoy.getMonth()]} · ${hora} am`;
 
-  // Contadores de la tarjeta
-  document.querySelectorAll('.hcard-stat-val').forEach(num => {
+  // Estado abierto/cerrado real
+  const estadoEl = document.getElementById('estadoClinica');
+  if (estadoEl) {
+    const diaSemana = hoy.getDay(); // 0=Dom, 6=Sáb
+    const horaActual = hoy.getHours() + hoy.getMinutes() / 60;
+    const abierto = diaSemana >= 1 && diaSemana <= 6 && horaActual >= 9 && horaActual < 19;
+    if (diaSemana === 0) {
+      estadoEl.textContent = '🔴 Cerrado hoy (domingo)';
+      estadoEl.style.color = '#ff8a80';
+    } else if (abierto) {
+      estadoEl.textContent = '🟢 Abierto ahora';
+      estadoEl.style.color = '#b9f6ca';
+    } else {
+      // Calcular cuándo abre
+      if (horaActual < 9) {
+        estadoEl.textContent = '🟡 Abre a las 9:00 am';
+      } else {
+        estadoEl.textContent = '🔴 Cerrado · Abre mañana 9 am';
+      }
+      estadoEl.style.color = '#ffe082';
+    }
+  }
+
+  // Contadores de la tarjeta (solo los que quedan con data-target)
+  document.querySelectorAll('.hcard-stat-val[data-target]').forEach(num => {
     new IntersectionObserver((entries, obs) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
