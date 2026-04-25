@@ -414,13 +414,27 @@ body {
 
 .producto-img {
   background: var(--blue-pale);
-  height: 130px;
+  height: 160px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 4rem;
   position: relative;
+  overflow: hidden;
 }
+
+.prod-img-real {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: .75rem;
+  transition: transform .3s ease;
+}
+
+.producto-card:hover .prod-img-real {
+  transform: scale(1.06);
+}
+
 .producto-badge {
   position: absolute;
   top: .5rem;
