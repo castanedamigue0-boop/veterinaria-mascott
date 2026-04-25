@@ -168,6 +168,31 @@
     </div>
   </div>
 
+  <!-- MODAL DETALLE PRODUCTO -->
+  <div class="modal-overlay" id="modalProducto" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-prod-nombre">
+    <div class="modal-producto">
+      <button class="modal-prod-close" id="modalProdClose" aria-label="Cerrar">✕</button>
+      <div class="modal-prod-body">
+        <div class="modal-prod-img-wrap">
+          <img id="modalProdImg" src="" alt="" class="modal-prod-img"/>
+        </div>
+        <div class="modal-prod-info">
+          <div class="modal-prod-tags" id="modalProdTags"></div>
+          <h2 id="modal-prod-nombre"></h2>
+          <p id="modalProdDesc" class="modal-prod-desc"></p>
+          <p id="modalProdMarca" class="modal-prod-marca"></p>
+          <div class="modal-prod-precio-wrap">
+            <span id="modalProdPrecio" class="modal-prod-precio"></span>
+            <span id="modalProdOld" class="modal-prod-old"></span>
+          </div>
+          <div id="modalProdVariantes" class="modal-prod-variantes"></div>
+          <button class="btn-modal-agregar" id="btnModalAgregar">+ Agregar al carrito</button>
+          <div class="form-msg" id="modalProdMsg" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST -->
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 

@@ -46,7 +46,8 @@ const PRODUCTOS = [
     precio:85, precioOld:null, marca:'PetStyle',
     img:IMG+'image4.png',
     desc:'Collar suave de nylon, ajustable de 20 a 35 cm.',
-    badge:null
+    badge:null,
+    variantes:{ label:'Color', opciones:['Rojo','Azul','Verde','Negro','Rosa','Morado'] }
   },
   {
     id:5, nombre:"Hill's Science Diet Adulto 7kg",
@@ -94,7 +95,8 @@ const PRODUCTOS = [
     precio:450, precioOld:null, marca:'PetComfort',
     img:IMG+'image10.png',
     desc:'Espuma viscoelástica. Ideal para perros con artritis.',
-    badge:null
+    badge:null,
+    variantes:{ label:'Talla', opciones:['S','M','L','XL'] }
   },
   {
     id:11, nombre:'Royal Canin Senior 8+ 3kg',
@@ -281,7 +283,7 @@ function renderProductos() {
     const btnClass = agotado ? 'btn-add agotado' : (enCarrito ? 'btn-add added' : 'btn-add');
     const btnText  = agotado ? '✕ Agotado' : (enCarrito ? '✓ Agregado' : '+ Agregar');
     const btnExtra = agotado ? 'disabled aria-disabled="true"' : '';
-    return '<article class="producto-card' + (agotado ? ' producto-agotado' : '') + '" role="listitem">'
+    return '<article class="producto-card' + (agotado ? ' producto-agotado' : '') + '" role="listitem" data-id="' + p.id + '">'
       + '<div class="producto-img">'
       + '<img src="' + p.img + '" alt="' + p.nombre + '" class="prod-img-real" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'
       + '<span class="prod-img-fallback" style="display:none;font-size:2.5rem;align-items:center;justify-content:center;height:100%">🐾</span>'
@@ -305,6 +307,15 @@ function renderProductos() {
 
   grid.querySelectorAll('.btn-add:not([disabled])').forEach(btn => {
     btn.addEventListener('click', () => agregarAlCarrito(Number(btn.dataset.id)));
+  });
+
+  // Clic en la tarjeta abre el modal de detalle
+  grid.querySelectorAll('.producto-card').forEach(card => {
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', e => {
+      if (e.target.closest('.btn-add')) return; // no abrir si clic en botón
+      abrirModalProducto(Number(card.dataset.id));
+    });
   });
 }
 
@@ -566,6 +577,77 @@ function initSesion() {
   }
 }
 
+// ===== MODAL DETALLE PRODUCTO =====
+function abrirModalProducto(id) {
+  const p = PRODUCTOS.find(x => x.id === id);
+  if (!p) return;
+
+  document.getElementById('modalProdImg').src = p.img;
+  document.getElementById('modalProdImg').alt = p.nombre;
+  document.getElementById('modal-prod-nombre').textContent = p.nombre;
+  document.getElementById('modalProdDesc').textContent = p.desc;
+  document.getElementById('modalProdMarca').textContent = '🏷 ' + p.marca;
+  document.getElementById('modalProdPrecio').textContent = '$' + p.precio + ' MXN';
+
+  const oldEl = document.getElementById('modalProdOld');
+  oldEl.textContent = p.precioOld ? '$' + p.precioOld : '';
+
+  document.getElementById('modalProdTags').innerHTML =
+    '<span class="tag tag-animal">' + p.animal + '</span>' +
+    '<span class="tag tag-etapa">' + p.etapa + '</span>' +
+    '<span class="tag tag-cat">' + p.cat + '</span>';
+
+  // Variantes (colores, tallas, etc.)
+  const varEl = document.getElementById('modalProdVariantes');
+  if (p.variantes) {
+    varEl.innerHTML = '<p class="variante-label">' + p.variantes.label + ':</p>'
+      + '<div class="variante-opciones">'
+      + p.variantes.opciones.map(op =>
+          '<button class="variante-btn" data-val="' + op + '">' + op + '</button>'
+        ).join('')
+      + '</div>';
+    varEl.querySelectorAll('.variante-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        varEl.querySelectorAll('.variante-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+  } else {
+    varEl.innerHTML = '';
+  }
+
+  const btnAgregar = document.getElementById('btnModalAgregar');
+  const stock = getStock(p.id);
+  if (stock === 0) {
+    btnAgregar.textContent = '✕ Agotado';
+    btnAgregar.disabled = true;
+    btnAgregar.className = 'btn-modal-agregar agotado';
+  } else {
+    btnAgregar.textContent = '+ Agregar al carrito';
+    btnAgregar.disabled = false;
+    btnAgregar.className = 'btn-modal-agregar';
+    btnAgregar.onclick = () => {
+      agregarAlCarrito(p.id);
+      const msg = document.getElementById('modalProdMsg');
+      msg.className = 'form-msg success';
+      msg.textContent = '✅ Agregado al carrito';
+      setTimeout(() => { msg.textContent = ''; }, 2000);
+    };
+  }
+
+  const modal = document.getElementById('modalProducto');
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+
+function cerrarModalProducto() {
+  const modal = document.getElementById('modalProducto');
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
   const panel   = document.getElementById('carritoPanel');
@@ -582,6 +664,12 @@ document.addEventListener('DOMContentLoaded', () => {
   $('btnCarrito').addEventListener('click', abrirCarrito);
   $('carritoClose').addEventListener('click', cerrarCarrito);
   $('carritoOverlay').addEventListener('click', cerrarCarrito);
+
+  // Modal producto
+  $('modalProdClose').addEventListener('click', cerrarModalProducto);
+  $('modalProducto').addEventListener('click', e => {
+    if (e.target === $('modalProducto')) cerrarModalProducto();
+  });
   $('btnVaciar').addEventListener('click', () => {
     carrito = [];
     guardarCarrito();
@@ -597,6 +685,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { cerrarCarrito(); cerrarCheckout(); }
+    if (e.key === 'Escape') { cerrarCarrito(); cerrarCheckout(); cerrarModalProducto(); }
   });
 });
