@@ -26,7 +26,7 @@ async function guardarUsuario() {
 }
 
 // ===== CATALOGO =====
-const IMG = 'img/productos/';
+const IMG = 'img/';
 const PRODUCTOS = [
   { id:1,  nombre:'Royal Canin Cachorro 3kg',          animal:'perro', etapa:'cachorro', cat:'alimento',  precio:420, precioOld:480,  marca:'Royal Canin',   img:IMG+'image1.png',  badge:'oferta', desc:'Formula especial para cachorros hasta 12 meses.' },
   { id:2,  nombre:'Purina Pro Plan Cachorro 4kg',      animal:'perro', etapa:'cachorro', cat:'alimento',  precio:390, precioOld:null, marca:'Purina',        img:IMG+'image2.png',  badge:'nuevo',  desc:'Proteina de pollo real como primer ingrediente.' },

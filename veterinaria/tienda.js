@@ -12,7 +12,7 @@ function getStock(prodId) {
 }
 
 // ===== RUTA BASE DE IMÁGENES =====
-const IMG = 'img/productos/';
+const IMG = 'img/';
 
 // ===== CATÁLOGO DE PRODUCTOS =====
 const PRODUCTOS = [
