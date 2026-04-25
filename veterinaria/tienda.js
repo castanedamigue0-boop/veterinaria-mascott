@@ -16,32 +16,214 @@ const IMG = 'img/';
 
 // ===== CATÁLOGO DE PRODUCTOS =====
 const PRODUCTOS = [
-  { id:1,  nombre:'Royal Canin Cachorro 3kg',          animal:'perro',  etapa:'cachorro', cat:'alimento',  precio:420, precioOld:480,  marca:'Royal Canin',   img:IMG+'image1.png',  desc:'Fórmula especial para cachorros hasta 12 meses. Refuerza el sistema inmune.', badge:'oferta' },
-  { id:2,  nombre:'Purina Pro Plan Cachorro 4kg',      animal:'perro',  etapa:'cachorro', cat:'alimento',  precio:390, precioOld:null, marca:'Purina',        img:IMG+'image2.png',  desc:'Proteína de pollo real como primer ingrediente.', badge:'nuevo' },
-  { id:3,  nombre:'Snack Dental Cachorro x20',         animal:'perro',  etapa:'cachorro', cat:'snack',     precio:120, precioOld:null, marca:'Pedigree',      img:IMG+'image3.png',  desc:'Cuida los dientes desde pequeño. Sin colorantes artificiales.', badge:null },
-  { id:4,  nombre:'Collar Ajustable Cachorro',         animal:'perro',  etapa:'cachorro', cat:'accesorio', precio:85,  precioOld:null, marca:'PetStyle',      img:IMG+'image4.png',  desc:'Collar suave de nylon, ajustable de 20 a 35 cm.', badge:null },
-  { id:5,  nombre:"Hill's Science Diet Adulto 7kg",    animal:'perro',  etapa:'adulto',   cat:'alimento',  precio:650, precioOld:720,  marca:"Hill's",        img:IMG+'image5.png',  desc:'Nutrición balanceada para perros adultos activos.', badge:'oferta' },
-  { id:6,  nombre:'Eukanuba Adulto Razas Grandes',     animal:'perro',  etapa:'adulto',   cat:'alimento',  precio:580, precioOld:null, marca:'Eukanuba',      img:IMG+'image6.png',  desc:'Especial para razas grandes. Cuida articulaciones.', badge:null },
-  { id:7,  nombre:'Shampoo Perro Pelo Corto 500ml',    animal:'perro',  etapa:'adulto',   cat:'higiene',   precio:95,  precioOld:null, marca:'BioGroom',      img:IMG+'image7.png',  desc:'Fórmula suave con aloe vera. Deja el pelo brillante.', badge:null },
-  { id:8,  nombre:'Juguete Kong Classic M',            animal:'perro',  etapa:'adulto',   cat:'juguete',   precio:210, precioOld:null, marca:'Kong',          img:IMG+'image8.png',  desc:'Resistente caucho natural. Ideal para rellenar con premios.', badge:'nuevo' },
-  { id:9,  nombre:'Antipulgas Spot-On Perro',          animal:'perro',  etapa:'adulto',   cat:'salud',     precio:180, precioOld:200,  marca:'Frontline',     img:IMG+'image9.png',  desc:'Protección 30 días contra pulgas y garrapatas.', badge:'oferta' },
-  { id:10, nombre:'Cama Ortopédica Perro M',           animal:'perro',  etapa:'adulto',   cat:'accesorio', precio:450, precioOld:null, marca:'PetComfort',    img:IMG+'image10.png', desc:'Espuma viscoelástica. Ideal para perros con artritis.', badge:null },
-  { id:11, nombre:'Royal Canin Senior 8+ 3kg',         animal:'perro',  etapa:'senior',   cat:'alimento',  precio:480, precioOld:520,  marca:'Royal Canin',   img:IMG+'image11.png', desc:'Fórmula adaptada para perros mayores de 8 años.', badge:'oferta' },
-  { id:12, nombre:'Suplemento Articular Perro',        animal:'perro',  etapa:'senior',   cat:'salud',     precio:260, precioOld:null, marca:'Vetri-Science', img:IMG+'image12.png', desc:'Glucosamina y condroitina para articulaciones sanas.', badge:null },
-  { id:13, nombre:'Royal Canin Kitten 2kg',            animal:'gato',   etapa:'cachorro', cat:'alimento',  precio:350, precioOld:390,  marca:'Royal Canin',   img:IMG+'image13.png', desc:'Nutrición completa para gatitos hasta 12 meses.', badge:'oferta' },
-  { id:14, nombre:'Juguete Ratón con Catnip',          animal:'gato',   etapa:'cachorro', cat:'juguete',   precio:65,  precioOld:null, marca:'Catit',         img:IMG+'image14.png', desc:'Estimula el instinto cazador. Con hierba gatera natural.', badge:null },
-  { id:15, nombre:'Whiskas Adulto Pollo 3kg',          animal:'gato',   etapa:'adulto',   cat:'alimento',  precio:280, precioOld:null, marca:'Whiskas',       img:IMG+'image15.png', desc:'Croquetas con pollo real. Apoya la salud urinaria.', badge:null },
-  { id:16, nombre:'Arena Sanitaria Aglomerante 5kg',   animal:'gato',   etapa:'adulto',   cat:'higiene',   precio:130, precioOld:150,  marca:'Ever Clean',    img:IMG+'image16.png', desc:'Control de olores 7 días. Aglomeración instantánea.', badge:'oferta' },
-  { id:17, nombre:'Rascador Torre Gato',               animal:'gato',   etapa:'adulto',   cat:'accesorio', precio:320, precioOld:null, marca:'Catit',         img:IMG+'image17.png', desc:'Sisal natural, plataforma superior y juguete colgante.', badge:'nuevo' },
-  { id:18, nombre:'Snack Temptations Gato x85g',       animal:'gato',   etapa:'adulto',   cat:'snack',     precio:75,  precioOld:null, marca:'Temptations',   img:IMG+'image18.png', desc:'Crujientes por fuera, suaves por dentro. Irresistibles.', badge:null },
-  { id:19, nombre:'Antipulgas Gato Spot-On',           animal:'gato',   etapa:'adulto',   cat:'salud',     precio:160, precioOld:180,  marca:'Frontline',     img:IMG+'image19.png', desc:'Protección mensual contra pulgas y garrapatas.', badge:'oferta' },
-  { id:20, nombre:"Hill's Science Diet Gato 7+ 1.5kg", animal:'gato',   etapa:'senior',   cat:'alimento',  precio:390, precioOld:null, marca:"Hill's",        img:IMG+'image20.png', desc:'Fórmula para gatos mayores. Cuida riñones y articulaciones.', badge:null },
-  { id:21, nombre:'Alimento Conejo Adulto 1.5kg',      animal:'conejo', etapa:'adulto',   cat:'alimento',  precio:150, precioOld:null, marca:'Versele-Laga',  img:IMG+'image21.png', desc:'Mezcla de heno, verduras y cereales. Sin colorantes.', badge:null },
-  { id:22, nombre:'Jaula Conejo Mediana',               animal:'conejo', etapa:'adulto',   cat:'accesorio', precio:520, precioOld:600,  marca:'Ferplast',      img:IMG+'image22.png', desc:'Jaula con bandeja extraíble y comedero incluido.', badge:'oferta' },
-  { id:23, nombre:'Snack Heno Timothy Conejo',         animal:'conejo', etapa:'adulto',   cat:'snack',     precio:90,  precioOld:null, marca:'Oxbow',         img:IMG+'image23.png', desc:'Heno de primera calidad. Esencial para la digestión.', badge:'nuevo' },
-  { id:24, nombre:'Alimento Periquito Mezcla 1kg',     animal:'ave',    etapa:'adulto',   cat:'alimento',  precio:95,  precioOld:null, marca:'Versele-Laga',  img:IMG+'image24.png', desc:'Mezcla de semillas seleccionadas para periquitos.', badge:null },
-  { id:25, nombre:'Jaula Canario Decorativa',          animal:'ave',    etapa:'adulto',   cat:'accesorio', precio:380, precioOld:420,  marca:'Ferplast',      img:IMG+'image25.png', desc:'Diseño elegante con comederos y bebederos incluidos.', badge:'oferta' },
-  { id:26, nombre:'Vitaminas Aves Líquidas 30ml',      animal:'ave',    etapa:'adulto',   cat:'salud',     precio:110, precioOld:null, marca:'Nekton',        img:IMG+'image26.png', desc:'Complejo vitamínico para aves en época de muda.', badge:null },
+  {
+    id:1, nombre:'Royal Canin Cachorro 3kg',
+    animal:'perro', etapa:'cachorro', cat:'alimento',
+    precio:420, precioOld:480, marca:'Royal Canin',
+    img:IMG+'image1.png',
+    desc:'Fórmula especial para cachorros hasta 12 meses. Refuerza el sistema inmune.',
+    badge:'oferta'
+  },
+  {
+    id:2, nombre:'Purina Pro Plan Cachorro 4kg',
+    animal:'perro', etapa:'cachorro', cat:'alimento',
+    precio:390, precioOld:null, marca:'Purina',
+    img:IMG+'image2.png',
+    desc:'Proteína de pollo real como primer ingrediente.',
+    badge:'nuevo'
+  },
+  {
+    id:3, nombre:'Snack Dental Cachorro x20',
+    animal:'perro', etapa:'cachorro', cat:'snack',
+    precio:120, precioOld:null, marca:'Pedigree',
+    img:IMG+'image3.png',
+    desc:'Cuida los dientes desde pequeño. Sin colorantes artificiales.',
+    badge:null
+  },
+  {
+    id:4, nombre:'Collar Ajustable Cachorro',
+    animal:'perro', etapa:'cachorro', cat:'accesorio',
+    precio:85, precioOld:null, marca:'PetStyle',
+    img:IMG+'image4.png',
+    desc:'Collar suave de nylon, ajustable de 20 a 35 cm.',
+    badge:null
+  },
+  {
+    id:5, nombre:"Hill's Science Diet Adulto 7kg",
+    animal:'perro', etapa:'adulto', cat:'alimento',
+    precio:650, precioOld:720, marca:"Hill's",
+    img:IMG+'image5.png',
+    desc:'Nutrición balanceada para perros adultos activos.',
+    badge:'oferta'
+  },
+  {
+    id:6, nombre:'Eukanuba Adulto Razas Grandes',
+    animal:'perro', etapa:'adulto', cat:'alimento',
+    precio:580, precioOld:null, marca:'Eukanuba',
+    img:IMG+'image6.png',
+    desc:'Especial para razas grandes. Cuida articulaciones.',
+    badge:null
+  },
+  {
+    id:7, nombre:'Shampoo Perro Pelo Corto 500ml',
+    animal:'perro', etapa:'adulto', cat:'higiene',
+    precio:95, precioOld:null, marca:'BioGroom',
+    img:IMG+'image7.png',
+    desc:'Fórmula suave con aloe vera. Deja el pelo brillante.',
+    badge:null
+  },
+  {
+    id:8, nombre:'Juguete Kong Classic M',
+    animal:'perro', etapa:'adulto', cat:'juguete',
+    precio:210, precioOld:null, marca:'Kong',
+    img:IMG+'image8.png',
+    desc:'Resistente caucho natural. Ideal para rellenar con premios.',
+    badge:'nuevo'
+  },
+  {
+    id:9, nombre:'Antipulgas Spot-On Perro',
+    animal:'perro', etapa:'adulto', cat:'salud',
+    precio:180, precioOld:200, marca:'Frontline',
+    img:IMG+'image9.png',
+    desc:'Protección 30 días contra pulgas y garrapatas.',
+    badge:'oferta'
+  },
+  {
+    id:10, nombre:'Cama Ortopédica Perro M',
+    animal:'perro', etapa:'adulto', cat:'accesorio',
+    precio:450, precioOld:null, marca:'PetComfort',
+    img:IMG+'image10.png',
+    desc:'Espuma viscoelástica. Ideal para perros con artritis.',
+    badge:null
+  },
+  {
+    id:11, nombre:'Royal Canin Senior 8+ 3kg',
+    animal:'perro', etapa:'senior', cat:'alimento',
+    precio:480, precioOld:520, marca:'Royal Canin',
+    img:IMG+'image11.png',
+    desc:'Fórmula adaptada para perros mayores de 8 años.',
+    badge:'oferta'
+  },
+  {
+    id:12, nombre:'Suplemento Articular Perro',
+    animal:'perro', etapa:'senior', cat:'salud',
+    precio:260, precioOld:null, marca:'Vetri-Science',
+    img:IMG+'image12.png',
+    desc:'Glucosamina y condroitina para articulaciones sanas.',
+    badge:null
+  },
+  {
+    id:13, nombre:'Royal Canin Kitten 2kg',
+    animal:'gato', etapa:'cachorro', cat:'alimento',
+    precio:350, precioOld:390, marca:'Royal Canin',
+    img:IMG+'image13.png',
+    desc:'Nutrición completa para gatitos hasta 12 meses.',
+    badge:'oferta'
+  },
+  {
+    id:14, nombre:'Juguete Ratón con Catnip',
+    animal:'gato', etapa:'cachorro', cat:'juguete',
+    precio:65, precioOld:null, marca:'Catit',
+    img:IMG+'image14.png',
+    desc:'Estimula el instinto cazador. Con hierba gatera natural.',
+    badge:null
+  },
+  {
+    id:15, nombre:'Whiskas Adulto Pollo 3kg',
+    animal:'gato', etapa:'adulto', cat:'alimento',
+    precio:280, precioOld:null, marca:'Whiskas',
+    img:IMG+'image15.png',
+    desc:'Croquetas con pollo real. Apoya la salud urinaria.',
+    badge:null
+  },
+  {
+    id:16, nombre:'Arena Sanitaria Aglomerante 5kg',
+    animal:'gato', etapa:'adulto', cat:'higiene',
+    precio:130, precioOld:150, marca:'Ever Clean',
+    img:IMG+'image16.png',
+    desc:'Control de olores 7 días. Aglomeración instantánea.',
+    badge:'oferta'
+  },
+  {
+    id:17, nombre:'Rascador Torre Gato',
+    animal:'gato', etapa:'adulto', cat:'accesorio',
+    precio:320, precioOld:null, marca:'Catit',
+    img:IMG+'image17.png',
+    desc:'Sisal natural, plataforma superior y juguete colgante.',
+    badge:'nuevo'
+  },
+  {
+    id:18, nombre:'Snack Temptations Gato x85g',
+    animal:'gato', etapa:'adulto', cat:'snack',
+    precio:75, precioOld:null, marca:'Temptations',
+    img:IMG+'image18.png',
+    desc:'Crujientes por fuera, suaves por dentro. Irresistibles.',
+    badge:null
+  },
+  {
+    id:19, nombre:'Antipulgas Gato Spot-On',
+    animal:'gato', etapa:'adulto', cat:'salud',
+    precio:160, precioOld:180, marca:'Frontline',
+    img:IMG+'image19.png',
+    desc:'Protección mensual contra pulgas y garrapatas.',
+    badge:'oferta'
+  },
+  {
+    id:20, nombre:"Hill's Science Diet Gato 7+ 1.5kg",
+    animal:'gato', etapa:'senior', cat:'alimento',
+    precio:390, precioOld:null, marca:"Hill's",
+    img:IMG+'image20.png',
+    desc:'Fórmula para gatos mayores. Cuida riñones y articulaciones.',
+    badge:null
+  },
+  {
+    id:21, nombre:'Alimento Conejo Adulto 1.5kg',
+    animal:'conejo', etapa:'adulto', cat:'alimento',
+    precio:150, precioOld:null, marca:'Versele-Laga',
+    img:IMG+'image21.png',
+    desc:'Mezcla de heno, verduras y cereales. Sin colorantes.',
+    badge:null
+  },
+  {
+    id:22, nombre:'Jaula Conejo Mediana',
+    animal:'conejo', etapa:'adulto', cat:'accesorio',
+    precio:520, precioOld:600, marca:'Ferplast',
+    img:IMG+'image22.png',
+    desc:'Jaula con bandeja extraíble y comedero incluido.',
+    badge:'oferta'
+  },
+  {
+    id:23, nombre:'Snack Heno Timothy Conejo',
+    animal:'conejo', etapa:'adulto', cat:'snack',
+    precio:90, precioOld:null, marca:'Oxbow',
+    img:IMG+'image23.png',
+    desc:'Heno de primera calidad. Esencial para la digestión.',
+    badge:'nuevo'
+  },
+  {
+    id:24, nombre:'Alimento Periquito Mezcla 1kg',
+    animal:'ave', etapa:'adulto', cat:'alimento',
+    precio:95, precioOld:null, marca:'Versele-Laga',
+    img:IMG+'image24.png',
+    desc:'Mezcla de semillas seleccionadas para periquitos.',
+    badge:null
+  },
+  {
+    id:25, nombre:'Jaula Canario Decorativa',
+    animal:'ave', etapa:'adulto', cat:'accesorio',
+    precio:380, precioOld:420, marca:'Ferplast',
+    img:IMG+'image25.png',
+    desc:'Diseño elegante con comederos y bebederos incluidos.',
+    badge:'oferta'
+  },
+  {
+    id:26, nombre:'Vitaminas Aves Líquidas 30ml',
+    animal:'ave', etapa:'adulto', cat:'salud',
+    precio:110, precioOld:null, marca:'Nekton',
+    img:IMG+'image26.png',
+    desc:'Complejo vitamínico para aves en época de muda.',
+    badge:null
+  },
 ];
 
 // ===== ESTADO =====
