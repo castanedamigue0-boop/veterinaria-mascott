@@ -1,0 +1,219 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Clínica Veterinaria Mascott</title>
+  <meta name="description" content="Clínica Veterinaria Mascott – Consultas, vacunación, estética canina y tienda de mascotas."/>
+  <meta name="theme-color" content="#1565c0"/>
+  <link rel="icon" href="{% static 'mascott/imagenes/logo.png' %}"/>
+  <link rel="stylesheet" href="{% static 'mascott/estilos/inicio.css' %}"/>
+</head>
+<body>
+
+  {% if messages %}
+  <div style="position:fixed;top:1rem;right:1rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem">
+    {% for msg in messages %}
+      <div class="django-msg" style="background:{% if msg.tags == 'error' %}#c62828{% else %}#2e7d32{% endif %};
+           color:#fff;padding:.75rem 1.25rem;border-radius:12px;font-size:.9rem;
+           font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.2);max-width:320px">{{ msg }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- SPLASH -->
+  <div id="splash">
+    <div class="splash-orb splash-orb1"></div>
+    <div class="splash-orb splash-orb2"></div>
+    <div class="splash-logo-wrap">
+      <div class="splash-ring"></div>
+      <div class="splash-ring2"></div>
+      <img src="{% static 'mascott/imagenes/logo.png' %}" alt="Logo Mascott" class="splash-logo"/>
+    </div>
+    <p class="splash-title">MASC<span>OTT</span></p>
+    <p class="splash-sub">Clínica Veterinaria</p>
+    <div class="splash-divider"></div>
+  </div>
+
+  <!-- NAV -->
+  <header class="topbar" id="topbar" role="banner">
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
+    <a href="{% url 'inicio' %}" class="nav-logo">
+      <img src="{% static 'mascott/imagenes/logo.png' %}" alt="Logo" width="36" height="36"/>
+      <span>Mascott</span>
+    </a>
+    <nav class="nav-links" id="navLinks" role="navigation">
+      <a href="#inicio"    class="nav-link">Inicio</a>
+      <a href="#servicios" class="nav-link">Servicios</a>
+      <a href="#productos" class="nav-link">Productos</a>
+      <a href="#contacto"  class="nav-link">Contacto</a>
+      <a href="{% url 'tienda' %}" class="nav-link">🛒 Tienda</a>
+    </nav>
+    <div class="nav-actions">
+      {% if user.is_authenticated %}
+        <a href="{% url 'dashboard' %}" class="btn-nav-secondary">Mi cuenta</a>
+        <a href="{% url 'cerrar_sesion' %}" class="btn-nav-outline">Salir</a>
+      {% else %}
+        <a href="{% url 'login_registro' %}" class="btn-nav-secondary">Iniciar sesión</a>
+        <a href="{% url 'login_registro' %}?tab=registro" class="btn-nav-primary">Registrarse</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" id="inicio">
+    <div class="hero-content">
+      <span class="hero-badge">🏆 Veterinaria de confianza</span>
+      <h1 class="hero-title">Cuidamos a tu<br/><span>mascota</span> con amor</h1>
+      <p class="hero-desc">Consultas, vacunación, estética, tienda y más. Tu mascota merece lo mejor.</p>
+      <div class="hero-btns">
+        <a href="{% url 'login_registro' %}" class="btn-hero-primary">📅 Agendar cita</a>
+        <a href="{% url 'tienda' %}" class="btn-hero-secondary">🛒 Ver tienda</a>
+      </div>
+    </div>
+    <div class="hero-img" aria-hidden="true">
+      <img src="{% static 'mascott/imagenes/fondo-principal.png' %}" alt="Mascotas felices"/>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats-bar">
+    <div class="stat-item"><span class="stat-num" data-target="500">0</span><p>Mascotas atendidas</p></div>
+    <div class="stat-item"><span class="stat-num" data-target="8">0</span><p>Años de experiencia</p></div>
+    <div class="stat-item"><span class="stat-num" data-target="15">0</span><p>Veterinarios expertos</p></div>
+    <div class="stat-item"><span class="stat-num" data-target="98">0</span><p>% satisfacción</p></div>
+  </section>
+
+  <!-- SERVICIOS -->
+  <section class="servicios" id="servicios">
+    <div class="section-header-center">
+      <h2>Nuestros <span>Servicios</span></h2>
+      <p>Todo lo que tu mascota necesita en un solo lugar</p>
+    </div>
+    <div class="servicios-grid">
+      <div class="servicio-card"><span>🩺</span><h3>Consultas</h3><p>Diagnóstico y atención médica general y especializada.</p></div>
+      <div class="servicio-card"><span>💉</span><h3>Vacunación</h3><p>Programa completo de vacunas con cartilla actualizada.</p></div>
+      <div class="servicio-card"><span>✂️</span><h3>Estética</h3><p>Baño, corte y peluquería para que luzca increíble.</p></div>
+      <div class="servicio-card"><span>🔬</span><h3>Laboratorio</h3><p>Análisis clínicos con resultados el mismo día.</p></div>
+      <div class="servicio-card"><span>🏥</span><h3>Cirugías</h3><p>Quirófano equipado con tecnología de punta.</p></div>
+      <div class="servicio-card"><span>🚑</span><h3>Urgencias 24h</h3><p>Atención de emergencias las 24 horas del día.</p></div>
+    </div>
+  </section>
+
+  <!-- PRODUCTOS DESTACADOS -->
+  <section class="productos-dest" id="productos">
+    <div class="section-header-center">
+      <h2>Productos <span>Destacados</span></h2>
+      <p>Lo mejor para tu mascota al mejor precio</p>
+    </div>
+    <div class="productos-dest-grid">
+      {% for p in productos_destacados %}
+        <div class="prod-dest-card">
+          <div class="prod-dest-emoji">{{ p.emoji }}</div>
+          <h4>{{ p.nombre }}</h4>
+          <p>{{ p.descripcion|truncatewords:10 }}</p>
+          <div class="prod-dest-footer">
+            <span class="prod-dest-precio">${{ p.precio }} MXN</span>
+            <a href="{% url 'tienda' %}" class="btn-prod-dest">Ver tienda</a>
+          </div>
+        </div>
+      {% empty %}
+        <p style="grid-column:1/-1;text-align:center;color:#546e7a">
+          Próximamente productos disponibles.
+          <a href="{% url 'tienda' %}">Ver tienda</a>
+        </p>
+      {% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:2rem">
+      <a href="{% url 'tienda' %}" class="btn-hero-primary">Ver todos los productos →</a>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section class="contacto" id="contacto">
+    <div class="section-header-center">
+      <h2>📍 <span>Encuéntranos</span></h2>
+    </div>
+    <div class="contacto-grid">
+      <div class="contacto-info">
+        <div class="contacto-item"><span>📍</span><p>Av. Principal 123, Col. Centro</p></div>
+        <div class="contacto-item"><span>📞</span><p>(55) 1234-5678</p></div>
+        <div class="contacto-item"><span>📧</span><p>contacto@mascott.com</p></div>
+        <div class="contacto-item"><span>🕐</span><p>Lun–Sáb: 8am – 8pm &nbsp;|&nbsp; Dom: 10am – 4pm</p></div>
+        <a href="https://wa.me/5512345678" target="_blank" rel="noopener" class="btn-whatsapp">
+          💬 Escríbenos por WhatsApp
+        </a>
+      </div>
+      <div class="contacto-mapa">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3762.661!2d-99.1332!3d19.4326!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTnCsDI1JzU3LjQiTiA5OcKwMDcnNTkuNiJX!5e0!3m2!1ses!2smx!4v1"
+          width="100%" height="300" style="border:0;border-radius:16px" allowfullscreen loading="lazy"
+          title="Ubicación de la clínica">
+        </iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <span class="footer-logo">🐾 Mascott</span>
+        <p>Cuidando a tus mascotas con amor y profesionalismo.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Navegación</h4>
+        <a href="{% url 'inicio' %}">Inicio</a>
+        <a href="{% url 'tienda' %}">Tienda</a>
+        <a href="{% url 'login_registro' %}">Mi cuenta</a>
+      </div>
+      <div class="footer-links">
+        <h4>Servicios</h4>
+        <a href="#">Consultas</a>
+        <a href="#">Vacunación</a>
+        <a href="#">Estética</a>
+        <a href="#">Urgencias</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Clínica Veterinaria Mascott · Hecho con ❤️ para tus mascotas</p>
+    </div>
+  </footer>
+
+  <!-- WhatsApp flotante -->
+  <a href="https://wa.me/5512345678" target="_blank" rel="noopener"
+     class="fab-whatsapp" aria-label="Contactar por WhatsApp">💬</a>
+
+  <script src="{% static 'mascott/scripts/inicio.js' %}"></script>
+  <script>
+    // Splash
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const splash = document.getElementById('splash');
+        if (splash) splash.classList.add('hide');
+      }, 1800);
+    });
+
+    // Contadores animados
+    document.querySelectorAll('.stat-num').forEach(el => {
+      const target = parseInt(el.dataset.target);
+      let count = 0;
+      const step = Math.ceil(target / 60);
+      const interval = setInterval(() => {
+        count = Math.min(count + step, target);
+        el.textContent = count + (target >= 98 ? '%' : '+');
+        if (count >= target) clearInterval(interval);
+      }, 30);
+    });
+
+    // Auto-ocultar mensajes
+    setTimeout(() => {
+      document.querySelectorAll('.django-msg').forEach(el => {
+        el.style.transition='opacity .5s'; el.style.opacity='0';
+        setTimeout(()=>el.remove(),500);
+      });
+    }, 4000);
+  </script>
+</body>
+</html>

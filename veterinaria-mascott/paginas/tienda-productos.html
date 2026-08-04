@@ -1,0 +1,239 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tienda · Clínica Veterinaria Mascott</title>
+  <meta name="description" content="Tienda de productos para mascotas – Alimentos, accesorios, higiene y salud. Clínica Veterinaria Mascott."/>
+  <meta name="robots" content="index, follow"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="Tienda · Mascott"/>
+  <meta property="og:description" content="Todo lo que tu mascota necesita en un solo lugar."/>
+  <meta property="og:image" content="../imagenes/logo.png"/>
+  <link rel="manifest" href="../configuracion/manifest.json"/>
+  <meta name="theme-color" content="#1565c0"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-title" content="Mascott"/>
+  <link rel="apple-touch-icon" href="../imagenes/logo.png"/>
+  <link rel="icon" href="../imagenes/logo.png"/>
+  <link rel="stylesheet" href="../estilos/tienda-productos.css"/>
+</head>
+<body>
+
+  <a href="#main" class="skip-link">Saltar al contenido</a>
+
+  <!-- HEADER -->
+  <header class="t-header" role="banner">
+    <a href="inicio.html" class="t-logo" aria-label="Volver al inicio">
+      <span aria-hidden="true">🐾</span> Mascott
+    </a>
+    <nav class="t-nav" aria-label="Navegación tienda">
+      <a href="inicio.html">Inicio</a>
+      <a href="inicio.html#servicios">Servicios</a>
+      <a href="tienda-productos.html" aria-current="page">Tienda</a>
+    </nav>
+    <div class="t-header-actions">
+      <button class="btn-carrito" id="btnCarrito" aria-label="Ver carrito" aria-haspopup="true">
+        🛒 <span class="carrito-count" id="carritoCount">0</span>
+      </button>
+      <a href="login-registro.html" class="btn-login-header">👤 Mi cuenta</a>
+    </div>
+    <button class="t-menu-btn" id="tMenuBtn" aria-label="Abrir menú" aria-expanded="false">☰</button>
+  </header>
+
+  <!-- MENÚ MÓVIL -->
+  <div class="t-mobile-menu" id="tMobileMenu" aria-hidden="true">
+    <a href="inicio.html">Inicio</a>
+    <a href="inicio.html#servicios">Servicios</a>
+    <a href="tienda-productos.html">Tienda</a>
+    <a href="login-registro.html">Mi cuenta</a>
+  </div>
+
+  <!-- HERO TIENDA -->
+  <section class="t-hero" aria-label="Bienvenida a la tienda">
+    <div class="t-hero-content">
+      <h1>Tienda <strong>Mascott</strong></h1>
+      <p>Todo lo que tu mascota necesita, en un solo lugar.</p>
+      <div class="t-hero-badges">
+        <span>🚚 Envío a domicilio</span>
+        <span>✅ Productos certificados</span>
+        <span>💳 Pago seguro</span>
+      </div>
+    </div>
+  </section>
+
+  <main id="main">
+
+    <!-- BARRA DE BÚSQUEDA -->
+    <div class="t-search-bar">
+      <div class="search-wrap">
+        <span aria-hidden="true">🔍</span>
+        <input type="search" id="searchInput" placeholder="Buscar productos..." aria-label="Buscar productos"/>
+      </div>
+      <span class="result-count" id="resultCount" aria-live="polite"></span>
+    </div>
+
+    <div class="t-layout">
+
+      <!-- SIDEBAR FILTROS -->
+      <aside class="t-sidebar" aria-label="Filtros de productos">
+        <div class="filter-section">
+          <h3>🐾 Animal</h3>
+          <div class="filter-group" role="group" aria-label="Filtrar por animal">
+            <label class="filter-chip active"><input type="radio" name="animal" value="todos" checked/> Todos</label>
+            <label class="filter-chip"><input type="radio" name="animal" value="perro"/> 🐕 Perro</label>
+            <label class="filter-chip"><input type="radio" name="animal" value="gato"/> 🐈 Gato</label>
+            <label class="filter-chip"><input type="radio" name="animal" value="conejo"/> 🐇 Conejo</label>
+            <label class="filter-chip"><input type="radio" name="animal" value="ave"/> 🐦 Ave</label>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <h3>📦 Categoría</h3>
+          <div class="filter-group" role="group" aria-label="Filtrar por categoría">
+            <label class="filter-chip active"><input type="radio" name="cat" value="todos" checked/> Todos</label>
+            <label class="filter-chip"><input type="radio" name="cat" value="alimento"/> 🦴 Alimento</label>
+            <label class="filter-chip"><input type="radio" name="cat" value="snack"/> 🍖 Snacks</label>
+            <label class="filter-chip"><input type="radio" name="cat" value="accesorio"/> 🎾 Accesorios</label>
+            <label class="filter-chip"><input type="radio" name="cat" value="higiene"/> 🧴 Higiene</label>
+            <label class="filter-chip"><input type="radio" name="cat" value="salud"/> 💊 Salud</label>
+            <label class="filter-chip"><input type="radio" name="cat" value="juguete"/> 🧸 Juguetes</label>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <h3>🐶 Etapa de vida</h3>
+          <div class="filter-group" role="group" aria-label="Filtrar por etapa de vida">
+            <label class="filter-chip active"><input type="radio" name="etapa" value="todos" checked/> Todas</label>
+            <label class="filter-chip"><input type="radio" name="etapa" value="cachorro"/> 🍼 Cachorro</label>
+            <label class="filter-chip"><input type="radio" name="etapa" value="adulto"/> 🐾 Adulto</label>
+            <label class="filter-chip"><input type="radio" name="etapa" value="senior"/> 👴 Senior</label>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <h3>💰 Precio</h3>
+          <div class="price-range">
+            <input type="range" id="precioMax" min="50" max="1000" value="1000" step="50"
+              aria-label="Precio máximo"/>
+            <div class="price-labels">
+              <span>$50</span>
+              <span id="precioLabel">$1000</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-limpiar" id="btnLimpiar">✕ Limpiar filtros</button>
+      </aside>
+
+      <!-- GRID PRODUCTOS -->
+      <section aria-labelledby="tit-productos">
+        <h2 class="sr-only" id="tit-productos">Productos</h2>
+        <div class="productos-grid" id="productosGrid" role="list"></div>
+        <p class="no-results" id="noResults" style="display:none" role="status">
+          😕 No encontramos productos con esos filtros.
+        </p>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- PANEL CARRITO -->
+  <div class="carrito-overlay" id="carritoOverlay" aria-hidden="true"></div>
+  <aside class="carrito-panel" id="carritoPanel" role="dialog" aria-modal="true"
+    aria-label="Carrito de compras" aria-hidden="true">
+    <div class="carrito-header">
+      <h2>🛒 Tu carrito</h2>
+      <button class="carrito-close" id="carritoClose" aria-label="Cerrar carrito">✕</button>
+    </div>
+    <div class="carrito-body" id="carritoBody"></div>
+    <div class="carrito-footer">
+      <div class="carrito-total-row">
+        <span>Subtotal</span><span id="carritoSubtotal">$0 MXN</span>
+      </div>
+      <div class="carrito-total-row carrito-total-final">
+        <span>Total</span><strong id="carritoTotal">$0 MXN</strong>
+      </div>
+      <button class="btn-checkout" id="btnCheckout">💳 Proceder al pago</button>
+      <button class="btn-vaciar" id="btnVaciar">🗑 Vaciar carrito</button>
+    </div>
+  </aside>
+
+  <!-- MODAL CHECKOUT -->
+  <div class="modal-overlay" id="checkoutOverlay" role="dialog" aria-modal="true"
+    aria-labelledby="checkout-title" aria-hidden="true">
+    <div class="modal-checkout">
+      <button class="modal-close" id="checkoutClose" aria-label="Cerrar">✕</button>
+      <div id="checkoutContent"></div>
+    </div>
+  </div>
+
+  <!-- MODAL DETALLE PRODUCTO -->
+  <div class="modal-overlay" id="modalProducto" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-prod-nombre">
+    <div class="modal-producto">
+      <button class="modal-prod-close" id="modalProdClose" aria-label="Cerrar">✕</button>
+      <div class="modal-prod-body">
+        <div class="modal-prod-img-wrap">
+          <img id="modalProdImg" src="" alt="" class="modal-prod-img"/>
+        </div>
+        <div class="modal-prod-info">
+          <div class="modal-prod-tags" id="modalProdTags"></div>
+          <h2 id="modal-prod-nombre"></h2>
+          <p id="modalProdDesc" class="modal-prod-desc"></p>
+          <p id="modalProdMarca" class="modal-prod-marca"></p>
+          <div class="modal-prod-precio-wrap">
+            <span id="modalProdPrecio" class="modal-prod-precio"></span>
+            <span id="modalProdOld" class="modal-prod-old"></span>
+          </div>
+          <div id="modalProdVariantes" class="modal-prod-variantes"></div>
+          <button class="btn-modal-agregar" id="btnModalAgregar">+ Agregar al carrito</button>
+          <div class="form-msg" id="modalProdMsg" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <footer class="t-footer" role="contentinfo">
+    <div class="t-footer-grid">
+      <div class="t-footer-col">
+        <p class="t-footer-brand">🐾 Mascott</p>
+        <p>Tu tienda de confianza para todo lo que tu mascota necesita.</p>
+      </div>
+      <div class="t-footer-col">
+        <p class="t-footer-heading">Navegación</p>
+        <ul>
+          <li><a href="inicio.html">Inicio</a></li>
+          <li><a href="inicio.html#servicios">Servicios</a></li>
+          <li><a href="tienda-productos.html">Tienda</a></li>
+          <li><a href="inicio.html#ubicacion">Ubicación</a></li>
+        </ul>
+      </div>
+      <div class="t-footer-col">
+        <p class="t-footer-heading">Contacto</p>
+        <ul>
+          <li>📍 Calle Principal #123, Col. Centro</li>
+          <li>📞 <a href="tel:+525512345678">(55) 1234-5678</a></li>
+          <li>📧 <a href="mailto:contacto@mascott.com">contacto@mascott.com</a></li>
+          <li>🕐 Lun–Sáb: 9:00 am – 7:00 pm</li>
+        </ul>
+      </div>
+      <div class="t-footer-col">
+        <p class="t-footer-heading">Síguenos</p>
+        <div class="t-footer-social">
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">📘 Facebook</a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">📸 Instagram</a>
+          <a href="https://wa.me/573114569768" target="_blank" rel="noopener noreferrer">💬 WhatsApp</a>
+        </div>
+      </div>
+    </div>
+    <div class="t-footer-bottom">
+      <p>© 2026 Clínica Veterinaria Mascott · <a href="inicio.html">Volver al inicio</a></p>
+    </div>
+  </footer>
+
+  <script type="module" src="../scripts/tienda-productos.js"></script>
+</body>
+</html>

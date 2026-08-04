@@ -1,0 +1,186 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Acceso · Clínica Veterinaria Mascott</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="icon" href="{% static 'mascott/imagenes/logo.png' %}"/>
+  <link rel="stylesheet" href="{% static 'mascott/estilos/login-registro.css' %}"/>
+</head>
+<body>
+
+  {% if messages %}
+  <div style="position:fixed;top:1rem;right:1rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem">
+    {% for msg in messages %}
+      <div style="background:{% if msg.tags == 'error' %}#c62828{% else %}#2e7d32{% endif %};
+                  color:#fff;padding:.75rem 1.25rem;border-radius:12px;font-size:.9rem;
+                  font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.2);max-width:320px"
+           class="django-msg">{{ msg }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <a href="#auth-main" class="skip-link">Saltar al contenido</a>
+
+  <div class="auth-bg" aria-hidden="true">
+    <div class="auth-blob b1"></div>
+    <div class="auth-blob b2"></div>
+    <div class="paw p1">🐾</div>
+    <div class="paw p2">🐾</div>
+    <div class="paw p3">🐾</div>
+  </div>
+
+  <main class="auth-wrap" id="auth-main">
+
+    <a href="{% url 'inicio' %}" class="back-link">← Volver al inicio</a>
+
+    <div class="auth-card">
+
+      <div class="auth-logo">
+        <span aria-hidden="true">🐾</span>
+        <span>Mascott</span>
+      </div>
+
+      <!-- TABS -->
+      <div class="auth-tabs" role="tablist">
+        <button class="tab {% if not tab_activa or tab_activa == 'login' %}active{% endif %}"
+                id="tab-login" role="tab" aria-selected="true" aria-controls="panel-login">
+          Iniciar Sesión
+        </button>
+        <button class="tab {% if tab_activa == 'registro' %}active{% endif %}"
+                id="tab-register" role="tab" aria-selected="false" aria-controls="panel-register">
+          Registrarse
+        </button>
+      </div>
+
+      <!-- PANEL LOGIN -->
+      <div class="tab-panel {% if not tab_activa or tab_activa == 'login' %}active{% endif %}"
+           id="panel-login" role="tabpanel">
+        <form method="POST" action="{% url 'login_registro' %}" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="accion" value="login"/>
+
+          <div class="form-group">
+            <label for="l-email">Correo electrónico</label>
+            <input type="email" name="email" id="l-email"
+                   placeholder="correo@ejemplo.com" required autocomplete="email"/>
+          </div>
+
+          <div class="form-group">
+            <label for="l-pass">Contraseña</label>
+            <div class="pass-wrap">
+              <input type="password" name="password" id="l-pass"
+                     placeholder="••••••••" required autocomplete="current-password"/>
+              <button type="button" class="toggle-pass" data-target="l-pass"
+                      aria-label="Mostrar contraseña">👁</button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-auth">
+            <span>🔓</span> Entrar
+          </button>
+
+          <p class="auth-switch">
+            ¿No tienes cuenta?
+            <button type="button" class="link-btn" id="goRegister">Regístrate gratis</button>
+          </p>
+        </form>
+      </div>
+
+      <!-- PANEL REGISTRO -->
+      <div class="tab-panel {% if tab_activa == 'registro' %}active{% endif %}"
+           id="panel-register" role="tabpanel"
+           {% if tab_activa != 'registro' %}hidden{% endif %}>
+        <form method="POST" action="{% url 'login_registro' %}" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="accion" value="registro"/>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="r-nombre">Nombre</label>
+              <input type="text" name="nombre" id="r-nombre"
+                     placeholder="María" required autocomplete="given-name"/>
+            </div>
+            <div class="form-group">
+              <label for="r-apellido">Apellido</label>
+              <input type="text" name="apellido" id="r-apellido"
+                     placeholder="García" required autocomplete="family-name"/>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="r-email">Correo electrónico</label>
+            <input type="email" name="email" id="r-email"
+                   placeholder="correo@ejemplo.com" required autocomplete="email"/>
+          </div>
+
+          <div class="form-group">
+            <label for="r-tel">Teléfono</label>
+            <input type="tel" name="tel" id="r-tel"
+                   placeholder="(55) 1234-5678" autocomplete="tel"/>
+          </div>
+
+          <div class="form-group">
+            <label for="r-pass">Contraseña</label>
+            <div class="pass-wrap">
+              <input type="password" name="password" id="r-pass"
+                     placeholder="Mínimo 6 caracteres" required autocomplete="new-password"/>
+              <button type="button" class="toggle-pass" data-target="r-pass"
+                      aria-label="Mostrar contraseña">👁</button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-auth">
+            <span>✅</span> Crear cuenta
+          </button>
+
+          <p class="auth-switch">
+            ¿Ya tienes cuenta?
+            <button type="button" class="link-btn" id="goLogin">Inicia sesión</button>
+          </p>
+        </form>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    // Toggle tabs
+    const tabLogin    = document.getElementById('tab-login');
+    const tabRegister = document.getElementById('tab-register');
+    const panelLogin  = document.getElementById('panel-login');
+    const panelReg    = document.getElementById('panel-register');
+
+    function showTab(tab) {
+      const isLogin = tab === 'login';
+      tabLogin.classList.toggle('active', isLogin);
+      tabRegister.classList.toggle('active', !isLogin);
+      panelLogin.classList.toggle('active', isLogin);
+      panelReg.classList.toggle('active', !isLogin);
+      panelLogin.hidden = !isLogin;
+      panelReg.hidden   = isLogin;
+    }
+    tabLogin.addEventListener('click',    () => showTab('login'));
+    tabRegister.addEventListener('click', () => showTab('register'));
+    document.getElementById('goRegister').addEventListener('click', () => showTab('register'));
+    document.getElementById('goLogin').addEventListener('click',    () => showTab('login'));
+
+    // Toggle contraseña
+    document.querySelectorAll('.toggle-pass').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const inp  = document.getElementById(this.dataset.target);
+        const show = inp.type === 'password';
+        inp.type         = show ? 'text' : 'password';
+        this.textContent = show ? '🙈' : '👁';
+      });
+    });
+
+    // Auto-ocultar mensajes
+    setTimeout(() => {
+      document.querySelectorAll('.django-msg').forEach(el => el.remove());
+    }, 4000);
+  </script>
+</body>
+</html>
