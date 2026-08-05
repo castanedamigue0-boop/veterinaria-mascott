@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Python / Django
 __pycache__/
 *.py[cod]
@@ -18,3 +19,10 @@ env/
 # Sistema operativo
 .DS_Store
 Thumbs.db
+=======
+# Ignorar archivos del sistema
+.DS_Store
+Thumbs.db
+*.log
+node_modules/
+>>>>>>> 13aeba9f4b0d40af92d79b288b97dfbc2a2f3c27
