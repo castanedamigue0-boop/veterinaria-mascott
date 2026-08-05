@@ -1,4 +1,19 @@
-﻿// ===== CREDENCIALES =====
+﻿// ===== EMAILJS — CONFIGURACIÓN =====
+var EMAILJS_SERVICE  = 'service_fw1q099';
+var EMAILJS_TEMPLATE = 'template_1ibh7nj';
+
+function enviarCorreo(params) {
+  if (typeof emailjs === 'undefined') return;
+  emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, params)
+    .then(function() {
+      console.log('✅ Correo enviado a ' + params.email);
+    })
+    .catch(function(err) {
+      console.warn('⚠️ Error enviando correo:', err);
+    });
+}
+
+// ===== CREDENCIALES =====
 var ADMIN_USER = 'admin';
 var ADMIN_PASS = 'mascott2026';
 
@@ -90,6 +105,7 @@ document.getElementById('adminMenuBtn').addEventListener('click', function() {
 document.getElementById('adminOverlay').addEventListener('click', function() {
   document.getElementById('adminSidebar').classList.remove('open');
   document.getElementById('adminOverlay').classList.remove('active');
+  document.getElementById
 });
 
 // ===== NAVEGACIÓN =====
@@ -142,15 +158,37 @@ function cambiarEstado(userEmail, citaId, nuevoEstado) {
   var users = getUsers();
   var user  = users.find(function(u) { return u.email === userEmail; });
   if (!user) return;
+
+  var citaData = null;
   (user.citas || []).forEach(function(c) {
     if (c.id !== citaId) return;
     c.estado = nuevoEstado;
+    citaData = c;
+
+    // Notificación en Firebase
     var emoji = nuevoEstado === 'confirmada' ? '✅' : '❌';
     var msg = emoji + ' Tu cita de ' + c.servicio + ' para ' + c.mascota +
       ' el ' + c.fecha + ' a las ' + c.hora +
       ' fue ' + nuevoEstado + ' por el veterinario.';
     agregarNotificacion(userEmail, msg);
+
+    // Correo por EmailJS
+    enviarCorreo({
+      email:    userEmail,
+      nombre:   (user.nombre || '') + ' ' + (user.apellido || ''),
+      asunto:   nuevoEstado === 'confirmada'
+                  ? '✅ Tu cita fue confirmada — Veterinaria Mascott'
+                  : '❌ Tu cita fue cancelada — Veterinaria Mascott',
+      mensaje:  nuevoEstado === 'confirmada'
+                  ? '¡Tu cita ha sido CONFIRMADA por el veterinario! Te esperamos puntualmente.'
+                  : 'Lamentamos informarte que tu cita fue CANCELADA. Puedes reagendar cuando quieras.',
+      servicio: c.servicio,
+      mascota:  c.mascota,
+      fecha:    c.fecha,
+      hora:     c.hora
+    });
   });
+
   actualizarUsuario(userEmail, { citas: user.citas });
 }
 
