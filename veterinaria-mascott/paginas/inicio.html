@@ -37,33 +37,136 @@
       z-index:9999; transition:opacity .8s ease, visibility .8s ease;
       overflow:hidden;
     }
-    #splash.hide { opacity:0; visibility:hidden; }
-    .splash-orb { position:absolute; border-radius:50%; filter:blur(60px); pointer-events:none; }
-    .splash-orb1 { width:400px; height:400px; background:rgba(66,165,245,.25); top:-100px; left:-100px; animation:orbFloat1 6s ease-in-out infinite; }
-    .splash-orb2 { width:300px; height:300px; background:rgba(255,111,0,.18); bottom:-80px; right:-80px; animation:orbFloat2 7s ease-in-out infinite; }
-    .splash-orb3 { width:200px; height:200px; background:rgba(255,255,255,.08); top:40%; left:60%; animation:orbFloat1 5s ease-in-out infinite reverse; }
-    @keyframes orbFloat1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(30px,-30px) scale(1.1)} }
-    @keyframes orbFloat2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-20px,20px) scale(1.08)} }
-    .splash-paw { position:absolute; font-size:1.4rem; opacity:0; animation:pawFloat 3s ease-in-out forwards; pointer-events:none; user-select:none; }
-    @keyframes pawFloat { 0%{opacity:0;transform:translateY(20px) rotate(var(--r,0deg)) scale(.6)} 30%{opacity:.5} 70%{opacity:.3} 100%{opacity:0;transform:translateY(-80px) rotate(var(--r,0deg)) scale(1)} }
+    #splash.hide { 
+      opacity:0; 
+      visibility:hidden;
+     }
+    .splash-orb { 
+      position:absolute;
+       border-radius:50%;
+        filter:blur(60px);
+         pointer-events:none; 
+        }
+    .splash-orb1 {
+       width:400px; 
+       height:400px;
+        background:rgba(66,165,245,.25); 
+        top:-100px;
+         left:-100px;
+          animation:orbFloat1 6s ease-in-out infinite;
+        
+        }
+    .splash-orb2 {
+       width:300px;
+        height:300px;
+         background:rgba(255,111,0,.18);
+          bottom:-80px;
+           right:-80px; 
+          animation:orbFloat2 7s ease-in-out infinite;
+         }
+    .splash-orb3 {
+       width:200px; 
+       height:200px; 
+       background:rgba(255,255,255,.08);
+        top:40%;
+         left:60%;
+         animation:orbFloat1 5s ease-in-out infinite reverse;
+         }
+    @keyframes orbFloat1 {
+       0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(30px,-30px) scale(1.1)}
+       }
+    @keyframes orbFloat2 {
+       0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-20px,20px) scale(1.08)} 
+      }
+    .splash-paw { 
+      position:absolute;
+       font-size:1.4rem; 
+       opacity:0; 
+       animation:pawFloat 3s ease-in-out forwards;
+        pointer-events:none
+        ; user-select:none;
+       }
+    @keyframes pawFloat {
+       0%{opacity:0;transform:translateY(20px) rotate(var(--r,0deg)) scale(.6)} 30%{opacity:.5} 70%{opacity:.3} 100%{opacity:0;transform:translateY(-80px) rotate(var(--r,0deg)) scale(1)} }
     .splash-logo-wrap { position:relative; display:flex; align-items:center; justify-content:center; width:120px; height:120px; opacity:0; animation:splashPopIn .6s cubic-bezier(.34,1.56,.64,1) .2s forwards; }
-    .splash-ring  { position:absolute; inset:-12px; border-radius:50%; border:3px solid rgba(255,255,255,.3); animation:ringPulse 2s ease-in-out .8s infinite; }
-    .splash-ring2 { position:absolute; inset:-24px; border-radius:50%; border:2px solid rgba(255,255,255,.12); animation:ringPulse 2s ease-in-out 1.2s infinite; }
-    @keyframes ringPulse { 0%,100%{transform:scale(1);opacity:.6} 50%{transform:scale(1.12);opacity:.15} }
-    .splash-logo { width:90px; height:90px; object-fit:contain; position:relative; z-index:1; filter:drop-shadow(0 0 20px rgba(255,255,255,.4)); animation:logoBob 2s ease-in-out 1s infinite; }
+    .splash-ring  {
+       position:absolute; 
+       inset:-12px;
+        border-radius:50%; 
+        border:3px solid rgba(255,255,255,.3);
+         animation:ringPulse 2s ease-in-out .8s infinite; 
+        }
+    .splash-ring2 { 
+      position:absolute;
+       inset:-24px; 
+       border-radius:50%;
+        border:2px solid rgba(255,255,255,.12); 
+        animation:ringPulse 2s ease-in-out 1.2s infinite;
+       }
+    @keyframes ringPulse { 
+      0%,100%{transform:scale(1);opacity:.6} 50%{transform:scale(1.12);opacity:.15}  
+    }
+    .splash-logo {
+       width:90px;
+        height:90px;
+         object-fit:contain;
+          position:relative;
+           z-index:1;
+            filter:drop-shadow(0 0 20px rgba(255,255,255,.4)); 
+            animation:logoBob 2s ease-in-out 1s infinite; 
+          }
     @keyframes logoBob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
     @keyframes splashPopIn { from{opacity:0;transform:scale(.4) rotate(-10deg)} to{opacity:1;transform:scale(1) rotate(0deg)} }
-    .splash-title { color:#fff; font-size:2.4rem; font-weight:900; margin-top:1.25rem; letter-spacing:4px; text-transform:uppercase; opacity:0; animation:splashSlideUp .5s ease .7s forwards; text-shadow:0 2px 20px rgba(0,0,0,.3); }
-    .splash-title span { color:#90caf9; }
-    .splash-sub { color:rgba(255,255,255,.65); font-size:.9rem; margin-top:.3rem; letter-spacing:2px; text-transform:uppercase; opacity:0; animation:splashSlideUp .5s ease .95s forwards; }
+    .splash-title { 
+      color:#fff; 
+      font-size:2.4rem; 
+      font-weight:900;
+       margin-top:1.25rem;
+        letter-spacing:4px;
+         text-transform:uppercase; 
+         opacity:0; 
+         animation:splashSlideUp .5s ease .7s forwards; 
+         text-shadow:0 2px 20px rgba(0,0,0,.3);
+         }
+    .splash-title span {
+       color:#90caf9;
+       }
+    .splash-sub {
+      color:rgba(255,255,255,.65);
+       font-size:.9rem; margin-top:.3rem; 
+       letter-spacing:2px; 
+       text-transform:uppercase; 
+       opacity:0;
+        animation:splashSlideUp .5s ease .95s forwards; 
+      }
     @keyframes splashSlideUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
     .splash-divider { width:0; height:2px; margin-top:1.5rem; background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent); border-radius:2px; animation:dividerGrow .6s ease 1.1s forwards; }
     @keyframes dividerGrow { to{width:180px} }
-    .splash-bar { width:200px; height:5px; background:rgba(255,255,255,.15); border-radius:10px; margin-top:1.5rem; overflow:hidden; opacity:0; animation:splashSlideUp .4s ease 1.2s forwards; }
-    .splash-bar-fill { height:100%; width:0; border-radius:10px; background:linear-gradient(90deg,#42a5f5,#fff,#ff6f00); background-size:200% 100%; animation:barLoad 1.6s cubic-bezier(.4,0,.2,1) 1.3s forwards, barShimmer 1s linear 1.3s infinite; }
+    .splash-bar {
+      width:200px;
+       height:5px;
+        background:rgba(255,255,255,.15);
+         border-radius:10px;
+          margin-top:1.5rem;
+           overflow:hidden; opacity:0;
+            animation:splashSlideUp .4s ease 1.2s forwards; 
+          }
+    .splash-bar-fill {
+       height:100%;
+        width:0;
+         border-radius:10px; 
+         background:linear-gradient(90deg,#42a5f5,#fff,#ff6f00); 
+         background-size:200% 100%; 
+         animation:barLoad 1.6s cubic-bezier(.4,0,.2,1) 1.3s forwards, barShimmer 1s linear 1.3s infinite; }
     @keyframes barLoad    { from{width:0} to{width:100%} }
     @keyframes barShimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-    .splash-loading-text { color:rgba(255,255,255,.45); font-size:.72rem; letter-spacing:2px; margin-top:.75rem; text-transform:uppercase; opacity:0; animation:splashSlideUp .4s ease 1.4s forwards; }
+    .splash-loading-text { 
+      color:rgba(255,255,255,.45);
+       font-size:.72rem; letter-spacing:2px;
+        margin-top:.75rem; text-transform:uppercase; 
+        opacity:0; 
+        animation:splashSlideUp .4s ease 1.4s forwards; 
+      }
   </style>
 </head>
 <body>
@@ -361,9 +464,9 @@
           loading="lazy" referrerpolicy="no-referrer-when-downgrade">
         </iframe>
         <div class="map-info">
-          <p><span aria-hidden="true">📍</span> Calle Principal #123, Col. Centro, CDMX</p>
+          <p><span aria-hidden="true">📍</span> Calle Principal #123, sogamoso-boyaca</p>
           <p><span aria-hidden="true">🕐</span> Lun–Sáb: 9:00 am – 7:00 pm</p>
-          <p><span aria-hidden="true">📞</span> (55) 1234-5678</p>
+          <p><span aria-hidden="true">📞</span> (+57) 312345678</p>
           <a href="https://maps.app.goo.gl/zocalo" target="_blank" rel="noopener noreferrer"
             class="btn-cita" style="margin-top:1rem; display:inline-flex;">
             <span aria-hidden="true">🗺️</span> Cómo llegar

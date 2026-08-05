@@ -4,7 +4,7 @@ Ejecutar con: python manage.py shell < cargar_datos.py
 """
 import os
 import django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mascott_django.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
 django.setup()
 
 from django.contrib.auth.models import User
