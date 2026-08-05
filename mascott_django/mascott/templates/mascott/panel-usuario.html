@@ -1,0 +1,442 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mi Cuenta · Clínica Veterinaria Mascott</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="icon" href="{% static 'mascott/imagenes/logo.png' %}"/>
+  <link rel="stylesheet" href="{% static 'mascott/estilos/panel-usuario.css' %}"/>
+</head>
+<body>
+
+  {% if messages %}
+  <div style="position:fixed;top:1rem;right:1rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem">
+    {% for msg in messages %}
+      <div class="django-msg" style="background:{% if msg.tags == 'error' %}#c62828{% else %}#2e7d32{% endif %};
+           color:#fff;padding:.75rem 1.25rem;border-radius:12px;font-size:.9rem;
+           font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.2);max-width:320px">
+        {{ msg }}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <a href="#dash-main" class="skip-link">Saltar al contenido</a>
+
+  <!-- SIDEBAR -->
+  <aside class="dash-sidebar" id="dashSidebar" role="navigation">
+    <div class="ds-header">
+      <a href="{% url 'inicio' %}" class="ds-logo"><span>🐾</span> Mascott</a>
+    </div>
+    <div class="ds-user">
+      <div class="ds-avatar">{{ user.first_name|first|upper }}</div>
+      <div>
+        <p class="ds-name">{{ user.get_full_name }}</p>
+        <p class="ds-email">{{ user.email }}</p>
+      </div>
+    </div>
+    <nav>
+      <ul class="ds-links" role="list">
+        <li><button class="ds-link active" data-section="inicio">  <span>🏠</span> Inicio</button></li>
+        <li><button class="ds-link" data-section="citas">          <span>📅</span> Mis Citas</button></li>
+        <li><button class="ds-link" data-section="mascotas">       <span>🐾</span> Mis Mascotas</button></li>
+        <li><button class="ds-link" data-section="tienda">         <span>🛒</span> Tienda</button></li>
+        <li><button class="ds-link" data-section="historial">      <span>📋</span> Historial</button></li>
+        <li><button class="ds-link" data-section="perfil">         <span>👤</span> Mi Perfil</button></li>
+      </ul>
+    </nav>
+    <div class="ds-footer">
+      <a href="{% url 'inicio' %}" class="ds-back-btn"><span>🌐</span> Ver sitio</a>
+      <a href="{% url 'cerrar_sesion' %}" class="ds-logout"><span>🚪</span> Cerrar sesión</a>
+    </div>
+  </aside>
+
+  <header class="dash-topbar" role="banner">
+    <button class="dash-menu-btn" id="dashMenuBtn" aria-label="Abrir menú">☰</button>
+    <span class="dash-topbar-title">🐾 Mascott</span>
+    <div style="display:flex;align-items:center;gap:.75rem">
+      <span style="font-size:.85rem;color:#90caf9">{{ user.first_name }}</span>
+      <a href="{% url 'cerrar_sesion' %}" class="ds-logout-top" aria-label="Cerrar sesión">🚪</a>
+    </div>
+  </header>
+
+  <div class="dash-overlay" id="dashOverlay" aria-hidden="true"></div>
+
+  <main class="dash-main" id="dash-main">
+
+    <!-- ── INICIO ── -->
+    <section class="dash-section active" id="sec-inicio">
+      <div class="dash-welcome reveal">
+        <div>
+          <p class="welcome-sub">Bienvenido/a de vuelta,</p>
+          <h1>Hola, {{ user.first_name }} 👋</h1>
+          <p class="welcome-desc">Aquí tienes un resumen de tu cuenta.</p>
+        </div>
+        <div class="welcome-img" aria-hidden="true">🐶</div>
+      </div>
+      <div class="dash-stats reveal">
+        <div class="dstat"><span class="dstat-icon">📅</span><div><span class="dstat-num">{{ citas.count }}</span><p>Citas agendadas</p></div></div>
+        <div class="dstat"><span class="dstat-icon">🐾</span><div><span class="dstat-num">{{ mascotas.count }}</span><p>Mascotas</p></div></div>
+        <div class="dstat"><span class="dstat-icon">✅</span><div><span class="dstat-num">{{ completadas }}</span><p>Visitas completadas</p></div></div>
+        <div class="dstat"><span class="dstat-icon">🛒</span><div><span class="dstat-num">{{ pedidos.count }}</span><p>Pedidos realizados</p></div></div>
+      </div>
+      <div class="dash-grid reveal">
+        <div class="dash-card">
+          <h3>📅 Próxima cita</h3>
+          {% with proxima=citas|dictsort:"fecha"|first %}
+            {% if proxima and proxima.estado == 'pendiente' %}
+              <div class="cita-item">
+                <div class="cita-info">
+                  <h4>{{ proxima.servicio }}</h4>
+                  <p>🐾 {{ proxima.mascota }} | 📅 {{ proxima.fecha }} · {{ proxima.hora }}</p>
+                </div>
+                <span class="cita-badge badge-pendiente">⏳ Pendiente</span>
+              </div>
+            {% else %}
+              <p class="empty-msg">No tienes citas próximas.</p>
+            {% endif %}
+          {% endwith %}
+          <button class="btn-dash" style="margin-top:.75rem" onclick="showSection('citas')">+ Agendar cita</button>
+        </div>
+        <div class="dash-card">
+          <h3>🐾 Mis mascotas</h3>
+          {% if mascotas %}
+            <div class="mascotas-mini">
+              {% for m in mascotas %}
+                <span class="mascota-chip">{{ m.especie|slice:":2" }} {{ m.nombre }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="empty-msg">Sin mascotas aún.</p>
+          {% endif %}
+          <button class="btn-dash-outline" style="margin-top:.75rem" onclick="showSection('mascotas')">+ Agregar mascota</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CITAS ── -->
+    <section class="dash-section" id="sec-citas" hidden>
+      <div class="section-header reveal">
+        <h2>📅 Mis Citas</h2>
+        <button class="btn-dash" id="btnAbrirCita">+ Nueva cita</button>
+      </div>
+
+      <div class="citas-list reveal">
+        {% for cita in citas %}
+          <div class="cita-item {{ cita.estado }}">
+            <div class="cita-info">
+              <h4>{{ cita.servicio }}</h4>
+              <p>🐾 {{ cita.mascota }} &nbsp;|&nbsp; 📅 {{ cita.fecha }} &nbsp;·&nbsp; 🕐 {{ cita.hora }}
+                {% if cita.notas %} &nbsp;|&nbsp; 📝 {{ cita.notas }}{% endif %}
+              </p>
+            </div>
+            <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+              <span class="cita-badge badge-{{ cita.estado }}">
+                {% if cita.estado == 'confirmada' %}✅ Confirmada
+                {% elif cita.estado == 'cancelada' %}❌ Cancelada
+                {% elif cita.estado == 'completada' %}🎉 Completada
+                {% else %}⏳ Pendiente{% endif %}
+              </span>
+              {% if cita.estado == 'pendiente' %}
+                <form method="POST" action="{% url 'cancelar_cita' cita.pk %}" style="display:inline">
+                  {% csrf_token %}
+                  <button type="submit" class="btn-icon">Cancelar</button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+        {% empty %}
+          <p class="empty-msg">No tienes citas registradas.</p>
+        {% endfor %}
+      </div>
+
+      <!-- FORM NUEVA CITA -->
+      <div class="form-wrap" id="citaFormWrap" style="display:none">
+        <form class="dash-form" method="POST" action="{% url 'crear_cita' %}">
+          {% csrf_token %}
+          <h3>Nueva cita</h3>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="nc-mascota">Mascota</label>
+              <input type="text" name="mascota" id="nc-mascota" placeholder="Ej. Firulais" required/>
+            </div>
+            <div class="form-group">
+              <label for="nc-servicio">Servicio</label>
+              <select name="servicio" id="nc-servicio" required>
+                <option value="">Selecciona</option>
+                <option>Consulta general</option>
+                <option>💉 Vacunación</option>
+                <option>✂️ Baño y peluquería</option>
+                <option>🦷 Limpieza dental</option>
+                <option>🔬 Análisis clínico</option>
+                <option>🩺 Revisión anual</option>
+                <option>💊 Desparasitación</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="nc-fecha">Fecha</label>
+              <input type="date" name="fecha" id="nc-fecha" required/>
+            </div>
+            <div class="form-group">
+              <label for="nc-hora">Hora</label>
+              <select name="hora" id="nc-hora" required>
+                <option value="">Selecciona</option>
+                <option>08:00 am</option><option>09:00 am</option><option>10:00 am</option>
+                <option>11:00 am</option><option>12:00 pm</option><option>02:00 pm</option>
+                <option>03:00 pm</option><option>04:00 pm</option><option>05:00 pm</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="nc-notas">Notas (opcional)</label>
+            <input type="text" name="notas" id="nc-notas" placeholder="Ej. Traer cartilla"/>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-dash">Confirmar cita</button>
+            <button type="button" class="btn-dash-outline" id="btnCancelarCita">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ── MASCOTAS ── -->
+    <section class="dash-section" id="sec-mascotas" hidden>
+      <div class="section-header reveal">
+        <h2>🐾 Mis Mascotas</h2>
+        <button class="btn-dash" id="btnAbrirMascota">+ Agregar mascota</button>
+      </div>
+      <div class="mascotas-grid reveal">
+        {% for m in mascotas %}
+          <div class="mascota-card">
+            <span class="mascota-emoji">{{ m.especie|slice:":2" }}</span>
+            <h4>{{ m.nombre }}</h4>
+            <p>{{ m.especie|slice:"3:" }}{% if m.raza %} — {{ m.raza }}{% endif %}{% if m.edad %} — {{ m.edad }} años{% endif %}</p>
+            <form method="POST" action="{% url 'eliminar_mascota' m.pk %}" style="margin-top:.75rem">
+              {% csrf_token %}
+              <button type="submit" class="btn-icon">Eliminar</button>
+            </form>
+          </div>
+        {% empty %}
+          <p class="empty-msg">No tienes mascotas registradas.</p>
+        {% endfor %}
+      </div>
+
+      <!-- FORM NUEVA MASCOTA -->
+      <div class="form-wrap" id="mascotaFormWrap" style="display:none">
+        <form class="dash-form" method="POST" action="{% url 'crear_mascota' %}">
+          {% csrf_token %}
+          <h3>Nueva mascota</h3>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="m-nombre">Nombre</label>
+              <input type="text" name="nombre" id="m-nombre" placeholder="Ej. Firulais" required/>
+            </div>
+            <div class="form-group">
+              <label for="m-especie">Especie</label>
+              <select name="especie" id="m-especie" required>
+                <option value="">Selecciona</option>
+                <option value="🐕 Perro">🐕 Perro</option>
+                <option value="🐈 Gato">🐈 Gato</option>
+                <option value="🐇 Conejo">🐇 Conejo</option>
+                <option value="🐦 Ave">🐦 Ave</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="m-raza">Raza</label>
+              <input type="text" name="raza" id="m-raza" placeholder="Ej. Labrador"/>
+            </div>
+            <div class="form-group">
+              <label for="m-edad">Edad (años)</label>
+              <input type="number" name="edad" id="m-edad" min="0" max="30" placeholder="3"/>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-dash">Guardar mascota</button>
+            <button type="button" class="btn-dash-outline" id="btnCancelarMascota">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ── TIENDA ── -->
+    <section class="dash-section" id="sec-tienda" hidden>
+      <div class="section-header reveal">
+        <h2>🛒 Tienda Mascott</h2>
+        <a href="{% url 'tienda' %}" class="btn-dash">Ver tienda completa →</a>
+      </div>
+      <p class="empty-msg" style="text-align:center;padding:2rem">
+        Ve a la <a href="{% url 'tienda' %}" style="color:#1565c0;font-weight:700">tienda completa</a> para explorar y comprar productos.
+      </p>
+    </section>
+
+    <!-- ── HISTORIAL ── -->
+    <section class="dash-section" id="sec-historial" hidden>
+      <div class="section-header reveal"><h2>📋 Historial</h2></div>
+      <div class="historial-tabs reveal">
+        <button class="htab active" data-htab="citas-hist">Citas</button>
+        <button class="htab" data-htab="pedidos-hist">Pedidos</button>
+      </div>
+      <div id="citas-hist" class="citas-list reveal">
+        {% for cita in citas %}
+          <div class="cita-item {{ cita.estado }}">
+            <div class="cita-info">
+              <h4>{{ cita.servicio }}</h4>
+              <p>{{ cita.mascota }} | {{ cita.fecha }} {{ cita.hora }}</p>
+            </div>
+            <span class="cita-badge badge-{{ cita.estado }}">{{ cita.get_estado_display }}</span>
+          </div>
+        {% empty %}
+          <p class="empty-msg">No hay citas registradas.</p>
+        {% endfor %}
+      </div>
+      <div id="pedidos-hist" class="citas-list reveal" style="display:none">
+        {% for pedido in pedidos %}
+          <div class="cita-item">
+            <div class="cita-info">
+              <h4>Pedido #{{ pedido.pk }}</h4>
+              <p>{{ pedido.fecha|date:"d/m/Y" }} — {{ pedido.items.count }} producto(s)</p>
+            </div>
+            <span class="cita-badge badge-completada">${{ pedido.total }} MXN</span>
+          </div>
+        {% empty %}
+          <p class="empty-msg">No hay pedidos registrados.</p>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- ── PERFIL ── -->
+    <section class="dash-section" id="sec-perfil" hidden>
+      <div class="section-header reveal"><h2>👤 Mi Perfil</h2></div>
+      <form class="dash-form reveal" method="POST" action="{% url 'actualizar_perfil' %}">
+        {% csrf_token %}
+        <div class="perfil-avatar-wrap">
+          <div class="perfil-avatar">{{ user.first_name|first|upper }}</div>
+          <div>
+            <p class="perfil-name">{{ user.get_full_name }}</p>
+            <p class="perfil-since">Miembro desde {{ user.date_joined|date:"Y" }}</p>
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="p-nombre">Nombre</label>
+            <input type="text" name="nombre" id="p-nombre" value="{{ user.first_name }}"/>
+          </div>
+          <div class="form-group">
+            <label for="p-apellido">Apellido</label>
+            <input type="text" name="apellido" id="p-apellido" value="{{ user.last_name }}"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="p-email">Correo</label>
+          <input type="email" name="email" id="p-email" value="{{ user.email }}"/>
+        </div>
+        <div class="form-group">
+          <label for="p-pass">Nueva contraseña <small>(dejar vacío para no cambiar)</small></label>
+          <div class="pass-wrap">
+            <input type="password" name="password" id="p-pass" placeholder="••••••••"/>
+            <button type="button" class="toggle-pass" data-target="p-pass">👁</button>
+          </div>
+        </div>
+        <button type="submit" class="btn-dash">Guardar cambios</button>
+      </form>
+    </section>
+
+  </main>
+
+  <script>
+    // Navegación entre secciones
+    const allSections = document.querySelectorAll('.dash-section');
+    const navBtns     = document.querySelectorAll('.ds-link[data-section]');
+    const sidebar     = document.getElementById('dashSidebar');
+    const overlay     = document.getElementById('dashOverlay');
+
+    function showSection(id) {
+      allSections.forEach(s => { s.classList.remove('active'); s.hidden = true; });
+      navBtns.forEach(b => b.classList.remove('active'));
+      const sec = document.getElementById('sec-' + id);
+      const btn = document.querySelector('.ds-link[data-section="' + id + '"]');
+      if (sec) { sec.classList.add('active'); sec.hidden = false; }
+      if (btn) btn.classList.add('active');
+      if (window.innerWidth <= 900) {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+      }
+      setTimeout(() => {
+        document.querySelectorAll('.reveal:not(.visible)').forEach(el => el.classList.add('visible'));
+      }, 60);
+    }
+
+    navBtns.forEach(b => b.addEventListener('click', () => showSection(b.dataset.section)));
+
+    // Menú móvil
+    document.getElementById('dashMenuBtn').addEventListener('click', () => {
+      const open = sidebar.classList.toggle('open');
+      overlay.classList.toggle('active', open);
+    });
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+    });
+
+    // Toggle formularios
+    const btnAbrirCita   = document.getElementById('btnAbrirCita');
+    const citaFormWrap   = document.getElementById('citaFormWrap');
+    const btnCancelCita  = document.getElementById('btnCancelarCita');
+    const btnAbrirMasc   = document.getElementById('btnAbrirMascota');
+    const mascFormWrap   = document.getElementById('mascotaFormWrap');
+    const btnCancelMasc  = document.getElementById('btnCancelarMascota');
+
+    if (btnAbrirCita)  btnAbrirCita.addEventListener('click',  () => citaFormWrap.style.display = 'block');
+    if (btnCancelCita) btnCancelCita.addEventListener('click', () => citaFormWrap.style.display = 'none');
+    if (btnAbrirMasc)  btnAbrirMasc.addEventListener('click',  () => mascFormWrap.style.display = 'block');
+    if (btnCancelMasc) btnCancelMasc.addEventListener('click', () => mascFormWrap.style.display = 'none');
+
+    // Tabs historial
+    document.querySelectorAll('.htab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.htab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('citas-hist').style.display   = tab.dataset.htab === 'citas-hist'   ? 'flex' : 'none';
+        document.getElementById('pedidos-hist').style.display = tab.dataset.htab === 'pedidos-hist' ? 'flex' : 'none';
+      });
+    });
+
+    // Toggle contraseña perfil
+    document.querySelectorAll('.toggle-pass').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const inp = document.getElementById(this.dataset.target);
+        const show = inp.type === 'password';
+        inp.type = show ? 'text' : 'password';
+        this.textContent = show ? '🙈' : '👁';
+      });
+    });
+
+    // Auto-ocultar mensajes
+    setTimeout(() => {
+      document.querySelectorAll('.django-msg').forEach(el => {
+        el.style.transition = 'opacity .5s'; el.style.opacity = '0';
+        setTimeout(() => el.remove(), 500);
+      });
+    }, 4000);
+
+    // Fecha mínima para nueva cita (mañana)
+    const fechaInput = document.getElementById('nc-fecha');
+    if (fechaInput) {
+      const manana = new Date(); manana.setDate(manana.getDate() + 1);
+      fechaInput.min = manana.toISOString().split('T')[0];
+    }
+
+    // Reveal inicial
+    setTimeout(() => {
+      document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+    }, 100);
+  </script>
+</body>
+</html>

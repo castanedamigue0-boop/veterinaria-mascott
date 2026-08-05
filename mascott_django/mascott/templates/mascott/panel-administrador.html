@@ -1,0 +1,362 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel Admin · Veterinaria Mascott</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="icon" href="{% static 'mascott/imagenes/logo.png' %}"/>
+  <link rel="stylesheet" href="{% static 'mascott/estilos/panel-administrador.css' %}"/>
+</head>
+<body>
+
+  {% if messages %}
+  <div style="position:fixed;top:1rem;right:1rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem">
+    {% for msg in messages %}
+      <div class="django-msg" style="background:{% if msg.tags == 'error' %}#c62828{% else %}#2e7d32{% endif %};
+           color:#fff;padding:.75rem 1.25rem;border-radius:12px;font-size:.9rem;
+           font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.2);max-width:340px">{{ msg }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="as-header">
+      <span class="as-logo">🐾 Mascott Admin</span>
+    </div>
+    <nav>
+      <ul class="as-links" role="list">
+        <li><button class="as-link active" data-section="dashboard">📊 Dashboard</button></li>
+        <li><button class="as-link" data-section="citas">📅 Citas</button></li>
+        <li><button class="as-link" data-section="clientes">👥 Clientes</button></li>
+        <li><button class="as-link" data-section="inventario">📦 Inventario</button></li>
+        <li><button class="as-link" data-section="ventas">💰 Ventas</button></li>
+      </ul>
+    </nav>
+    <div class="as-footer">
+      <a href="{% url 'inicio' %}" class="as-back">🌐 Ver sitio</a>
+      <a href="{% url 'cerrar_sesion' %}" class="as-logout">🚪 Salir</a>
+    </div>
+  </aside>
+
+  <header class="admin-topbar">
+    <button class="admin-menu-btn" id="adminMenuBtn">☰</button>
+    <span>🐾 Panel Administrador</span>
+    <span style="font-size:.85rem;color:#90caf9">{{ user.get_full_name }}</span>
+  </header>
+
+  <div class="admin-overlay" id="adminOverlay"></div>
+
+  <main class="admin-main">
+
+    <!-- ── DASHBOARD ── -->
+    <section class="admin-section active" id="sec-dashboard">
+      <h2 class="section-title">📊 Dashboard</h2>
+      <div class="admin-stats">
+        <div class="astat"><span>📅</span><div><span class="astat-num">{{ stats.total_citas }}</span><p>Total citas</p></div></div>
+        <div class="astat"><span>⏳</span><div><span class="astat-num">{{ stats.pendientes }}</span><p>Pendientes</p></div></div>
+        <div class="astat"><span>✅</span><div><span class="astat-num">{{ stats.confirmadas }}</span><p>Confirmadas</p></div></div>
+        <div class="astat"><span>👥</span><div><span class="astat-num">{{ stats.total_clientes }}</span><p>Clientes</p></div></div>
+        <div class="astat"><span>📦</span><div><span class="astat-num">{{ stats.total_productos }}</span><p>Productos</p></div></div>
+        <div class="astat"><span>⚠️</span><div><span class="astat-num">{{ stats.stock_bajo }}</span><p>Stock bajo</p></div></div>
+        <div class="astat"><span>🧾</span><div><span class="astat-num">{{ stats.total_pedidos }}</span><p>Pedidos</p></div></div>
+        <div class="astat"><span>💰</span><div><span class="astat-num">${{ stats.ingresos }}</span><p>Ingresos</p></div></div>
+      </div>
+
+      <h3 style="margin:1.5rem 0 .75rem">⏳ Citas pendientes recientes</h3>
+      {% for cita in citas %}
+        {% if cita.estado == 'pendiente' %}
+          <div class="cita-admin-item pendiente">
+            <div class="cita-admin-info">
+              <h4>{{ cita.servicio }}</h4>
+              <p>🐾 {{ cita.mascota }} &nbsp;|&nbsp; 👤 {{ cita.usuario.get_full_name }}</p>
+              <p>📅 {{ cita.fecha }} &nbsp;·&nbsp; 🕐 {{ cita.hora }}</p>
+            </div>
+            <div class="cita-admin-actions">
+              <form method="POST" action="{% url 'cambiar_estado_cita' cita.pk %}" style="display:inline">
+                {% csrf_token %}
+                <input type="hidden" name="estado" value="confirmada"/>
+                <button type="submit" class="btn-confirmar">✅ Confirmar</button>
+              </form>
+              <form method="POST" action="{% url 'cambiar_estado_cita' cita.pk %}" style="display:inline">
+                {% csrf_token %}
+                <input type="hidden" name="estado" value="cancelada"/>
+                <button type="submit" class="btn-cancelar-cita">❌ Cancelar</button>
+              </form>
+            </div>
+          </div>
+        {% endif %}
+      {% empty %}
+        <p class="empty-msg">Sin citas pendientes.</p>
+      {% endfor %}
+    </section>
+
+    <!-- ── CITAS ── -->
+    <section class="admin-section" id="sec-citas" hidden>
+      <h2 class="section-title">📅 Todas las Citas</h2>
+      <div class="filtros-admin" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem">
+        <button class="filtro-btn active" data-filt="todas">Todas</button>
+        <button class="filtro-btn" data-filt="pendiente">⏳ Pendientes</button>
+        <button class="filtro-btn" data-filt="confirmada">✅ Confirmadas</button>
+        <button class="filtro-btn" data-filt="cancelada">❌ Canceladas</button>
+      </div>
+      <div id="adminCitasList">
+        {% for cita in citas %}
+          <div class="cita-admin-item {{ cita.estado }}" data-estado="{{ cita.estado }}">
+            <div class="cita-admin-info">
+              <h4>{{ cita.servicio }}</h4>
+              <p>🐾 {{ cita.mascota }} &nbsp;|&nbsp; 👤 {{ cita.usuario.get_full_name }}</p>
+              <p>📅 {{ cita.fecha }} &nbsp;·&nbsp; 🕐 {{ cita.hora }}{% if cita.notas %} &nbsp;|&nbsp; 📝 {{ cita.notas }}{% endif %}</p>
+            </div>
+            <div class="cita-admin-actions">
+              <span class="badge-estado badge-{{ cita.estado }}">{{ cita.get_estado_display }}</span>
+              {% if cita.estado == 'pendiente' %}
+                <form method="POST" action="{% url 'cambiar_estado_cita' cita.pk %}" style="display:inline">
+                  {% csrf_token %}
+                  <input type="hidden" name="estado" value="confirmada"/>
+                  <button type="submit" class="btn-confirmar">✅ Confirmar</button>
+                </form>
+                <form method="POST" action="{% url 'cambiar_estado_cita' cita.pk %}" style="display:inline">
+                  {% csrf_token %}
+                  <input type="hidden" name="estado" value="cancelada"/>
+                  <button type="submit" class="btn-cancelar-cita">❌ Cancelar</button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+        {% empty %}
+          <p class="empty-msg">No hay citas.</p>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- ── CLIENTES ── -->
+    <section class="admin-section" id="sec-clientes" hidden>
+      <h2 class="section-title">👥 Clientes</h2>
+      <input type="text" id="clienteSearch" placeholder="Buscar cliente..." class="search-input"
+             style="max-width:320px;margin-bottom:1rem"/>
+      <div id="clientesList">
+        {% for u in usuarios %}
+          <div class="cliente-card" data-nombre="{{ u.get_full_name|lower }} {{ u.email|lower }}">
+            <div style="display:flex;align-items:center;gap:.85rem;margin-bottom:.75rem">
+              <div class="cliente-avatar">{{ u.first_name|first|upper }}</div>
+              <div>
+                <h4>{{ u.get_full_name }}</h4>
+                <p>{{ u.email }}</p>
+              </div>
+            </div>
+            <p>🐾 {{ u.mascotas.count }} mascotas &nbsp;|&nbsp; 📅 {{ u.citas.count }} citas &nbsp;|&nbsp; 🛒 {{ u.pedidos.count }} pedidos</p>
+          </div>
+        {% empty %}
+          <p class="empty-msg">Sin clientes registrados.</p>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- ── INVENTARIO ── -->
+    <section class="admin-section" id="sec-inventario" hidden>
+      <div class="section-header">
+        <h2 class="section-title">📦 Inventario</h2>
+        <button class="btn-dash" id="btnAgregarProducto">+ Agregar producto</button>
+      </div>
+
+      <!-- FORM NUEVO PRODUCTO -->
+      <div class="form-wrap" id="formProductoWrap" style="display:none;margin-bottom:1.5rem">
+        <form class="dash-form" method="POST" action="{% url 'agregar_producto_admin' %}">
+          {% csrf_token %}
+          <h3>Nuevo producto</h3>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Nombre *</label>
+              <input type="text" name="nombre" placeholder="Royal Canin Cachorro 3kg" required/>
+            </div>
+            <div class="form-group">
+              <label>Marca</label>
+              <input type="text" name="marca" placeholder="Royal Canin"/>
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Precio *</label>
+              <input type="number" name="precio" placeholder="420" step="0.01" required/>
+            </div>
+            <div class="form-group">
+              <label>Stock</label>
+              <input type="number" name="cantidad" placeholder="10" min="0"/>
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Animal</label>
+              <select name="animal">
+                <option value="todos">Todos</option>
+                <option value="perro">Perro</option>
+                <option value="gato">Gato</option>
+                <option value="conejo">Conejo</option>
+                <option value="ave">Ave</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Categoría</label>
+              <select name="categoria">
+                <option value="alimento">Alimento</option>
+                <option value="snack">Snack</option>
+                <option value="higiene">Higiene</option>
+                <option value="salud">Salud</option>
+                <option value="juguete">Juguete</option>
+                <option value="accesorio">Accesorio</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Descripción</label>
+            <input type="text" name="desc" placeholder="Descripción del producto"/>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-dash">Guardar producto</button>
+            <button type="button" class="btn-dash-outline" id="btnCancelarProducto">Cancelar</button>
+          </div>
+        </form>
+      </div>
+
+      <div style="overflow-x:auto">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>#</th><th>Nombre</th><th>Animal</th><th>Categoría</th>
+              <th>Marca</th><th>Precio</th><th>Stock</th><th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in productos %}
+              <tr>
+                <td>{{ p.pk }}</td>
+                <td><strong>{{ p.nombre }}</strong></td>
+                <td>{{ p.animal }}</td>
+                <td>{{ p.categoria }}</td>
+                <td>{{ p.marca }}</td>
+                <td>${{ p.precio }}</td>
+                <td style="{% if p.cantidad == 0 %}color:#c62828;font-weight:800{% elif p.cantidad <= 5 %}color:#e65100;font-weight:700{% endif %}">
+                  {{ p.cantidad }} uds
+                </td>
+                <td>
+                  <form method="POST" action="{% url 'eliminar_producto_admin' p.pk %}"
+                        style="display:inline"
+                        onsubmit="return confirm('¿Eliminar {{ p.nombre }}?')">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-eliminar">🗑</button>
+                  </form>
+                </td>
+              </tr>
+            {% empty %}
+              <tr><td colspan="8" style="text-align:center;padding:2rem;color:#546e7a">Sin productos.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── VENTAS ── -->
+    <section class="admin-section" id="sec-ventas" hidden>
+      <h2 class="section-title">💰 Ventas</h2>
+      <div class="admin-stats" id="ventasStats">
+        <div class="astat"><span>🧾</span><div><span class="astat-num">{{ stats.total_pedidos }}</span><p>Pedidos totales</p></div></div>
+        <div class="astat"><span>💰</span><div><span class="astat-num">${{ stats.ingresos }}</span><p>Ingresos totales</p></div></div>
+        <div class="astat"><span>👥</span><div><span class="astat-num">{{ stats.total_clientes }}</span><p>Clientes</p></div></div>
+      </div>
+      <div style="overflow-x:auto;margin-top:1.5rem">
+        <table class="admin-table">
+          <thead>
+            <tr><th>#</th><th>Cliente</th><th>Fecha</th><th>Productos</th><th>Total</th></tr>
+          </thead>
+          <tbody>
+            {% for pedido in pedidos %}
+              <tr>
+                <td><strong>#{{ pedido.pk }}</strong></td>
+                <td>{{ pedido.usuario.get_full_name }}<br><small>{{ pedido.usuario.email }}</small></td>
+                <td>{{ pedido.fecha|date:"d/m/Y H:i" }}</td>
+                <td style="font-size:.8rem;max-width:220px;color:#546e7a">
+                  {% for item in pedido.items.all %}{{ item.nombre }} x{{ item.cantidad }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                </td>
+                <td><strong style="color:#2e7d32">${{ pedido.total }}</strong></td>
+              </tr>
+            {% empty %}
+              <tr><td colspan="5" style="text-align:center;padding:2rem;color:#546e7a">Sin ventas.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // Navegación
+    const secciones = document.querySelectorAll('.admin-section');
+    const links     = document.querySelectorAll('.as-link[data-section]');
+
+    links.forEach(btn => {
+      btn.addEventListener('click', () => {
+        links.forEach(b => b.classList.remove('active'));
+        secciones.forEach(s => { s.classList.remove('active'); s.hidden = true; });
+        btn.classList.add('active');
+        const sec = document.getElementById('sec-' + btn.dataset.section);
+        if (sec) { sec.classList.add('active'); sec.hidden = false; }
+        if (window.innerWidth <= 900) {
+          document.getElementById('adminSidebar').classList.remove('open');
+          document.getElementById('adminOverlay').classList.remove('active');
+        }
+      });
+    });
+
+    // Menú móvil
+    document.getElementById('adminMenuBtn').addEventListener('click', () => {
+      document.getElementById('adminSidebar').classList.toggle('open');
+      document.getElementById('adminOverlay').classList.toggle('active');
+    });
+    document.getElementById('adminOverlay').addEventListener('click', () => {
+      document.getElementById('adminSidebar').classList.remove('open');
+      document.getElementById('adminOverlay').classList.remove('active');
+    });
+
+    // Toggle form producto
+    document.getElementById('btnAgregarProducto').addEventListener('click', () => {
+      const w = document.getElementById('formProductoWrap');
+      w.style.display = w.style.display === 'none' ? 'block' : 'none';
+    });
+    document.getElementById('btnCancelarProducto').addEventListener('click', () => {
+      document.getElementById('formProductoWrap').style.display = 'none';
+    });
+
+    // Filtro citas
+    document.querySelectorAll('.filtro-btn[data-filt]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filtro-btn[data-filt]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filt = btn.dataset.filt;
+        document.querySelectorAll('.cita-admin-item').forEach(item => {
+          item.style.display = (filt === 'todas' || item.dataset.estado === filt) ? '' : 'none';
+        });
+      });
+    });
+
+    // Buscar clientes
+    document.getElementById('clienteSearch').addEventListener('input', function() {
+      const q = this.value.toLowerCase();
+      document.querySelectorAll('.cliente-card').forEach(card => {
+        card.style.display = card.dataset.nombre.includes(q) ? '' : 'none';
+      });
+    });
+
+    // Auto-ocultar mensajes
+    setTimeout(() => {
+      document.querySelectorAll('.django-msg').forEach(el => {
+        el.style.transition='opacity .5s'; el.style.opacity='0';
+        setTimeout(()=>el.remove(),500);
+      });
+    }, 4000);
+  </script>
+</body>
+</html>

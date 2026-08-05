@@ -1,0 +1,262 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tienda · Clínica Veterinaria Mascott</title>
+  <link rel="icon" href="{% static 'mascott/imagenes/logo.png' %}"/>
+  <link rel="stylesheet" href="{% static 'mascott/estilos/tienda-productos.css' %}"/>
+</head>
+<body>
+
+  {% if messages %}
+  <div style="position:fixed;top:1rem;right:1rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem">
+    {% for msg in messages %}
+      <div class="django-msg" style="background:{% if msg.tags == 'error' %}#c62828{% else %}#2e7d32{% endif %};
+           color:#fff;padding:.75rem 1.25rem;border-radius:12px;font-size:.9rem;
+           font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.2);max-width:320px">{{ msg }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- TOPBAR -->
+  <header class="tienda-topbar" role="banner">
+    <button class="t-menu-btn" id="tMenuBtn" aria-label="Menú" aria-expanded="false">☰</button>
+    <a href="{% url 'inicio' %}" class="t-logo">🐾 <span>Mascott</span></a>
+    <nav class="t-nav" id="tNav">
+      <a href="{% url 'inicio' %}">Inicio</a>
+      <a href="{% url 'tienda' %}" class="active">Tienda</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'dashboard' %}">Mi cuenta</a>
+        <a href="{% url 'cerrar_sesion' %}">Salir</a>
+      {% else %}
+        <a href="{% url 'login_registro' %}">Iniciar sesión</a>
+      {% endif %}
+    </nav>
+    <div class="t-carrito-wrap">
+      <button class="btn-carrito" id="btnCarrito" aria-label="Ver carrito">
+        🛒 <span class="carrito-count" id="carritoCount">
+          {% with carrito=request.session.carrito %}
+            {{ carrito.values|length }}
+          {% endwith %}
+        </span>
+      </button>
+    </div>
+  </header>
+
+  <div class="tienda-layout">
+
+    <!-- FILTROS SIDEBAR -->
+    <aside class="tienda-filtros" role="search" aria-label="Filtros">
+      <form method="GET" action="{% url 'tienda' %}">
+        <h3>🔍 Buscar</h3>
+        <input class="search-input" type="text" name="q" id="searchInput"
+               placeholder="Nombre, marca..." value="{{ busqueda }}"/>
+
+        <h3>🐾 Animal</h3>
+        <div class="radio-group">
+          {% for val, label in animales %}
+            <label class="radio-label">
+              <input type="radio" name="animal" value="{{ val }}"
+                     {% if animal == val %}checked{% endif %}/>
+              {{ label }}
+            </label>
+          {% endfor %}
+        </div>
+
+        <h3>📦 Categoría</h3>
+        <div class="radio-group">
+          {% for val, label in categorias %}
+            <label class="radio-label">
+              <input type="radio" name="cat" value="{{ val }}"
+                     {% if categoria == val %}checked{% endif %}/>
+              {{ label }}
+            </label>
+          {% endfor %}
+        </div>
+
+        <button type="submit" class="btn-filtrar">Aplicar filtros</button>
+        <a href="{% url 'tienda' %}" class="btn-limpiar" id="btnLimpiar">Limpiar</a>
+      </form>
+    </aside>
+
+    <!-- PRODUCTOS -->
+    <main class="tienda-main" id="tienda-main">
+      <div class="tienda-header">
+        <h1>🛍 Tienda Mascott</h1>
+        <span class="result-count" id="resultCount">{{ productos.count }} producto{{ productos.count|pluralize }}</span>
+      </div>
+
+      {% if productos %}
+        <div class="productos-grid" id="productosGrid" role="list">
+          {% for p in productos %}
+            <article class="producto-card" role="listitem">
+              <div class="producto-img">
+                {{ p.emoji }}
+                {% if p.badge %}
+                  <span class="producto-badge {{ p.badge }}">{{ p.badge }}</span>
+                {% endif %}
+              </div>
+              <div class="producto-body">
+                <div class="producto-tags">
+                  <span class="tag tag-animal">{{ p.animal }}</span>
+                  <span class="tag tag-etapa">{{ p.etapa }}</span>
+                  <span class="tag tag-cat">{{ p.categoria }}</span>
+                </div>
+                <p class="producto-nombre">{{ p.nombre }}</p>
+                <p class="producto-desc">{{ p.descripcion }}</p>
+                <p class="producto-marca">{{ p.marca }}</p>
+              </div>
+              <div class="producto-footer">
+                <div>
+                  <div class="producto-precio">${{ p.precio }} MXN</div>
+                  {% if p.precio_old %}
+                    <span class="producto-precio-old">${{ p.precio_old }}</span>
+                  {% endif %}
+                </div>
+                {% if p.cantidad > 0 %}
+                  <form method="POST" action="{% url 'agregar_carrito' p.pk %}" class="form-agregar">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-add">+ Agregar</button>
+                  </form>
+                {% else %}
+                  <span class="btn-add" style="background:#ccc;cursor:not-allowed">Sin stock</span>
+                {% endif %}
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="no-results" id="noResults">
+          <span>🔍</span>
+          <p>No encontramos productos con esos filtros.</p>
+          <a href="{% url 'tienda' %}" class="btn-limpiar">Ver todos</a>
+        </div>
+      {% endif %}
+    </main>
+  </div>
+
+  <!-- PANEL CARRITO -->
+  <div class="carrito-overlay" id="carritoOverlay" aria-hidden="true"></div>
+  <aside class="carrito-panel" id="carritoPanel" role="dialog" aria-modal="true" aria-label="Carrito" aria-hidden="true">
+    <div class="carrito-header">
+      <h2>🛒 Tu carrito</h2>
+      <button class="carrito-close" id="carritoClose" aria-label="Cerrar carrito">✕</button>
+    </div>
+    <div class="carrito-body" id="carritoBody">
+      <div class="carrito-empty"><span>🛒</span><p>Tu carrito está vacío</p></div>
+    </div>
+    <div class="carrito-footer">
+      <div class="carrito-totales">
+        <span>Subtotal:</span><span id="carritoSubtotal">$0 MXN</span>
+      </div>
+      <div class="carrito-totales">
+        <strong>Total:</strong><strong id="carritoTotal">$0 MXN</strong>
+      </div>
+      <button class="btn-vaciar" id="btnVaciar">🗑 Vaciar</button>
+      {% if user.is_authenticated %}
+        <form method="POST" action="{% url 'confirmar_pedido' %}">
+          {% csrf_token %}
+          <button type="submit" class="btn-checkout" id="btnCheckout">💳 Confirmar pedido</button>
+        </form>
+      {% else %}
+        <a href="{% url 'login_registro' %}" class="btn-checkout">🔒 Inicia sesión para comprar</a>
+      {% endif %}
+    </div>
+  </aside>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    // Carrito en sesión — mostrar panel con los items actuales
+    const carritoData = {{ carrito_json|safe }};
+
+    function renderCarritoPanel() {
+      const body     = document.getElementById('carritoBody');
+      const subtotal = document.getElementById('carritoSubtotal');
+      const total    = document.getElementById('carritoTotal');
+      const items    = Object.entries(carritoData);
+
+      if (!items.length) {
+        body.innerHTML = '<div class="carrito-empty"><span>🛒</span><p>Tu carrito está vacío</p></div>';
+        subtotal.textContent = '$0 MXN';
+        total.textContent    = '$0 MXN';
+        return;
+      }
+      let sum = 0;
+      body.innerHTML = items.map(([id, item]) => {
+        const sub = parseFloat(item.precio) * item.qty;
+        sum += sub;
+        return `<div class="carrito-item">
+          <div class="ci-emoji">${item.emoji || '📦'}</div>
+          <div class="ci-info"><h4>${item.nombre}</h4><p>${item.marca}</p></div>
+          <div class="ci-controls">
+            <span class="ci-precio">$${sub.toFixed(0)} MXN</span>
+            <div class="ci-qty">
+              <form method="POST" action="/carrito/actualizar/${id}/" style="display:inline">
+                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+                <input type="hidden" name="accion" value="menos"/>
+                <button type="submit" class="qty-btn">−</button>
+              </form>
+              <span class="qty-num">${item.qty}</span>
+              <form method="POST" action="/carrito/actualizar/${id}/" style="display:inline">
+                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+                <input type="hidden" name="accion" value="mas"/>
+                <button type="submit" class="qty-btn">+</button>
+              </form>
+            </div>
+            <form method="POST" action="/carrito/actualizar/${id}/" style="display:inline">
+              <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+              <input type="hidden" name="accion" value="quitar"/>
+              <button type="submit" class="ci-quitar">🗑</button>
+            </form>
+          </div>
+        </div>`;
+      }).join('');
+      subtotal.textContent = `$${sum.toFixed(0)} MXN`;
+      total.textContent    = `$${sum.toFixed(0)} MXN`;
+    }
+
+    // Abrir/cerrar carrito
+    const panel   = document.getElementById('carritoPanel');
+    const overlay = document.getElementById('carritoOverlay');
+
+    function abrirCarrito()  { renderCarritoPanel(); panel.classList.add('open'); overlay.classList.add('open'); panel.setAttribute('aria-hidden','false'); }
+    function cerrarCarrito() { panel.classList.remove('open'); overlay.classList.remove('open'); panel.setAttribute('aria-hidden','true'); }
+
+    document.getElementById('btnCarrito').addEventListener('click', abrirCarrito);
+    document.getElementById('carritoClose').addEventListener('click', cerrarCarrito);
+    overlay.addEventListener('click', cerrarCarrito);
+
+    // Vaciar carrito (recarga la página vaciando la sesión via AJAX simple)
+    document.getElementById('btnVaciar').addEventListener('click', () => {
+      Object.keys(carritoData).forEach(k => delete carritoData[k]);
+      renderCarritoPanel();
+      document.getElementById('carritoCount').textContent = '0';
+    });
+
+    // Toast al agregar al carrito
+    document.querySelectorAll('.form-agregar').forEach(form => {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const t = document.getElementById('toast');
+        const nombre = form.closest('.producto-card').querySelector('.producto-nombre').textContent;
+        t.textContent = `🛒 ${nombre} agregado`;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2500);
+        // Enviar el form después del toast
+        setTimeout(() => form.submit(), 300);
+      });
+    });
+
+    // Auto-ocultar mensajes
+    setTimeout(() => {
+      document.querySelectorAll('.django-msg').forEach(el => {
+        el.style.transition='opacity .5s'; el.style.opacity='0';
+        setTimeout(()=>el.remove(),500);
+      });
+    }, 4000);
+  </script>
+</body>
+</html>

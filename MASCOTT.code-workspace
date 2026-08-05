@@ -1,0 +1,66 @@
+{
+  "folders": [
+    {
+      "name": "🐾 MASCOTT — Django Backend",
+      "path": "mascott_django"
+    },
+    {
+      "name": "🌐 MASCOTT — Frontend Original",
+      "path": "veterinaria-mascott"
+    }
+  ],
+  "settings": {
+    "files.associations": {
+      "**/*.html": "django-html",
+      "**/templates/**/*.html": "django-html"
+    },
+    "emmet.includeLanguages": {
+      "django-html": "html"
+    },
+    "workbench.iconTheme": "material-icon-theme",
+    "material-icon-theme.folders.associations": {
+      "templates":     "views",
+      "static":        "static",
+      "migrations":    "database",
+      "mascott":       "app",
+      "mascott_django":"config",
+      "estilos":       "css",
+      "scripts":       "js",
+      "imagenes":      "images",
+      "paginas":       "views",
+      "configuracion": "config"
+    },
+    "material-icon-theme.files.associations": {
+      "models.py":    "database",
+      "views.py":     "template",
+      "urls.py":      "routing",
+      "admin.py":     "shield",
+      "forms.py":     "form",
+      "signals.py":   "event",
+      "apps.py":      "config",
+      "settings.py":  "settings",
+      "manage.py":    "python",
+      "*.sqlite3":    "database",
+      "requirements.txt": "dependencies"
+    },
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.expand": false,
+    "explorer.fileNesting.patterns": {
+      "manage.py":     "db.sqlite3, requirements.txt, .gitignore, cargar_datos.py",
+      "models.py":     "admin.py, forms.py, signals.py, apps.py, tests.py",
+      "views.py":      "urls.py",
+      "settings.py":   "wsgi.py, asgi.py, __init__.py"
+    },
+    "workbench.colorCustomizations": {
+      "activityBar.background":         "#0d2137",
+      "activityBar.foreground":         "#ffffff",
+      "statusBar.background":           "#1565c0",
+      "statusBar.foreground":           "#ffffff",
+      "sideBar.background":             "#0a1929",
+      "sideBarSectionHeader.background":"#1565c0",
+      "sideBarSectionHeader.foreground":"#ffffff",
+      "titleBar.activeBackground":      "#0d2137",
+      "titleBar.activeForeground":      "#ffffff"
+    }
+  }
+}
