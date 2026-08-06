@@ -69,6 +69,7 @@
         <ul class="as-links">
           <li><button class="as-link active" data-section="dashboard"><span>📊</span> Dashboard</button></li>
           <li><button class="as-link" data-section="citas"><span>📅</span> Citas</button></li>
+          <li><button class="as-link" data-section="doctores"><span>🩺</span> Doctores</button></li>
           <li><button class="as-link" data-section="clientes"><span>👥</span> Clientes</button></li>
           <li><button class="as-link" data-section="inventario"><span>📦</span> Inventario</button></li>
           <li><button class="as-link" data-section="ventas"><span>💰</span> Ventas</button></li>
@@ -120,6 +121,24 @@
           </div>
         </div>
         <div id="adminCitasList" class="admin-citas-list"></div>
+      </section>
+
+      <!-- DOCTORES -->
+      <section class="admin-section" id="sec-doctores" hidden>
+        <h2 class="admin-title">🩺 Doctores</h2>
+
+        <!-- Filtro por fecha -->
+        <div class="doctores-admin-filtro">
+          <label for="filtroFechaDoc">Ver disponibilidad para:</label>
+          <input type="date" id="filtroFechaDoc"/>
+          <button class="btn-admin-primary" id="btnFiltrarFechaDoc">Ver</button>
+          <button class="btn-admin-outline" id="btnFechaHoy">Hoy</button>
+        </div>
+
+        <!-- Grid de doctores -->
+        <div class="doctores-admin-grid" id="doctoresAdminGrid">
+          <!-- se rellena con JS -->
+        </div>
       </section>
 
       <!-- CLIENTES -->

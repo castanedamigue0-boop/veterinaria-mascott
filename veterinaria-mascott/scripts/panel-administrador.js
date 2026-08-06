@@ -143,7 +143,7 @@ function initNav() {
       });
       var sec = document.getElementById('sec-' + btn.dataset.section);
       if (sec) { sec.classList.add('active'); sec.hidden = false; }
-      var fn = { dashboard: renderDashboard, citas: renderCitas, clientes: renderClientes, inventario: renderInventario, ventas: renderVentas };
+      var fn = { dashboard: renderDashboard, citas: renderCitas, clientes: renderClientes, inventario: renderInventario, ventas: renderVentas, doctores: renderDoctores };
       if (fn[btn.dataset.section]) fn[btn.dataset.section]();
     });
   });
@@ -623,4 +623,119 @@ function renderVentas() {
     : '<tr><td colspan="5" style="text-align:center;padding:2rem;color:#546e7a">Sin ventas registradas.</td></tr>';
 
   if (count) count.textContent = pedidos.length + ' pedidos · Ingresos: $' + totalIngresos.toLocaleString() + ' MXN';
+}
+
+// ===== DOCTORES =====
+var _fechaFiltroDoc = new Date().toISOString().split('T')[0]; // hoy por defecto
+
+function renderDoctores() {
+  // Setear fecha por defecto al input
+  var inputFecha = document.getElementById('filtroFechaDoc');
+  if (inputFecha) inputFecha.value = _fechaFiltroDoc;
+
+  renderDoctoresGrid(_fechaFiltroDoc);
+
+  // Botón filtrar
+  var btnFiltrar = document.getElementById('btnFiltrarFechaDoc');
+  if (btnFiltrar) {
+    btnFiltrar.onclick = function() {
+      var f = document.getElementById('filtroFechaDoc').value;
+      if (f) { _fechaFiltroDoc = f; renderDoctoresGrid(f); }
+    };
+  }
+
+  // Botón hoy
+  var btnHoy = document.getElementById('btnFechaHoy');
+  if (btnHoy) {
+    btnHoy.onclick = function() {
+      _fechaFiltroDoc = new Date().toISOString().split('T')[0];
+      if (inputFecha) inputFecha.value = _fechaFiltroDoc;
+      renderDoctoresGrid(_fechaFiltroDoc);
+    };
+  }
+}
+
+function renderDoctoresGrid(fecha) {
+  var grid = document.getElementById('doctoresAdminGrid');
+  if (!grid) return;
+
+  var docs  = getDoctores();
+  var users = getUsers();
+
+  if (!docs.length) {
+    grid.innerHTML = '<p class="empty-msg">No hay doctores registrados.</p>';
+    return;
+  }
+
+  // Calcular citas por doctor en esa fecha
+  var citasPorDoctor = {};
+  docs.forEach(function(d) { citasPorDoctor[d.id] = []; });
+
+  users.forEach(function(u) {
+    (u.citas || []).forEach(function(c) {
+      if (c.fecha === fecha && c.estado !== 'cancelada' && c.doctorId) {
+        if (citasPorDoctor[c.doctorId]) {
+          citasPorDoctor[c.doctorId].push({
+            mascota:  c.mascota,
+            servicio: c.servicio,
+            hora:     c.hora,
+            estado:   c.estado,
+            cliente:  (u.nombre || '') + ' ' + (u.apellido || ''),
+          });
+        }
+      }
+    });
+  });
+
+  // Formatear fecha para mostrar
+  var partes = fecha.split('-');
+  var meses  = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  var fechaLabel = parseInt(partes[2]) + ' ' + meses[parseInt(partes[1])-1] + ' ' + partes[0];
+
+  grid.innerHTML = docs.map(function(doc) {
+    var citas    = citasPorDoctor[doc.id] || [];
+    var ocupado  = citas.length > 0;
+    var estado   = ocupado ? 'ocupado' : 'disponible';
+    var inicial  = (doc.nombre || 'D')[0].toUpperCase();
+    var fotoHtml = doc.foto
+      ? '<img src="' + doc.foto + '" alt="' + doc.nombre + '"/>'
+      : inicial;
+
+    var citasHtml = citas.length
+      ? citas.map(function(c) {
+          return '<div class="doc-cita-mini ' + c.estado + '">' +
+            '<span>🕐 ' + c.hora + '</span>' +
+            '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' +
+              c.servicio.replace(/^[^\w]+ /, '') +
+            '</span>' +
+            '<span>🐾 ' + c.mascota + '</span>' +
+          '</div>';
+        }).join('')
+      : '<div class="doc-sin-citas">🟢 Sin citas asignadas este día</div>';
+
+    return '<div class="doctor-admin-card ' + estado + '">' +
+      '<div class="doc-card-header">' +
+        '<div class="doc-big-avatar">' + fotoHtml + '</div>' +
+        '<div class="doc-card-info">' +
+          '<h4>' + doc.nombre + '</h4>' +
+          '<p>' + doc.especialidad + '</p>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="doc-estado-badge ' + estado + '">' +
+        '<div class="doc-estado-dot"></div>' +
+        (ocupado ? '🔴 Ocupado — ' + citas.length + ' cita(s)' : '🟢 Disponible') +
+      '</div>' +
+
+      '<div style="font-size:.78rem;color:#546e7a;margin-bottom:.6rem">📅 ' + fechaLabel + '</div>' +
+
+      '<div class="doc-citas-lista">' + citasHtml + '</div>' +
+
+      '<div class="doc-info-extra">' +
+        '<span>📧 ' + (doc.email || '—') + '</span>' +
+        '<span>📞 ' + (doc.tel || '—') + '</span>' +
+        '<span>🕐 ' + (doc.horario || '—') + '</span>' +
+      '</div>' +
+    '</div>';
+  }).join('');
 }
