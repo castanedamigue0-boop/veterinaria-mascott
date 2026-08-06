@@ -56,24 +56,21 @@
     <header class="veterinario-topbar">
       <button class="veterinario-menu-btn" id="veterinarioMenuBtn" aria-label="Menú">☰</button>
       <span>🔐 veterinario Mascott</span>
-      <button class="as-logout-top" id="btnAdminLogoutTop">🚪</button>
+      <button class="as-logout-top" id="btnveterinaioLogoutTop">🚪</button>
     </header>
 
-    <div class="veterinario-overlay" id="adminOverlay"></div>
+    <div class="veterinario-overlay" id="veterinarioOverlay"></div>
 
     <!-- MAIN -->
-    <main class="admin-main">
+    <main class="veterinaio-main">
 
       <!-- DASHBOARD -->
-      <section class="admin-section active" id="sec-dashboard">
-        <h2 class="admin-title">📊 Dashboard</h2>
-        <div class="admin-stats" id="adminStats"></div>
-        <div class="admin-grid">
-          <div class="admin-card">
-            <h3>📅 Citas pendientes</h3>
-            <div id="dashCitasPendientes"></div>
-          </div>
-          <div class="admin-card">
+      <section class="veterinario-section active" id="sec-dashboard">
+        <h2 class="veterinario-title">📊 Dashboard</h2>
+        <div class="veterinario-stats" id="adminStats"></div>
+        <div class="veterinario-grid">
+          <div class="veterinario-card">
+          <div class="veterinarios-card">
             <h3>👥 Últimos clientes</h3>
             <div id="dashUltimosClientes"></div>
           </div>
@@ -81,20 +78,20 @@
       </section>
 
       <!-- CITAS -->
-      <section class="admin-section" id="sec-citas" hidden>
-        <div class="admin-section-header">
-          <h2 class="admin-title">📅 Gestión de Citas</h2>
+      <section class="veterinario-section" id="sec-citas" hidden>
+        <div class="veterinario-section-header">
+          <h2 class="veterinario-title">📅 Gestión de Citas</h2>
           <div class="citas-filtros">
            
           </div>
         </div>
-        <div id="adminCitasList" class="admin-citas-list"></div>
+        <div id="veteriarioCitasList" class="veteriario-citas-list"></div>
       </section>
 
       <!-- CLIENTES -->
-      <section class="admin-section" id="sec-clientes" hidden>
-        <h2 class="admin-title">👥 Clientes Registrados</h2>
-        <div class="admin-search-wrap">
+      <section class="veterinario-section" id="sec-clientes" hidden>
+        <h2 class="veterinario-title">👥 Clientes Registrados</h2>
+        <div class="veterinario-search-wrap">
           <input type="search" id="clienteSearch" placeholder="🔍 Buscar cliente..." aria-label="Buscar cliente"/>
         </div>
         <div id="clientesList" class="clientes-grid"></div>

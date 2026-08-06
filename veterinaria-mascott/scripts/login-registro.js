@@ -7,11 +7,11 @@
 
 // ===== DOCTORES POR DEFECTO (se crean si no existen) =====
 const DOCTORES_DEFAULT = [
-  { id:'doc1', nombre:'Dr. Andrés García',    especialidad:'Medicina General',   email:'andres@mascott.com', tel:'555-0001', exp:'8 años',  horario:'Lun-Vie 8am-4pm',  foto:'', bio:'Médico veterinario con especialidad en pequeñas especies. Apasionado por la medicina preventiva.', clinica:'Clínica Mascott', licencia:'CEDVET-001' },
-  { id:'doc2', nombre:'Dra. Laura Martínez',  especialidad:'Cirugía Veterinaria', email:'laura@mascott.com',  tel:'555-0002', exp:'12 años', horario:'Lun-Sáb 9am-5pm', foto:'', bio:'Especialista en cirugía ortopédica y tejidos blandos. Más de 500 cirugías exitosas.',           clinica:'Clínica Mascott', licencia:'CEDVET-002' },
-  { id:'doc3', nombre:'Dr. Carlos Pérez',     especialidad:'Dermatología',        email:'carlos@mascott.com', tel:'555-0003', exp:'6 años',  horario:'Mar-Sáb 10am-6pm', foto:'', bio:'Experto en enfermedades de piel y alergias en mascotas. Certificado en dermatología veterinaria.', clinica:'Clínica Mascott', licencia:'CEDVET-003' },
-  { id:'doc4', nombre:'Dra. Sofia Ramírez',   especialidad:'Nutrición Animal',    email:'sofia@mascott.com',  tel:'555-0004', exp:'5 años',  horario:'Lun-Vie 9am-3pm',  foto:'', bio:'Nutricionista veterinaria. Diseña planes alimenticios personalizados para cada paciente.',        clinica:'Clínica Mascott', licencia:'CEDVET-004' },
-  { id:'doc5', nombre:'Dr. Miguel Torres',    especialidad:'Urgencias 24h',       email:'miguel@mascott.com', tel:'555-0005', exp:'10 años', horario:'24/7 Urgencias',    foto:'', bio:'Especialista en medicina de urgencias. Disponible para emergencias veterinarias a cualquier hora.', clinica:'Clínica Mascott', licencia:'CEDVET-005' },
+  { id:'doc1', nombre:'Dr. Andrés García',    especialidad:'Medicina General',    email:'andres@mascott.com', tel:'555-0001', exp:'8 años',  horario:'Lun-Vie 8am-4pm',  foto:'', bio:'Médico veterinario con especialidad en pequeñas especies.', clinica:'Clínica Mascott', licencia:'CEDVET-001', password:'doctor1' },
+  { id:'doc2', nombre:'Dra. Laura Martínez',  especialidad:'Cirugía Veterinaria', email:'laura@mascott.com',  tel:'555-0002', exp:'12 años', horario:'Lun-Sáb 9am-5pm',  foto:'', bio:'Especialista en cirugía ortopédica y tejidos blandos.',    clinica:'Clínica Mascott', licencia:'CEDVET-002', password:'doctor2' },
+  { id:'doc3', nombre:'Dr. Carlos Pérez',     especialidad:'Dermatología',        email:'carlos@mascott.com', tel:'555-0003', exp:'6 años',  horario:'Mar-Sáb 10am-6pm', foto:'', bio:'Experto en enfermedades de piel y alergias en mascotas.',   clinica:'Clínica Mascott', licencia:'CEDVET-003', password:'doctor3' },
+  { id:'doc4', nombre:'Dra. Sofia Ramírez',   especialidad:'Nutrición Animal',    email:'sofia@mascott.com',  tel:'555-0004', exp:'5 años',  horario:'Lun-Vie 9am-3pm',   foto:'', bio:'Nutricionista veterinaria con planes personalizados.',       clinica:'Clínica Mascott', licencia:'CEDVET-004', password:'doctor4' },
+  { id:'doc5', nombre:'Dr. Miguel Torres',    especialidad:'Urgencias 24h',       email:'miguel@mascott.com', tel:'555-0005', exp:'10 años', horario:'24/7 Urgencias',    foto:'', bio:'Especialista en medicina de urgencias disponible 24/7.',    clinica:'Clínica Mascott', licencia:'CEDVET-005', password:'doctor5' },
 ];
 
 // Cargar doctores en Firebase si no existen
@@ -85,10 +85,12 @@ async function cargarDoctoresEnGrid() {
         </div>
       </button>
     `).join('');
+
+    // Al hacer clic mostrar form de contraseña
     grid.querySelectorAll('.doctor-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const doc = docs.find(d => d.id === btn.dataset.id);
-        if (doc) entrarComoDoctor(doc);
+        if (doc) mostrarPassDoctor(doc);
       });
     });
   } catch(e) {
@@ -96,11 +98,91 @@ async function cargarDoctoresEnGrid() {
   }
 }
 
-function entrarComoDoctor(doctor) {
-  setDoctorSession(doctor);
-  const msg = document.getElementById('doctor-msg');
-  if (msg) { msg.className = 'form-msg success'; msg.textContent = `✅ Bienvenido/a ${doctor.nombre}`; }
-  setTimeout(() => window.location.href = '../paginas/panel-doctor.html', 600);
+// ===== PEDIR CONTRASEÑA AL DOCTOR SELECCIONADO =====
+let _docSeleccionado = null;
+
+function mostrarPassDoctor(doc) {
+  _docSeleccionado = doc;
+  const grid = document.getElementById('doctorGrid');
+
+  grid.innerHTML = `
+    <div style="grid-column:1/-1;animation:fadeSlide .3s ease">
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;
+                  padding:.75rem 1rem;background:#f0f7f0;border-radius:12px;
+                  border:2px solid #c8e6c9">
+        <div class="doc-avatar" style="background:linear-gradient(135deg,#66bb6a,#2e7d32)">
+          ${doc.nombre.charAt(0)}
+        </div>
+        <div>
+          <p style="font-weight:700;color:#1b5e20;font-size:.9rem">${doc.nombre}</p>
+          <span style="font-size:.75rem;color:#546e7a">${doc.especialidad}</span>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:.75rem">
+        <label style="font-size:.85rem;font-weight:600;color:#1b5e20">Contraseña</label>
+        <div class="pass-wrap" style="margin-top:.35rem">
+          <input type="password" id="docPassInput" placeholder="••••••••"
+            autocomplete="current-password"
+            style="width:100%;padding:.75rem 3rem .75rem 1rem;border:2px solid #c8e6c9;
+                   border-radius:12px;font-size:.95rem;color:#1a1a2e;background:#fff;
+                   transition:border-color .2s"/>
+          <button type="button" class="toggle-pass" data-target="docPassInput"
+            style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);
+                   background:none;border:none;cursor:pointer;font-size:1rem;color:#546e7a">👁</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:.6rem">
+        <button id="btnConfirmDocPass" class="btn-auth"
+          style="flex:1;background:linear-gradient(135deg,#1b5e20,#2e7d32)">
+          <span>🩺</span> Entrar
+        </button>
+        <button id="btnVolverDoctores" class="btn-auth"
+          style="background:#546e7a;flex:0 0 auto;padding:.7rem 1rem">
+          ← Volver
+        </button>
+      </div>
+      <div class="form-msg" id="docPassMsg" role="status" aria-live="polite" style="margin-top:.5rem"></div>
+    </div>`;
+
+  // Toggle contraseña
+  const toggleBtn = grid.querySelector('.toggle-pass');
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', function() {
+      const inp = document.getElementById('docPassInput');
+      const show = inp.type === 'password';
+      inp.type = show ? 'text' : 'password';
+      this.textContent = show ? '🙈' : '👁';
+    });
+  }
+
+  // Enter para confirmar
+  const passInput = document.getElementById('docPassInput');
+  if (passInput) {
+    passInput.focus();
+    passInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') verificarPassDoctor();
+    });
+  }
+
+  document.getElementById('btnConfirmDocPass').addEventListener('click', verificarPassDoctor);
+  document.getElementById('btnVolverDoctores').addEventListener('click', () => cargarDoctoresEnGrid());
+}
+
+async function verificarPassDoctor() {
+  const pass = document.getElementById('docPassInput')?.value || '';
+  const msg  = document.getElementById('docPassMsg');
+  if (!pass) {
+    msg.className = 'form-msg error'; msg.textContent = '❌ Ingresa tu contraseña.'; return;
+  }
+  if (pass === _docSeleccionado.password) {
+    msg.className = 'form-msg success'; msg.textContent = `✅ Bienvenido/a ${_docSeleccionado.nombre}`;
+    setDoctorSession(_docSeleccionado);
+    setTimeout(() => window.location.href = '../paginas/panel-doctor.html', 700);
+  } else {
+    msg.className = 'form-msg error'; msg.textContent = '❌ Contraseña incorrecta.';
+    const inp = document.getElementById('docPassInput');
+    if (inp) { inp.style.borderColor = '#e53935'; inp.value = ''; inp.focus(); }
+  }
 }
 
 // ===== TABS LOGIN/REGISTRO =====
