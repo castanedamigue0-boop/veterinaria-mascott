@@ -125,10 +125,11 @@ function estaLogueado() {
 }
 
 function abrirCitaOLogin() {
+  // Si hay sesión de cliente → ir al calendario
   if (estaLogueado()) {
-    // Redirigir al dashboard sección citas donde se guarda en Firebase
-    window.location.href = 'panel-usuario.html#citas';
+    window.location.href = '../paginas/calendario.html';
   } else {
+    // Guardar redirect para después del login
     sessionStorage.setItem('macott_redirect', 'cita');
     window.location.href = '../paginas/login-registro.html';
   }

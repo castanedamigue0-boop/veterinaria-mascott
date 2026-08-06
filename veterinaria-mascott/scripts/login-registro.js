@@ -287,7 +287,11 @@ if (loginForm) {
       setSession({ nombre: user.nombre, apellido: user.apellido, email: user.email, tel: user.tel });
       msg.className = 'form-msg success';
       msg.textContent = `✅ ¡Bienvenido/a ${user.nombre}!`;
-      setTimeout(() => window.location.href = '../paginas/panel-usuario.html', 700);
+      const redirect = sessionStorage.getItem('macott_redirect');
+      sessionStorage.removeItem('macott_redirect');
+      setTimeout(() => window.location.href = redirect === 'cita'
+        ? '../paginas/calendario.html'
+        : '../paginas/panel-usuario.html', 700);
     } catch(err) {
       msg.className = 'form-msg error';
       msg.textContent = '❌ Error de conexión.';
@@ -329,7 +333,11 @@ if (registerForm) {
       setSession({ nombre, apellido, email, tel });
       msg.className = 'form-msg success';
       msg.textContent = `✅ ¡Cuenta creada! Bienvenido/a ${nombre}...`;
-      setTimeout(() => window.location.href = '../paginas/panel-usuario.html', 900);
+      const redirect = sessionStorage.getItem('macott_redirect');
+      sessionStorage.removeItem('macott_redirect');
+      setTimeout(() => window.location.href = redirect === 'cita'
+        ? '../paginas/calendario.html'
+        : '../paginas/panel-usuario.html', 900);
     } catch(err) {
       msg.className = 'form-msg error';
       msg.textContent = '❌ Error al crear cuenta.';
