@@ -2,7 +2,7 @@
   crearUsuario, obtenerUsuario, actualizarUsuario,
   setSession, getSession,
   obtenerDoctores, setDoctorSession, getDoctorSession,
-  crearDoctor
+  crearDoctor, actualizarDoctor
 } from '../scripts/base-de-datos.js';
 
 // ===== DOCTORES POR DEFECTO (se crean si no existen) =====
@@ -123,6 +123,7 @@ function mostrarPassDoctor(doc) {
         <div class="pass-wrap" style="margin-top:.35rem">
           <input type="password" id="docPassInput" placeholder="••••••••"
             autocomplete="current-password"
+            autocorrect="off" autocapitalize="off" spellcheck="false"
             style="width:100%;padding:.75rem 3rem .75rem 1rem;border:2px solid #c8e6c9;
                    border-radius:12px;font-size:.95rem;color:#1a1a2e;background:#fff;
                    transition:border-color .2s"/>
@@ -174,9 +175,19 @@ async function verificarPassDoctor() {
   if (!pass) {
     msg.className = 'form-msg error'; msg.textContent = '❌ Ingresa tu contraseña.'; return;
   }
-  if (pass === _docSeleccionado.password) {
+
+  // Obtener contraseña: primero desde Firebase, si no existe usar la del default local
+  const passCorrecta = _docSeleccionado.password
+    || (DOCTORES_DEFAULT.find(d => d.id === _docSeleccionado.id) || {}).password
+    || '';
+
+  if (pass === passCorrecta) {
+    // Si el doctor en Firebase no tenía password, actualizarlo
+    if (!_docSeleccionado.password) {
+      try { await actualizarDoctor(_docSeleccionado.id, { password: passCorrecta }); } catch(e) {}
+    }
     msg.className = 'form-msg success'; msg.textContent = `✅ Bienvenido/a ${_docSeleccionado.nombre}`;
-    setDoctorSession(_docSeleccionado);
+    setDoctorSession({ ..._docSeleccionado, password: passCorrecta });
     setTimeout(() => window.location.href = '../paginas/panel-doctor.html', 700);
   } else {
     msg.className = 'form-msg error'; msg.textContent = '❌ Contraseña incorrecta.';
