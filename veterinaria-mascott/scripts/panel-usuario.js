@@ -321,46 +321,18 @@ async function renderCitas() {
 
   _renderCitasList();
 
-  document.getElementById('btnAbrirCita').onclick = function() {
-    var wrap = document.getElementById('citaFormWrap');
-    var open = wrap.style.display === 'none';
-    wrap.style.display = open ? 'block' : 'none';
-    if (open) {
-      var manana = new Date(); manana.setDate(manana.getDate() + 1);
-      document.getElementById('nc-fecha').min = manana.toISOString().split('T')[0];
-    }
-  };
+  // btnAbrirCita ahora es un <a> que va al calendario — no necesita JS
+  var btnCancelarCita = document.getElementById('btnCancelarCita');
+  if (btnCancelarCita) {
+    btnCancelarCita.onclick = function() {
+      var wrap = document.getElementById('citaFormWrap');
+      if (wrap) wrap.style.display = 'none';
+    };
+  }
 
-  // Bloquear horas ocupadas al seleccionar fecha
-  document.getElementById('nc-fecha').addEventListener('change', async function() {
-    var fechaVal = this.value;
-    var horaSelect = document.getElementById('nc-hora');
-    Array.from(horaSelect.options).forEach(function(opt) {
-      opt.disabled = false;
-      opt.textContent = opt.textContent.replace(' (ocupado)', '');
-    });
-    if (!fechaVal) return;
-    try {
-      var todosUsuarios = await obtenerTodosUsuarios();
-      var horasOcupadas = [];
-      todosUsuarios.forEach(function(u) {
-        (u.citas || []).forEach(function(c) {
-          if (c.fecha === fechaVal && c.estado !== 'cancelada') {
-            horasOcupadas.push(c.hora);
-          }
-        });
-      });
-      Array.from(horaSelect.options).forEach(function(opt) {
-        if (opt.value && horasOcupadas.includes(opt.value)) {
-          opt.disabled = true;
-          opt.textContent = opt.value + ' (ocupado)';
-        }
-      });
-    } catch(e) { console.log('Error cargando horas:', e); }
-  });
-  document.getElementById('btnCancelarCita').onclick = function() {
-    document.getElementById('citaFormWrap').style.display = 'none';
-  };
+  // Bloquear horas ocupadas al seleccionar fecha (solo si existe el input)
+  var ncFecha = document.getElementById('nc-fecha');
+  if (!ncFecha) return;
 }
 
 function _renderCitasList() {
@@ -398,34 +370,8 @@ function _renderCitasList() {
 
 // poblarSelectMascotas eliminado — campo es input de texto libre
 
-document.getElementById('formNuevaCita').addEventListener('submit', function(e) {
-  e.preventDefault();
-  var mascota  = document.getElementById('nc-mascota');
-  var servicio = document.getElementById('nc-servicio');
-  var fecha    = document.getElementById('nc-fecha');
-  var hora     = document.getElementById('nc-hora');
-  var notas    = document.getElementById('nc-notas').value.trim();
-  var msg      = document.getElementById('cita-msg');
-  var valid = true;
-  valid = vld(mascota,  'nce-mascota',  'Selecciona una mascota.')  && valid;
-  valid = vld(servicio, 'nce-servicio', 'Selecciona un servicio.')  && valid;
-  valid = vld(fecha,    'nce-fecha',    'Selecciona una fecha.')    && valid;
-  valid = vld(hora,     'nce-hora',     'Selecciona un horario.')   && valid;
-  if (!valid) return;
-  userData.citas.push({ id: Date.now().toString(), mascota: mascota.value, servicio: servicio.value, fecha: fecha.value, hora: hora.value, notas: notas, estado: 'pendiente' });
-  msg.className = 'form-msg success'; msg.textContent = '⏳ Guardando cita...';
-  guardarUsuario().then(function() {
-    msg.textContent = '✅ Cita agendada!';
-    setTimeout(function() {
-      document.getElementById('citaFormWrap').style.display = 'none';
-      e.target.reset(); msg.textContent = ''; msg.className = 'form-msg';
-      renderCitas(); renderInicio();
-    }, 1200);
-  }).catch(function() {
-    msg.className = 'form-msg error';
-    msg.textContent = '❌ Error al guardar. Intenta de nuevo.';
-  });
-});
+// formNuevaCita eliminado — el calendario maneja el agendado de citas
+
 
 // ===== MASCOTAS =====
 var _mascotaHistorialId = null;
