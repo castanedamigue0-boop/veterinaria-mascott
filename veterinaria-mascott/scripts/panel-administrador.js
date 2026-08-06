@@ -659,6 +659,12 @@ function renderDoctoresGrid(fecha) {
   var grid = document.getElementById('doctoresAdminGrid');
   if (!grid) return;
 
+  grid.innerHTML = '<p class="empty-msg" style="text-align:center;padding:2rem">🔄 Cargando...</p>';
+
+  // Recargar datos frescos de Firebase siempre
+  cargarDatosFirebase().then(function() {
+    cargarDoctores().then(function() {
+
   var docs  = getDoctores();
   var users = getUsers();
 
@@ -738,4 +744,7 @@ function renderDoctoresGrid(fecha) {
       '</div>' +
     '</div>';
   }).join('');
+
+    }); // fin cargarDoctores
+  }); // fin cargarDatosFirebase
 }
