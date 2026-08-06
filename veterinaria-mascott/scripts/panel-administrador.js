@@ -673,7 +673,7 @@ function renderDoctoresGrid(fecha) {
 
   users.forEach(function(u) {
     (u.citas || []).forEach(function(c) {
-      if (c.fecha === fecha && c.estado !== 'cancelada' && c.doctorId) {
+      if (c.fecha === fecha && c.estado !== 'cancelada' && c.estado !== 'completada' && c.doctorId) {
         if (citasPorDoctor[c.doctorId]) {
           citasPorDoctor[c.doctorId].push({
             mascota:  c.mascota,

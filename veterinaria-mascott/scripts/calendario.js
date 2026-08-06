@@ -40,7 +40,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Pre-calcular horas ocupadas de todo el mes
   precalcularMes(anioActual, mesActual);
   renderCalendario();
-
   // Navegación mes
   document.getElementById('btnMesAnterior').addEventListener('click', () => {
     mesActual--;
@@ -88,7 +87,11 @@ function horasOcupadasEnFecha(fecha) {
   const ocupadas = [];
   todosUsuarios.forEach(u => {
     (u.citas || []).forEach(c => {
-      if (c.fecha === fecha && c.estado !== 'cancelada') ocupadas.push(c.hora);
+      // Solo bloquear horas de citas pendientes o confirmadas
+      // cancelada y completada liberan la hora
+      if (c.fecha === fecha && c.estado !== 'cancelada' && c.estado !== 'completada') {
+        ocupadas.push(c.hora);
+      }
     });
   });
   return ocupadas;
@@ -161,8 +164,16 @@ function renderCalendario() {
 }
 
 // ===== SELECCIONAR FECHA =====
-function seleccionarFecha(fecha) {
+async function seleccionarFecha(fecha) {
   fechaSel = fecha;
+
+  // Recargar datos frescos de Firebase al seleccionar fecha
+  try {
+    todosUsuarios = await obtenerTodosUsuarios();
+    // Actualizar cache del mes con datos frescos
+    precalcularMes(anioActual, mesActual);
+  } catch(e) { console.warn('Error recargando datos:', e); }
+
   renderCalendario(); // actualiza clase seleccionado
   irPaso(2);
   renderPaso2(fecha);
