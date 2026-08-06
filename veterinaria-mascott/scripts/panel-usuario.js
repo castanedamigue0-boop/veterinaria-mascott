@@ -286,12 +286,10 @@ function renderInicio() {
   var proxWrap = document.getElementById('proximaCita');
   if (pendientes.length) {
     var c = pendientes[0];
-    proxWrap.innerHTML = '<div class="cita-item"><div class="cita-info"><h4>' + c.servicio + '</h4><p>Mascota: ' + c.mascota + ' | ' + c.fecha + ' ' + c.hora + '</p></div><span class="cita-badge badge-pendiente">Pendiente</span></div><button class="btn-dash" id="btnNuevaCita" style="margin-top:.75rem">+ Agendar otra</button>';
+    proxWrap.innerHTML = '<div class="cita-item"><div class="cita-info"><h4>' + c.servicio + '</h4><p>Mascota: ' + c.mascota + ' | ' + c.fecha + ' ' + c.hora + '</p></div><span class="cita-badge badge-pendiente">Pendiente</span></div><a href="calendario.html" class="btn-dash" style="margin-top:.75rem;display:inline-flex">📅 Agendar otra</a>';
   } else {
-    proxWrap.innerHTML = '<p class="empty-msg">No tienes citas proximas.</p><button class="btn-dash" id="btnNuevaCita">+ Agendar cita</button>';
+    proxWrap.innerHTML = '<p class="empty-msg">No tienes citas proximas.</p><a href="calendario.html" class="btn-dash" style="display:inline-flex">📅 Agendar cita</a>';
   }
-  var btnNC = document.getElementById('btnNuevaCita');
-  if (btnNC) btnNC.addEventListener('click', function() { showSection('citas'); });
 
   var mList = document.getElementById('dashMascotasList');
   mList.innerHTML = userData.mascotas.length

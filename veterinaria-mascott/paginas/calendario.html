@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agendar Cita · Clínica Veterinaria Mascott</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="icon" href="../imagenes/logo.png"/>
+  <link rel="stylesheet" href="../estilos/calendario.css"/>
+</head>
+<body>
+
+  <a href="#cal-main" class="skip-link">Saltar al contenido</a>
+
+  <!-- TOPBAR -->
+  <header class="cal-topbar">
+    <a href="panel-usuario.html" class="cal-back">← Volver al panel</a>
+    <span class="cal-topbar-title">📅 Agendar Cita</span>
+    <span id="calUserName" class="cal-user"></span>
+  </header>
+
+  <main class="cal-main" id="cal-main">
+
+    <!-- ══ PASO 1: CALENDARIO ══ -->
+    <section class="cal-step active" id="step1">
+      <div class="cal-card">
+        <h2 class="cal-step-title"><span class="step-num">1</span> Selecciona una fecha</h2>
+
+        <!-- Navegación mes -->
+        <div class="cal-nav">
+          <button class="cal-nav-btn" id="btnMesAnterior">‹</button>
+          <h3 id="calMesAnio">Agosto 2026</h3>
+          <button class="cal-nav-btn" id="btnMesSiguiente">›</button>
+        </div>
+
+        <!-- Días de la semana -->
+        <div class="cal-dias-semana">
+          <span>Dom</span><span>Lun</span><span>Mar</span>
+          <span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
+        </div>
+
+        <!-- Grid de días -->
+        <div class="cal-grid" id="calGrid"></div>
+
+        <p class="cal-leyenda">
+          <span class="leyenda-item"><span class="dot disponible"></span> Disponible</span>
+          <span class="leyenda-item"><span class="dot parcial"></span> Parcialmente ocupado</span>
+          <span class="leyenda-item"><span class="dot lleno"></span> Sin cupos</span>
+          <span class="leyenda-item"><span class="dot pasado"></span> No disponible</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ══ PASO 2: HORAS ══ -->
+    <section class="cal-step" id="step2" hidden>
+      <div class="cal-card">
+        <button class="cal-back-step" id="btnVolverFecha">← Cambiar fecha</button>
+        <h2 class="cal-step-title"><span class="step-num">2</span> Selecciona un horario</h2>
+        <p class="cal-fecha-sel" id="calFechaSel">—</p>
+
+        <!-- Estado doctores -->
+        <div class="doctores-wrap">
+          <h4>🩺 Disponibilidad de doctores</h4>
+          <div class="doctores-grid" id="doctoresGrid">
+            <!-- se rellena con JS -->
+          </div>
+        </div>
+
+        <!-- Grid de horas -->
+        <h4 style="margin-bottom:.75rem;color:#0d47a1">Horarios disponibles</h4>
+        <div class="horas-grid" id="horasGrid"></div>
+      </div>
+    </section>
+
+    <!-- ══ PASO 3: FORMULARIO ══ -->
+    <section class="cal-step" id="step3" hidden>
+      <div class="cal-card">
+        <button class="cal-back-step" id="btnVolverHora">← Cambiar hora</button>
+        <h2 class="cal-step-title"><span class="step-num">3</span> Completa tu cita</h2>
+
+        <div class="resumen-cita" id="resumenCita">
+          <!-- se rellena con JS -->
+        </div>
+
+        <form id="formCita" novalidate>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="c-mascota">Mascota *</label>
+              <input type="text" id="c-mascota" placeholder="Ej. Firulais" required autocomplete="off"/>
+              <span class="field-error" id="e-mascota"></span>
+            </div>
+            <div class="form-group">
+              <label for="c-servicio">Servicio *</label>
+              <select id="c-servicio" required>
+                <option value="">Selecciona</option>
+                <optgroup label="🩺 Consultas">
+                  <option>🩺 Consulta General</option>
+                  <option>🔬 Consulta Especializada</option>
+                </optgroup>
+                <optgroup label="💉 Prevención">
+                  <option>💉 Vacunación</option>
+                  <option>🪱 Desparasitación</option>
+                </optgroup>
+                <optgroup label="✂️ Estética">
+                  <option>✂️ Estética Canina</option>
+                  <option>🛁 Baño y Secado</option>
+                </optgroup>
+                <optgroup label="🔬 Diagnóstico">
+                  <option>🩻 Radiografía</option>
+                  <option>📡 Ecografía</option>
+                  <option>🧪 Análisis de Laboratorio</option>
+                </optgroup>
+                <optgroup label="🏥 Cirugías">
+                  <option>✂️ Esterilización / Castración</option>
+                  <option>🏥 Cirugía General</option>
+                  <option>🦴 Cirugía Ortopédica</option>
+                  <option>🦷 Cirugía Dental</option>
+                </optgroup>
+                <optgroup label="🚑 Urgencias">
+                  <option>🚨 Urgencia / Emergencia</option>
+                  <option>🏨 Hospitalización</option>
+                </optgroup>
+                <option>📋 Otro</option>
+              </select>
+              <span class="field-error" id="e-servicio"></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="c-notas">Notas adicionales (opcional)</label>
+            <input type="text" id="c-notas" placeholder="Ej. Traer cartilla de vacunación"/>
+          </div>
+
+          <button type="submit" class="btn-confirmar">
+            <span>✅</span> Confirmar cita
+          </button>
+          <div class="form-msg" id="cita-msg" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ══ PASO 4: ÉXITO ══ -->
+    <section class="cal-step" id="step4" hidden>
+      <div class="cal-card cal-success">
+        <div class="success-icon">🎉</div>
+        <h2>¡Cita agendada!</h2>
+        <p id="successMsg">Tu cita fue registrada exitosamente.</p>
+        <div class="success-detalle" id="successDetalle"></div>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-top:1.5rem">
+          <button class="btn-confirmar" id="btnNuevaCita">+ Agendar otra cita</button>
+          <a href="panel-usuario.html" class="btn-volver-panel">← Ir a mi panel</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script type="module" src="../scripts/calendario.js"></script>
+</body>
+</html>

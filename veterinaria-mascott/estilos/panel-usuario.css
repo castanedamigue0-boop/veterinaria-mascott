@@ -1387,3 +1387,16 @@ body {
   background: rgba(255,255,255,.1);
   color: #fff;
 }
+
+/* ===== BANNER CALENDARIO ===== */
+.cal-banner{background:linear-gradient(135deg,#0d47a1,#1976d2);border-radius:20px;
+  padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;
+  gap:1.5rem;flex-wrap:wrap;margin-top:1.5rem;box-shadow:0 8px 28px rgba(13,71,161,.25)}
+.cal-banner-content{display:flex;align-items:center;gap:1.25rem;flex:1}
+.cal-banner-icon{font-size:3rem;animation:calFloat 2.5s ease-in-out infinite;flex-shrink:0}
+@keyframes calFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.cal-banner-content h3{color:#fff;font-size:1.05rem;font-weight:800;margin-bottom:.25rem}
+.cal-banner-content p{color:rgba(255,255,255,.75);font-size:.85rem}
+.cal-banner .btn-dash{background:rgba(255,255,255,.2);backdrop-filter:blur(4px);
+  border:2px solid rgba(255,255,255,.4);flex-shrink:0}
+.cal-banner .btn-dash:hover{background:rgba(255,255,255,.35)}
