@@ -224,7 +224,7 @@ function renderDoctores(fecha, horasOcupadas) {
   const doctoresOcupados = new Set();
   todosUsuarios.forEach(u => {
     (u.citas || []).forEach(c => {
-      if (c.fecha === fecha && c.estado !== 'cancelada' && c.doctorId) {
+      if (c.fecha === fecha && c.estado !== 'cancelada' && c.estado !== 'completada' && c.doctorId) {
         doctoresOcupados.add(c.doctorId);
       }
     });
