@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel Doctor · Clínica Veterinaria Mascott</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="icon" href="../imagenes/logo.png"/>
+  <link rel="stylesheet" href="../estilos/panel-doctor.css"/>
+</head>
+<body>
+
+  <a href="#doc-main" class="skip-link">Saltar al contenido</a>
+
+  <!-- SIDEBAR -->
+  <aside class="doc-sidebar" id="docSidebar">
+    <div class="doc-sidebar-header">
+      <a href="inicio.html" class="doc-logo">🐾 <span>Mascott</span></a>
+    </div>
+
+    <!-- Perfil doctor -->
+    <div class="doc-perfil-mini" id="docPerfilMini">
+      <div class="doc-avatar-wrap">
+        <div class="doc-avatar" id="docAvatarSidebar">DR</div>
+        <span class="doc-status-dot"></span>
+      </div>
+      <div class="doc-perfil-info">
+        <p class="doc-perfil-nombre" id="docNombreSidebar">Dr. Cargando...</p>
+        <p class="doc-perfil-esp" id="docEspSidebar">Especialidad</p>
+      </div>
+    </div>
+
+    <nav>
+      <ul class="doc-links" role="list">
+        <li><button class="doc-link active" data-section="inicio"><span>🏠</span> Inicio</button></li>
+        <li><button class="doc-link" data-section="citas"><span>📅</span> Mis Citas</button></li>
+        <li><button class="doc-link" data-section="pacientes"><span>🐾</span> Pacientes</button></li>
+        <li><button class="doc-link" data-section="perfil"><span>👤</span> Mi Perfil</button></li>
+      </ul>
+    </nav>
+
+    <div class="doc-sidebar-footer">
+      <a href="inicio.html" class="doc-back-btn"><span>🌐</span> Ver sitio</a>
+      <button class="doc-logout" id="btnDocLogout"><span>🚪</span> Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- TOPBAR MÓVIL -->
+  <header class="doc-topbar">
+    <button class="doc-menu-btn" id="docMenuBtn">☰</button>
+    <span>🩺 Panel Doctor</span>
+    <button class="doc-logout-top" id="btnDocLogoutTop">🚪</button>
+  </header>
+
+  <div class="doc-overlay" id="docOverlay"></div>
+
+  <!-- MAIN -->
+  <main class="doc-main" id="doc-main">
+
+    <!-- ══ INICIO ══ -->
+    <section class="doc-section active" id="sec-inicio">
+      <div class="doc-welcome reveal">
+        <div>
+          <p class="doc-welcome-sub">Bienvenido/a,</p>
+          <h1 id="docBienvenidaNombre">Dr. ...</h1>
+          <p class="doc-welcome-desc">Aquí tienes el resumen de tu jornada</p>
+        </div>
+        <div class="doc-welcome-emoji">🩺</div>
+      </div>
+
+      <!-- Stats -->
+      <div class="doc-stats reveal">
+        <div class="doc-stat">
+          <div class="doc-stat-icon">📅</div>
+          <div><span class="doc-stat-num" id="statTotalCitas">0</span><p>Citas hoy</p></div>
+        </div>
+        <div class="doc-stat">
+          <div class="doc-stat-icon">⏳</div>
+          <div><span class="doc-stat-num" id="statPendientes">0</span><p>Pendientes</p></div>
+        </div>
+        <div class="doc-stat">
+          <div class="doc-stat-icon">✅</div>
+          <div><span class="doc-stat-num" id="statAtendidas">0</span><p>Atendidas</p></div>
+        </div>
+        <div class="doc-stat">
+          <div class="doc-stat-icon">🐾</div>
+          <div><span class="doc-stat-num" id="statPacientes">0</span><p>Pacientes</p></div>
+        </div>
+      </div>
+
+      <!-- Próximas citas -->
+      <div class="doc-card reveal">
+        <h3>📋 Próximas citas asignadas</h3>
+        <div id="proxCitasList" class="citas-list"></div>
+      </div>
+    </section>
+
+    <!-- ══ CITAS ══ -->
+    <section class="doc-section" id="sec-citas" hidden>
+      <div class="section-header reveal">
+        <h2>📅 Mis Citas</h2>
+        <div class="filtros-cita">
+          <button class="filtro-btn active" data-filt="todas">Todas</button>
+          <button class="filtro-btn" data-filt="pendiente">⏳ Pendientes</button>
+          <button class="filtro-btn" data-filt="confirmada">✅ Confirmadas</button>
+          <button class="filtro-btn" data-filt="completada">🎉 Completadas</button>
+        </div>
+      </div>
+      <div id="docCitasList" class="citas-list reveal"></div>
+    </section>
+
+    <!-- ══ PACIENTES ══ -->
+    <section class="doc-section" id="sec-pacientes" hidden>
+      <div class="section-header reveal">
+        <h2>🐾 Mis Pacientes</h2>
+      </div>
+      <div id="docPacientesList" class="pacientes-grid reveal"></div>
+    </section>
+
+    <!-- ══ PERFIL ══ -->
+    <section class="doc-section" id="sec-perfil" hidden>
+      <div class="section-header reveal"><h2>👤 Mi Perfil</h2></div>
+
+      <div class="doc-perfil-card reveal">
+        <!-- Foto perfil -->
+        <div class="doc-perfil-foto-wrap">
+          <div class="doc-perfil-foto" id="docFotoGrande">DR</div>
+          <label class="doc-foto-btn" for="inputFotoDoc">📷 Cambiar foto</label>
+          <input type="file" id="inputFotoDoc" accept="image/*" style="display:none"/>
+          <span class="doc-status-badge">🟢 Disponible</span>
+        </div>
+
+        <div class="doc-perfil-datos">
+          <div class="doc-perfil-nombre-grande" id="docNombreGrande">Dr. Nombre Apellido</div>
+          <div class="doc-perfil-esp-grande" id="docEspGrande">Especialidad</div>
+
+          <div class="doc-info-grid">
+            <div class="doc-info-item"><span>📧</span><p id="docEmailPerfil">email@mascott.com</p></div>
+            <div class="doc-info-item"><span>📞</span><p id="docTelPerfil">Sin teléfono</p></div>
+            <div class="doc-info-item"><span>🏥</span><p id="docClinicaPerfil">Clínica Mascott</p></div>
+            <div class="doc-info-item"><span>🎓</span><p id="docLicPerfil">Cédula profesional</p></div>
+            <div class="doc-info-item"><span>⭐</span><p id="docExpPerfil">Años de experiencia</p></div>
+            <div class="doc-info-item"><span>🕐</span><p id="docHorarioPerfil">Lun-Vie 9am-6pm</p></div>
+          </div>
+
+          <div class="doc-bio" id="docBioPerfil">Sin biografía.</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script type="module" src="../scripts/panel-doctor.js"></script>
+</body>
+</html>

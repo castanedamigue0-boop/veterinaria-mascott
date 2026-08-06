@@ -41,7 +41,26 @@ export async function agregarNotificacion(email, msg) {
   await setDoc(doc(db, 'usuarios', email), { notificaciones: notifs }, { merge: true });
 }
 
+// ===== DOCTORES =====
+export async function obtenerDoctores() {
+  const snap = await getDocs(collection(db, 'doctores'));
+  return snap.docs.map(d => d.data());
+}
+export async function obtenerDoctor(id) {
+  const snap = await getDoc(doc(db, 'doctores', id));
+  return snap.exists() ? snap.data() : null;
+}
+export async function actualizarDoctor(id, data) {
+  await setDoc(doc(db, 'doctores', id), data, { merge: true });
+}
+export async function crearDoctor(data) {
+  await setDoc(doc(db, 'doctores', data.id), data);
+}
+
 // ===== SESION LOCAL =====
 export function setSession(user) { localStorage.setItem('macott_session', JSON.stringify(user)); }
 export function getSession()     { return JSON.parse(localStorage.getItem('macott_session') || 'null'); }
 export function clearSession()   { localStorage.removeItem('macott_session'); }
+export function setDoctorSession(doc) { localStorage.setItem('macott_doctor', JSON.stringify(doc)); }
+export function getDoctorSession()    { return JSON.parse(localStorage.getItem('macott_doctor') || 'null'); }
+export function clearDoctorSession()  { localStorage.removeItem('macott_doctor'); }

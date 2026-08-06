@@ -5,20 +5,38 @@ var EMAILJS_TEMPLATE = 'template_1ibh7nj';
 function enviarCorreo(params) {
   if (typeof emailjs === 'undefined') return;
   emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, params)
-    .then(function() {
-      console.log('✅ Correo enviado a ' + params.email);
-    })
-    .catch(function(err) {
-      console.warn('⚠️ Error enviando correo:', err);
-    });
+    .then(function() { console.log('✅ Correo enviado a ' + params.email); })
+    .catch(function(err) { console.warn('⚠️ Error enviando correo:', err); });
 }
 
-// ===== CREDENCIALES =====
+// ===== FIREBASE =====
+import { obtenerTodosUsuarios, actualizarUsuario, agregarNotificacion, obtenerDoctores, crearDoctor, actualizarDoctor } from '../scripts/base-de-datos.js';
+
+// ===== DOCTORES POR DEFECTO =====
+const DOCTORES_DEFAULT = [
+  { id:'doc1', nombre:'Dr. Andrés García',   especialidad:'Medicina General',    foto:'' },
+  { id:'doc2', nombre:'Dra. Laura Martínez', especialidad:'Cirugía Veterinaria', foto:'' },
+  { id:'doc3', nombre:'Dr. Carlos Pérez',    especialidad:'Dermatología',        foto:'' },
+  { id:'doc4', nombre:'Dra. Sofia Ramírez',  especialidad:'Nutrición Animal',    foto:'' },
+  { id:'doc5', nombre:'Dr. Miguel Torres',   especialidad:'Urgencias 24h',       foto:'' },
+];
+
+async function cargarDoctores() {
+  try {
+    var docs = await obtenerDoctores();
+    if (!docs.length) {
+      for (var d of DOCTORES_DEFAULT) await crearDoctor(d);
+      docs = await obtenerDoctores();
+    }
+    window._fbDoctores = docs;
+  } catch(e) { window._fbDoctores = DOCTORES_DEFAULT; }
+}
+
+function getDoctores() { return window._fbDoctores || DOCTORES_DEFAULT; }
 var ADMIN_USER = 'admin';
 var ADMIN_PASS = 'mascott2026';
 
-// ===== FIREBASE =====
-import { obtenerTodosUsuarios, actualizarUsuario, agregarNotificacion } from '../scripts/base-de-datos.js';
+// ===== CREDENCIALES =====
 
 async function cargarDatosFirebase() {
   try {
@@ -76,8 +94,10 @@ function mostrarPanel() {
   loginWrap.style.display  = 'none';
   adminPanel.style.display = 'flex';
   cargarDatosFirebase().then(() => {
-    initNav();
-    renderDashboard();
+    cargarDoctores().then(() => {
+      initNav();
+      renderDashboard();
+    });
   });
 }
 
@@ -154,25 +174,26 @@ function todasLasCitas() {
   return result;
 }
 
-function cambiarEstado(userEmail, citaId, nuevoEstado) {
+function cambiarEstado(userEmail, citaId, nuevoEstado, docId) {
   var users = getUsers();
   var user  = users.find(function(u) { return u.email === userEmail; });
   if (!user) return;
-
-  var citaData = null;
   (user.citas || []).forEach(function(c) {
     if (c.id !== citaId) return;
     c.estado = nuevoEstado;
-    citaData = c;
-
-    // Notificación en Firebase
-    var emoji = nuevoEstado === 'confirmada' ? '✅' : '❌';
+    if (docId) {
+      c.doctorId = docId;
+      var docObj = getDoctores().find(function(d) { return d.id === docId; });
+      c.doctorNombre = docObj ? docObj.nombre : '';
+    }
+    var emoji  = nuevoEstado === 'confirmada' ? '✅' : '❌';
+    var docInfo = c.doctorNombre ? ' · Doctor: ' + c.doctorNombre : '';
     var msg = emoji + ' Tu cita de ' + c.servicio + ' para ' + c.mascota +
-      ' el ' + c.fecha + ' a las ' + c.hora +
+      ' el ' + c.fecha + ' a las ' + c.hora + docInfo +
       ' fue ' + nuevoEstado + ' por el veterinario.';
     agregarNotificacion(userEmail, msg);
 
-    // Correo por EmailJS
+    // Correo EmailJS
     enviarCorreo({
       email:    userEmail,
       nombre:   (user.nombre || '') + ' ' + (user.apellido || ''),
@@ -180,15 +201,14 @@ function cambiarEstado(userEmail, citaId, nuevoEstado) {
                   ? '✅ Tu cita fue confirmada — Veterinaria Mascott'
                   : '❌ Tu cita fue cancelada — Veterinaria Mascott',
       mensaje:  nuevoEstado === 'confirmada'
-                  ? '¡Tu cita ha sido CONFIRMADA por el veterinario! Te esperamos puntualmente.'
-                  : 'Lamentamos informarte que tu cita fue CANCELADA. Puedes reagendar cuando quieras.',
+                  ? '¡Tu cita ha sido CONFIRMADA! Te atenderá ' + (c.doctorNombre || 'nuestro equipo') + '. Te esperamos puntualmente.'
+                  : 'Tu cita fue CANCELADA. Puedes reagendar desde tu panel cuando quieras.',
       servicio: c.servicio,
       mascota:  c.mascota,
       fecha:    c.fecha,
       hora:     c.hora
     });
   });
-
   actualizarUsuario(userEmail, { citas: user.citas });
 }
 
@@ -197,7 +217,7 @@ function toast(msg) {
   if (!t) {
     t = document.createElement('div');
     t.id = 'aToast';
-    t.style.cssText = 'position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);' +
+    t.inicio.cssText = 'position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);' +
       'background:#0d47a1;color:#fff;padding:.75rem 1.5rem;border-radius:50px;font-size:.9rem;' +
       'font-weight:600;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.25);' +
       'transition:transform .3s,opacity .3s;opacity:0;white-space:nowrap;';
@@ -276,16 +296,34 @@ function renderCitas() {
 }
 
 function citaHtml(c) {
+  var docs = getDoctores();
+  var docOpts = docs.map(function(d) {
+    var sel = c.doctorId === d.id ? 'selected' : '';
+    return '<option value="' + d.id + '" ' + sel + '>' + d.nombre + ' — ' + d.especialidad + '</option>';
+  }).join('');
+
+  var docAsignado = c.doctorId
+    ? docs.find(function(d) { return d.id === c.doctorId; })
+    : null;
+  var docBadge = docAsignado
+    ? '<span style="background:#e8f5e9;color:#2e7d32;padding:.2rem .7rem;border-radius:20px;font-size:.72rem;font-weight:700">🩺 ' + docAsignado.nombre + '</span>'
+    : '<span style="background:#fff3e0;color:#e65100;padding:.2rem .7rem;border-radius:20px;font-size:.72rem;font-weight:700">⚠️ Sin doctor asignado</span>';
+
   var btns = c.estado === 'pendiente'
-    ? '<button class="btn-confirmar" data-id="' + c.id + '" data-email="' + c.userEmail + '">✅ Confirmar</button>' +
+    ? '<select class="select-doctor" data-id="' + c.id + '" data-email="' + c.userEmail + '" style="padding:.4rem .7rem;border:1.5px solid #cfd8dc;border-radius:8px;font-size:.8rem;color:#1a1a2e;background:#fff;max-width:220px">' +
+        '<option value="">— Asignar doctor —</option>' + docOpts +
+      '</select>' +
+      '<button class="btn-confirmar" data-id="' + c.id + '" data-email="' + c.userEmail + '">✅ Confirmar</button>' +
       '<button class="btn-cancelar-cita" data-id="' + c.id + '" data-email="' + c.userEmail + '">❌ Cancelar</button>'
     : '';
+
   return '<div class="cita-admin-item ' + c.estado + '">' +
     '<div class="cita-admin-info">' +
       '<h4>' + c.servicio + '</h4>' +
       '<p>🐾 ' + c.mascota + ' &nbsp;|&nbsp; 👤 ' + c.userName.trim() + '</p>' +
       '<p>📅 ' + c.fecha + ' &nbsp;·&nbsp; 🕐 ' + c.hora + '</p>' +
       (c.notas ? '<p>📝 ' + c.notas + '</p>' : '') +
+      '<div style="margin-top:.4rem">' + docBadge + '</div>' +
     '</div>' +
     '<div class="cita-admin-actions">' +
       '<span class="badge-estado badge-' + c.estado + '">' + c.estado + '</span>' +
@@ -294,16 +332,49 @@ function citaHtml(c) {
 }
 
 function bindBtns(cont) {
+  // Guardar doctor al cambiar el select
+  cont.querySelectorAll('.select-doctor').forEach(function(sel) {
+    sel.addEventListener('change', function() {
+      var citaId = sel.dataset.id;
+      var email  = sel.dataset.email;
+      var docId  = sel.value;
+      if (!docId) return;
+      var users = getUsers();
+      var user  = users.find(function(u) { return u.email === email; });
+      if (!user) return;
+      (user.citas || []).forEach(function(c) {
+        if (c.id === citaId) {
+          c.doctorId = docId;
+          var doc = getDoctores().find(function(d) { return d.id === docId; });
+          c.doctorNombre = doc ? doc.nombre : '';
+        }
+      });
+      actualizarUsuario(email, { citas: user.citas });
+      toast('🩺 Doctor asignado');
+    });
+  });
+
   cont.querySelectorAll('.btn-confirmar').forEach(function(btn) {
     btn.onclick = function() {
-      cambiarEstado(btn.dataset.email, btn.dataset.id, 'confirmada');
+      // Leer doctor del select en la misma tarjeta
+      var card   = btn.closest('.cita-admin-item');
+      var sel    = card ? card.querySelector('.select-doctor') : null;
+      var docId  = sel ? sel.value : '';
+      if (!docId) {
+        toast('⚠️ Asigna un doctor antes de confirmar');
+        if (sel) sel.style.borderColor = '#e53935';
+        return;
+      }
+      if (sel) sel.style.borderColor = '#cfd8dc';
+      cambiarEstado(btn.dataset.email, btn.dataset.id, 'confirmada', docId);
       renderCitas(); renderDashboard();
       toast('✅ Cita confirmada — notificación enviada');
     };
   });
+
   cont.querySelectorAll('.btn-cancelar-cita').forEach(function(btn) {
     btn.onclick = function() {
-      cambiarEstado(btn.dataset.email, btn.dataset.id, 'cancelada');
+      cambiarEstado(btn.dataset.email, btn.dataset.id, 'cancelada', '');
       renderCitas(); renderDashboard();
       toast('❌ Cita cancelada — notificación enviada');
     };
