@@ -247,9 +247,6 @@
       <button class="btn-login" id="btnLogin" aria-haspopup="dialog">
         <span aria-hidden="true">👤</span> Iniciar Sesión
       </button>
-      <button class="btn-admin" id="btnAdmin" aria-haspopup="dialog">
-        <span aria-hidden="true">🔐</span> Admin
-      </button>
     </div>
   </aside>
 
@@ -648,39 +645,6 @@
     </div>
   </div>
 
-  <!-- MODAL ADMIN -->
-  <div class="modal-overlay" id="modalAdmin" role="dialog" aria-modal="true"
-    aria-labelledby="admin-title" aria-hidden="true">
-    <div class="modal modal-admin">
-      <button class="modal-close" id="adminClose" aria-label="Cerrar modal admin">✕</button>
-      <div class="modal-header modal-header-admin">
-        <span aria-hidden="true">🔐</span>
-        <h2 id="admin-title">Panel Administrador</h2>
-        <p>Acceso exclusivo para personal Mascott</p>
-      </div>
-      <form class="modal-form" id="adminForm" novalidate aria-label="Formulario de acceso administrador">
-        <div class="form-group">
-          <label for="admin-user">Usuario</label>
-          <input type="text" id="admin-user" placeholder="admin" required aria-required="true" autocomplete="username" />
-        </div>
-        <div class="form-group">
-          <label for="admin-pass">Contraseña</label>
-          <div class="pass-wrap">
-            <input type="password" id="admin-pass" placeholder="••••••••"
-              required aria-required="true" autocomplete="current-password" />
-            <button type="button" class="toggle-pass" id="toggleAdminPass" aria-label="Mostrar contraseña">👁</button>
-          </div>
-        </div>
-        <button type="submit" class="btn-admin-submit">
-          <span aria-hidden="true">🔓</span> Acceder al Panel
-        </button>
-        <p class="modal-footer-text" style="text-align:center; margin-top:.5rem;">
-          Acceso restringido · Solo personal autorizado
-        </p>
-      </form>
-    </div>
-  </div>
-
   <script src="../scripts/inicio.js"></script>
   <script>
     ['btnLogin','btnLoginTop'].forEach(function(id){
@@ -691,8 +655,6 @@
     });
     var lr = document.getElementById('linkRegister');
     if(lr) lr.addEventListener('click', function(e){ e.preventDefault(); window.location.href='login-registro.html?tab=register'; });
-    var btnAdmin = document.getElementById('btnAdmin');
-    if(btnAdmin) btnAdmin.addEventListener('click', function(){ window.location.href='panel-administrador.html'; });
   </script>
 
   <!-- WHATSAPP FLOTANTE -->
