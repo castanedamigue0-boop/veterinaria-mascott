@@ -259,29 +259,37 @@ function bindCompletarBtns(container) {
 }
 
 // ===== PACIENTES =====
+let _pacienteSeleccionado = null; // { nombre, userEmail, mascotaId }
+
 function renderPacientes() {
   const citas = misCitas();
-  // Agrupar por mascota única (mascota + email usuario)
   const vistos = new Set();
   const pacientes = [];
   citas.forEach(c => {
     const key = c.mascota + '|' + c.userEmail;
     if (!vistos.has(key)) {
       vistos.add(key);
-      // Buscar datos de la mascota en el usuario
       const user = allUsers.find(u => u.email === c.userEmail);
       const mascotaData = (user?.mascotas || []).find(m => m.nombre.toLowerCase() === c.mascota.toLowerCase());
       pacientes.push({
-        nombre:   c.mascota,
-        especie:  mascotaData?.especie || '🐾',
-        raza:     mascotaData?.raza    || '',
-        edad:     mascotaData?.edad    || '',
-        dueno:    c.userName.trim(),
-        tel:      c.userTel,
-        citas:    citas.filter(x => x.mascota === c.mascota && x.userEmail === c.userEmail).length,
+        nombre:     c.mascota,
+        especie:    mascotaData?.especie || '🐾',
+        raza:       mascotaData?.raza    || '',
+        edad:       mascotaData?.edad    || '',
+        peso:       mascotaData?.peso    || '',
+        mascotaId:  mascotaData?.id      || '',
+        dueno:      c.userName.trim(),
+        userEmail:  c.userEmail,
+        tel:        c.userTel,
+        citas:      citas.filter(x => x.mascota === c.mascota && x.userEmail === c.userEmail).length,
+        historial:  mascotaData?.historial || [],
       });
     }
   });
+
+  // Ocultar historial al re-renderizar
+  const histWrap = document.getElementById('docHistorialWrap');
+  if (histWrap) histWrap.style.display = 'none';
 
   const grid = document.getElementById('docPacientesList');
   if (!grid) return;
@@ -290,11 +298,169 @@ function renderPacientes() {
         <div class="paciente-card">
           <span class="paciente-emoji">${p.especie.split(' ')[0] || '🐾'}</span>
           <h4>${p.nombre}</h4>
-          <p>${p.especie.split(' ').slice(1).join(' ') || 'Mascota'}${p.raza ? ' — ' + p.raza : ''}${p.edad ? ' — ' + p.edad + ' años' : ''}</p>
-          <p style="margin-top:.4rem;font-size:.75rem;color:#546e7a">📅 ${p.citas} cita(s)</p>
+          <p>${p.especie.split(' ').slice(1).join(' ') || 'Mascota'}${p.raza ? ' — ' + p.raza : ''}${p.edad ? ' — ' + p.edad + ' años' : ''}${p.peso ? ' — ' + p.peso + ' kg' : ''}</p>
+          <p style="margin-top:.4rem;font-size:.75rem;color:#546e7a">📅 ${p.citas} cita(s) &nbsp;|&nbsp; 📋 ${p.historial.length} registro(s)</p>
           <span class="paciente-dueno">👤 ${p.dueno}${p.tel ? ' · ' + p.tel : ''}</span>
+          <button class="doc-btn-primary" style="width:100%;margin-top:.85rem;justify-content:center;font-size:.85rem"
+            data-email="${p.userEmail}" data-mascota="${p.nombre}" data-id="${p.mascotaId}">
+            📋 Ver historial clínico
+          </button>
         </div>`).join('')
     : '<p class="empty-msg" style="grid-column:1/-1">No tienes pacientes asignados aún.</p>';
+
+  // Bind botones historial
+  grid.querySelectorAll('[data-email]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      _pacienteSeleccionado = {
+        nombre:    btn.dataset.mascota,
+        userEmail: btn.dataset.email,
+        mascotaId: btn.dataset.id,
+      };
+      abrirHistorial();
+    });
+  });
+}
+
+function abrirHistorial() {
+  if (!_pacienteSeleccionado) return;
+  const wrap = document.getElementById('docHistorialWrap');
+  if (!wrap) return;
+  wrap.style.display = 'block';
+  document.getElementById('docHistorialTitulo').textContent =
+    '📋 Historial clínico — ' + _pacienteSeleccionado.nombre;
+
+  // Form cerrar
+  document.getElementById('btnCerrarHistorialDoc').onclick = () => { wrap.style.display = 'none'; };
+
+  // Botón nuevo registro
+  document.getElementById('btnNuevoRegistroDoc').onclick = () => {
+    const fw = document.getElementById('docRegistroFormWrap');
+    fw.style.display = fw.style.display === 'none' ? 'block' : 'none';
+    if (fw.style.display === 'block') {
+      // Setear fecha de hoy
+      document.getElementById('hc-fecha').value = new Date().toISOString().split('T')[0];
+    }
+  };
+  document.getElementById('btnCancelarRegistroDoc').onclick = () => {
+    document.getElementById('docRegistroFormWrap').style.display = 'none';
+  };
+
+  // Submit historial
+  const form = document.getElementById('docFormHistorial');
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('hc-msg');
+    const fecha       = document.getElementById('hc-fecha').value;
+    const tipo        = document.getElementById('hc-tipo').value;
+    const motivo      = document.getElementById('hc-motivo').value.trim();
+    const diagnostico = document.getElementById('hc-diagnostico').value.trim();
+
+    if (!fecha || !tipo || !motivo || !diagnostico) {
+      msg.className = 'form-msg error';
+      msg.textContent = '❌ Completa los campos obligatorios (fecha, tipo, motivo y diagnóstico).';
+      return;
+    }
+
+    const registro = {
+      id:            Date.now().toString(),
+      fecha,
+      tipo,
+      peso:          document.getElementById('hc-peso').value || '',
+      temperatura:   document.getElementById('hc-temp').value || '',
+      motivo,
+      examen:        document.getElementById('hc-examen').value.trim(),
+      diagnostico,
+      tratamiento:   document.getElementById('hc-tratamiento').value.trim(),
+      medicamentos:  document.getElementById('hc-medicamentos').value.trim(),
+      vacunas:       document.getElementById('hc-vacunas').value.trim(),
+      observaciones: document.getElementById('hc-observaciones').value.trim(),
+      proxCita:      document.getElementById('hc-proxcita').value || '',
+      estadoSalida:  document.getElementById('hc-estado-salida').value,
+      doctor:        doctor.nombre,
+      doctorId:      doctor.id,
+      fechaRegistro: new Date().toISOString(),
+    };
+
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true; btn.textContent = 'Guardando...';
+
+    try {
+      const user = allUsers.find(u => u.email === _pacienteSeleccionado.userEmail);
+      if (!user) throw new Error('Usuario no encontrado');
+
+      // Buscar mascota por id o nombre
+      let mascota = (user.mascotas || []).find(m => m.id === _pacienteSeleccionado.mascotaId);
+      if (!mascota) mascota = (user.mascotas || []).find(m => m.nombre.toLowerCase() === _pacienteSeleccionado.nombre.toLowerCase());
+      if (!mascota) {
+        // Crear mascota si no existe en el registro del usuario
+        mascota = { id: Date.now().toString(), nombre: _pacienteSeleccionado.nombre, especie: '🐾 Desconocida', raza: '', edad: '', historial: [] };
+        user.mascotas = [...(user.mascotas || []), mascota];
+      }
+      if (!mascota.historial) mascota.historial = [];
+      mascota.historial.unshift(registro); // más reciente primero
+
+      await actualizarUsuario(_pacienteSeleccionado.userEmail, { mascotas: user.mascotas });
+      msg.className = 'form-msg success'; msg.textContent = '✅ Registro guardado correctamente.';
+      e.target.reset();
+      btn.disabled = false; btn.textContent = '💾 Guardar registro';
+      document.getElementById('docRegistroFormWrap').style.display = 'none';
+
+      // Recargar datos y re-renderizar historial
+      await cargarDatos();
+      renderHistorialLista();
+      setTimeout(() => { msg.textContent = ''; msg.className = 'form-msg'; }, 3000);
+    } catch(err) {
+      console.error(err);
+      msg.className = 'form-msg error'; msg.textContent = '❌ Error al guardar. Intenta de nuevo.';
+      btn.disabled = false; btn.textContent = '💾 Guardar registro';
+    }
+  };
+
+  renderHistorialLista();
+  wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderHistorialLista() {
+  if (!_pacienteSeleccionado) return;
+  const user = allUsers.find(u => u.email === _pacienteSeleccionado.userEmail);
+  let mascota = (user?.mascotas || []).find(m => m.id === _pacienteSeleccionado.mascotaId);
+  if (!mascota) mascota = (user?.mascotas || []).find(m => m.nombre.toLowerCase() === _pacienteSeleccionado.nombre.toLowerCase());
+
+  const registros = mascota?.historial || [];
+  const lista = document.getElementById('docHistorialList');
+  if (!lista) return;
+
+  const estadoLabels = {
+    estable:       '😊 Estable',
+    mejorando:     '📈 Mejorando',
+    critico:       '⚠️ Crítico',
+    hospitalizado: '🏥 Hospitalizado',
+    dado_de_alta:  '✅ Dado de alta',
+  };
+
+  lista.innerHTML = registros.length
+    ? registros.map(r => `
+        <div class="doc-hc-item">
+          <div class="hc-header">
+            <span class="hc-tipo">${r.tipo}</span>
+            <span class="hc-fecha">📅 ${r.fecha}</span>
+            <span class="hc-doctor">🩺 ${r.doctor || doctor.nombre}</span>
+            <span class="doc-hc-estado ${r.estadoSalida}">${estadoLabels[r.estadoSalida] || r.estadoSalida}</span>
+          </div>
+          <div class="doc-hc-grid">
+            ${r.peso        ? `<div class="doc-hc-campo"><strong>⚖️ Peso</strong>${r.peso} kg</div>` : ''}
+            ${r.temperatura ? `<div class="doc-hc-campo"><strong>🌡️ Temperatura</strong>${r.temperatura} °C</div>` : ''}
+            ${r.motivo      ? `<div class="doc-hc-campo doc-form-full"><strong>📌 Motivo / Cómo llegó</strong>${r.motivo}</div>` : ''}
+            ${r.examen      ? `<div class="doc-hc-campo doc-form-full"><strong>🔍 Examen físico</strong>${r.examen}</div>` : ''}
+            ${r.diagnostico ? `<div class="doc-hc-campo doc-form-full"><strong>🩺 Diagnóstico</strong>${r.diagnostico}</div>` : ''}
+            ${r.tratamiento ? `<div class="doc-hc-campo doc-form-full"><strong>💉 Tratamiento aplicado</strong>${r.tratamiento}</div>` : ''}
+            ${r.medicamentos? `<div class="doc-hc-campo doc-form-full"><strong>💊 Medicamentos</strong>${r.medicamentos}</div>` : ''}
+            ${r.vacunas     ? `<div class="doc-hc-campo doc-form-full"><strong>🛡️ Vacunas</strong>${r.vacunas}</div>` : ''}
+            ${r.observaciones?`<div class="doc-hc-campo doc-form-full"><strong>📝 Observaciones / Indicaciones</strong>${r.observaciones}</div>` : ''}
+            ${r.proxCita    ? `<div class="doc-hc-campo"><strong>📅 Próxima cita</strong>${r.proxCita}</div>` : ''}
+          </div>
+        </div>`).join('')
+    : '<div class="doc-hc-empty">📋 Sin registros clínicos aún. Agrega el primero.</div>';
 }
 
 // ===== PERFIL =====

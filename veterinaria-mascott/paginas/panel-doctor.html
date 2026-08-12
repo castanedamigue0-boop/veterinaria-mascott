@@ -115,6 +115,129 @@
         <h2>🐾 Mis Pacientes</h2>
       </div>
       <div id="docPacientesList" class="pacientes-grid reveal"></div>
+
+      <!-- HISTORIAL CLÍNICO DEL PACIENTE -->
+      <div id="docHistorialWrap" style="display:none;margin-top:2rem">
+        <div class="section-header">
+          <h3 id="docHistorialTitulo">📋 Historial clínico</h3>
+          <div style="display:flex;gap:.5rem">
+            <button class="doc-btn-primary" id="btnNuevoRegistroDoc">+ Nuevo registro</button>
+            <button class="doc-btn-outline"  id="btnCerrarHistorialDoc">✕ Cerrar</button>
+          </div>
+        </div>
+
+        <!-- FORM HISTORIAL CLÍNICO -->
+        <div id="docRegistroFormWrap" style="display:none;margin-top:1rem">
+          <form class="doc-hc-form" id="docFormHistorial" novalidate>
+            <h4 style="color:#1b5e20;margin-bottom:1rem">📝 Nuevo registro clínico</h4>
+
+            <div class="doc-form-grid">
+              <!-- Fila 1 -->
+              <div class="form-group">
+                <label>Fecha *</label>
+                <input type="date" id="hc-fecha" required/>
+              </div>
+              <div class="form-group">
+                <label>Tipo de consulta *</label>
+                <select id="hc-tipo" required>
+                  <option value="">Selecciona</option>
+                  <option value="🩺 Consulta general">🩺 Consulta general</option>
+                  <option value="💉 Vacunación">💉 Vacunación</option>
+                  <option value="🪱 Desparasitación">🪱 Desparasitación</option>
+                  <option value="✂️ Cirugía">✂️ Cirugía</option>
+                  <option value="🦷 Odontología">🦷 Odontología</option>
+                  <option value="🧪 Análisis de laboratorio">🧪 Análisis de laboratorio</option>
+                  <option value="🩻 Radiografía / Ecografía">🩻 Radiografía / Ecografía</option>
+                  <option value="🚨 Urgencia">🚨 Urgencia</option>
+                  <option value="📋 Control">📋 Control</option>
+                  <option value="💊 Medicación">💊 Medicación</option>
+                  <option value="📋 Otro">📋 Otro</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Peso actual (kg)</label>
+                <input type="number" id="hc-peso" min="0" step="0.1" placeholder="10.5"/>
+              </div>
+              <div class="form-group">
+                <label>Temperatura (°C)</label>
+                <input type="number" id="hc-temp" min="30" max="45" step="0.1" placeholder="38.5"/>
+              </div>
+
+              <!-- Fila 2 -->
+              <div class="form-group doc-form-full">
+                <label>Motivo de consulta / Cómo llegó la mascota *</label>
+                <textarea id="hc-motivo" rows="2"
+                  placeholder="Ej. El paciente llega con decaimiento, vómito de 2 días, sin comer..." required></textarea>
+              </div>
+
+              <!-- Fila 3 -->
+              <div class="form-group doc-form-full">
+                <label>Examen físico / Hallazgos</label>
+                <textarea id="hc-examen" rows="2"
+                  placeholder="Ej. Mucosas pálidas, temperatura 39.2°C, abdomen tenso, ganglios inflamados..."></textarea>
+              </div>
+
+              <!-- Fila 4 -->
+              <div class="form-group doc-form-full">
+                <label>Diagnóstico *</label>
+                <textarea id="hc-diagnostico" rows="2"
+                  placeholder="Ej. Gastroenteritis aguda. Deshidratación leve." required></textarea>
+              </div>
+
+              <!-- Fila 5 -->
+              <div class="form-group doc-form-full">
+                <label>Tratamiento aplicado / Procedimientos realizados</label>
+                <textarea id="hc-tratamiento" rows="2"
+                  placeholder="Ej. Se aplicó suero IV 250ml, Metronidazol 250mg VO, Vitaminas B..."></textarea>
+              </div>
+
+              <!-- Fila 6 -->
+              <div class="form-group">
+                <label>Medicamentos recetados</label>
+                <textarea id="hc-medicamentos" rows="2"
+                  placeholder="Ej. Amoxicilina 250mg cada 12h por 7 días..."></textarea>
+              </div>
+              <div class="form-group">
+                <label>Vacunas aplicadas</label>
+                <input type="text" id="hc-vacunas"
+                  placeholder="Ej. Parvovirus, Moquillo - Lote: A123"/>
+              </div>
+
+              <!-- Fila 7 -->
+              <div class="form-group doc-form-full">
+                <label>Observaciones / Indicaciones al dueño</label>
+                <textarea id="hc-observaciones" rows="2"
+                  placeholder="Ej. Reposo 3 días, dieta blanda, regresar en 5 días para control..."></textarea>
+              </div>
+
+              <!-- Fila 8 -->
+              <div class="form-group">
+                <label>Próxima cita sugerida</label>
+                <input type="date" id="hc-proxcita"/>
+              </div>
+              <div class="form-group">
+                <label>Estado del paciente al salir</label>
+                <select id="hc-estado-salida">
+                  <option value="estable">😊 Estable</option>
+                  <option value="mejorando">📈 Mejorando</option>
+                  <option value="critico">⚠️ Crítico</option>
+                  <option value="hospitalizado">🏥 Hospitalizado</option>
+                  <option value="dado_de_alta">✅ Dado de alta</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-actions" style="margin-top:1.25rem">
+              <button type="submit" class="doc-btn-primary">💾 Guardar registro</button>
+              <button type="button" class="doc-btn-outline" id="btnCancelarRegistroDoc">Cancelar</button>
+            </div>
+            <div class="form-msg" id="hc-msg" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+
+        <!-- LISTA DE REGISTROS -->
+        <div id="docHistorialList" class="doc-hc-lista" style="margin-top:1.25rem"></div>
+      </div>
     </section>
 
     <!-- ══ PERFIL ══ -->

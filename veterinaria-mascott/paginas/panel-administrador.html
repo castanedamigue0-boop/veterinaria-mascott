@@ -143,8 +143,108 @@
 
       <!-- CLIENTES -->
       <section class="admin-section" id="sec-clientes" hidden>
-        <h2 class="admin-title">👥 Clientes Registrados</h2>
-        <div class="admin-search-wrap">
+        <div class="admin-section-header">
+          <h2 class="admin-title">👥 Clientes Registrados</h2>
+          <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+            <button class="btn-admin-action" id="btnNuevoUsuario">+ Nuevo usuario</button>
+            <button class="btn-admin-action" style="background:#2e7d32" id="btnAgregarMascotaAdmin">🐾 Agregar mascota</button>
+          </div>
+        </div>
+
+        <!-- FORM NUEVO USUARIO -->
+        <div class="admin-form-wrap" id="formNuevoUsuarioWrap" style="display:none">
+          <form class="admin-form" id="formNuevoUsuario" novalidate>
+            <h3>👤 Registrar nuevo usuario</h3>
+            <div class="form-row-3">
+              <div class="form-group">
+                <label>Nombre *</label>
+                <input type="text" id="nu-nombre" placeholder="María" required/>
+                <span class="field-error" id="nue-nombre"></span>
+              </div>
+              <div class="form-group">
+                <label>Apellido *</label>
+                <input type="text" id="nu-apellido" placeholder="García" required/>
+                <span class="field-error" id="nue-apellido"></span>
+              </div>
+              <div class="form-group">
+                <label>Teléfono</label>
+                <input type="tel" id="nu-tel" placeholder="(55) 1234-5678"/>
+              </div>
+            </div>
+            <div class="form-row-3">
+              <div class="form-group">
+                <label>Correo electrónico *</label>
+                <input type="email" id="nu-email" placeholder="correo@ejemplo.com" required/>
+                <span class="field-error" id="nue-email"></span>
+              </div>
+              <div class="form-group">
+                <label>Contraseña *</label>
+                <input type="text" id="nu-pass" placeholder="Mínimo 6 caracteres" required/>
+                <span class="field-error" id="nue-pass"></span>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn-admin-action">Registrar usuario</button>
+              <button type="button" class="btn-admin-outline" id="btnCancelarNuevoUsuario">Cancelar</button>
+            </div>
+            <div class="form-msg" id="nu-msg" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+
+        <!-- FORM AGREGAR MASCOTA A USUARIO -->
+        <div class="admin-form-wrap" id="formAgregarMascotaAdminWrap" style="display:none">
+          <form class="admin-form" id="formAgregarMascotaAdmin" novalidate>
+            <h3>🐾 Agregar mascota a usuario</h3>
+            <div class="form-row-3">
+              <div class="form-group">
+                <label>Usuario (email) *</label>
+                <select id="am-usuario" required>
+                  <option value="">Selecciona un usuario</option>
+                </select>
+                <span class="field-error" id="ame-usuario"></span>
+              </div>
+              <div class="form-group">
+                <label>Nombre mascota *</label>
+                <input type="text" id="am-nombre" placeholder="Ej. Firulais" required/>
+                <span class="field-error" id="ame-nombre"></span>
+              </div>
+              <div class="form-group">
+                <label>Especie *</label>
+                <select id="am-especie" required>
+                  <option value="">Selecciona</option>
+                  <option value="🐕 Perro">🐕 Perro</option>
+                  <option value="🐈 Gato">🐈 Gato</option>
+                  <option value="🐇 Conejo">🐇 Conejo</option>
+                  <option value="🐦 Ave">🐦 Ave</option>
+                  <option value="🐠 Pez">🐠 Pez</option>
+                  <option value="🦎 Reptil">🦎 Reptil</option>
+                </select>
+                <span class="field-error" id="ame-especie"></span>
+              </div>
+            </div>
+            <div class="form-row-3">
+              <div class="form-group">
+                <label>Raza</label>
+                <input type="text" id="am-raza" placeholder="Ej. Labrador"/>
+              </div>
+              <div class="form-group">
+                <label>Edad (años)</label>
+                <input type="number" id="am-edad" min="0" max="30" placeholder="3"/>
+              </div>
+              <div class="form-group">
+                <label>Peso (kg)</label>
+                <input type="number" id="am-peso" min="0" step="0.1" placeholder="10.5"/>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn-admin-action" style="background:#2e7d32">Agregar mascota</button>
+              <button type="button" class="btn-admin-outline" id="btnCancelarAgregarMascota">Cancelar</button>
+            </div>
+            <div class="form-msg" id="am-msg" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+
+        <div class="admin-search-wrap" style="margin-top:1rem">
           <input type="search" id="clienteSearch" placeholder="🔍 Buscar cliente..." aria-label="Buscar cliente"/>
         </div>
         <div id="clientesList" class="clientes-grid"></div>

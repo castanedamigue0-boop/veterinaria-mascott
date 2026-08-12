@@ -10,7 +10,7 @@ function enviarCorreo(params) {
 }
 
 // ===== FIREBASE =====
-import { obtenerTodosUsuarios, actualizarUsuario, agregarNotificacion, obtenerDoctores, crearDoctor, actualizarDoctor } from '../scripts/base-de-datos.js';
+import { obtenerTodosUsuarios, actualizarUsuario, agregarNotificacion, obtenerDoctores, crearDoctor, actualizarDoctor, crearUsuario, obtenerUsuario } from '../scripts/base-de-datos.js';
 
 // ===== DOCTORES POR DEFECTO =====
 const DOCTORES_DEFAULT = [
@@ -392,18 +392,125 @@ function renderClientes() {
   }) : users;
 
   cont.innerHTML = lista.length ? lista.map(function(u) {
+    var mascotas = (u.mascotas || []).map(function(m) {
+      return '<span style="background:#e3f2fd;color:#0d47a1;padding:.2rem .6rem;border-radius:20px;font-size:.72rem;font-weight:600;margin:.15rem">'
+        + m.especie.split(' ')[0] + ' ' + m.nombre + '</span>';
+    }).join('');
     return '<div class="cliente-card">' +
       '<div style="display:flex;align-items:center;gap:.85rem;margin-bottom:.75rem">' +
         '<div class="cliente-avatar">' + (u.nombre||'U')[0].toUpperCase() + '</div>' +
-        '<div><h4>' + (u.nombre||'') + ' ' + (u.apellido||'') + '</h4>' +
+        '<div style="flex:1;min-width:0"><h4>' + (u.nombre||'') + ' ' + (u.apellido||'') + '</h4>' +
         '<p>' + u.email + '</p>' +
         '<p>' + (u.tel || 'Sin teléfono') + '</p></div>' +
       '</div>' +
-      '<p>🐾 ' + (u.mascotas||[]).length + ' mascotas &nbsp;|&nbsp; 📅 ' + (u.citas||[]).length + ' citas</p>' +
+      '<p style="font-size:.8rem;color:#546e7a;margin-bottom:.5rem">🐾 ' + (u.mascotas||[]).length + ' mascotas &nbsp;|&nbsp; 📅 ' + (u.citas||[]).length + ' citas</p>' +
+      (mascotas ? '<div style="display:flex;flex-wrap:wrap;gap:.15rem">' + mascotas + '</div>' : '') +
     '</div>';
   }).join('') : '<p class="empty-msg">Sin clientes.</p>';
 
   if (inp) inp.oninput = renderClientes;
+
+  // Botones formularios
+  var btnNuevo = document.getElementById('btnNuevoUsuario');
+  var btnMasc  = document.getElementById('btnAgregarMascotaAdmin');
+  var wrapNuevo = document.getElementById('formNuevoUsuarioWrap');
+  var wrapMasc  = document.getElementById('formAgregarMascotaAdminWrap');
+
+  if (btnNuevo) btnNuevo.onclick = function() {
+    wrapNuevo.style.display = wrapNuevo.style.display === 'none' ? 'block' : 'none';
+    wrapMasc.style.display  = 'none';
+  };
+  if (btnMasc) btnMasc.onclick = function() {
+    wrapMasc.style.display  = wrapMasc.style.display === 'none' ? 'block' : 'none';
+    wrapNuevo.style.display = 'none';
+    poblarSelectUsuarios();
+  };
+  var btnCNU = document.getElementById('btnCancelarNuevoUsuario');
+  var btnCAM = document.getElementById('btnCancelarAgregarMascota');
+  if (btnCNU) btnCNU.onclick = function() { wrapNuevo.style.display = 'none'; };
+  if (btnCAM) btnCAM.onclick = function() { wrapMasc.style.display  = 'none'; };
+
+  // Form registrar usuario
+  var formNU = document.getElementById('formNuevoUsuario');
+  if (formNU) formNU.onsubmit = async function(e) {
+    e.preventDefault();
+    var nombre   = document.getElementById('nu-nombre').value.trim();
+    var apellido = document.getElementById('nu-apellido').value.trim();
+    var email    = document.getElementById('nu-email').value.trim().toLowerCase();
+    var pass     = document.getElementById('nu-pass').value.trim();
+    var tel      = document.getElementById('nu-tel').value.trim();
+    var msg      = document.getElementById('nu-msg');
+    var valido   = true;
+    if (!nombre)   { document.getElementById('nue-nombre').textContent   = 'Requerido'; valido = false; } else { document.getElementById('nue-nombre').textContent = ''; }
+    if (!apellido) { document.getElementById('nue-apellido').textContent = 'Requerido'; valido = false; } else { document.getElementById('nue-apellido').textContent = ''; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { document.getElementById('nue-email').textContent = 'Correo inválido'; valido = false; } else { document.getElementById('nue-email').textContent = ''; }
+    if (!pass || pass.length < 6) { document.getElementById('nue-pass').textContent = 'Mínimo 6 caracteres'; valido = false; } else { document.getElementById('nue-pass').textContent = ''; }
+    if (!valido) return;
+
+    var btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true; btn.textContent = 'Guardando...';
+    try {
+      var existe = await obtenerUsuario(email);
+      if (existe) { msg.className = 'form-msg error'; msg.textContent = '❌ Ya existe un usuario con ese correo.'; btn.disabled = false; btn.textContent = 'Registrar usuario'; return; }
+      await crearUsuario({ nombre, apellido, email, password: pass, tel, citas:[], mascotas:[], carrito:[], pedidos:[], fechaRegistro: new Date().toISOString() });
+      msg.className = 'form-msg success'; msg.textContent = '✅ Usuario registrado correctamente.';
+      e.target.reset();
+      btn.disabled = false; btn.textContent = 'Registrar usuario';
+      await cargarDatosFirebase();
+      renderClientes();
+      setTimeout(function() { msg.textContent = ''; msg.className = 'form-msg'; }, 3000);
+    } catch(err) {
+      msg.className = 'form-msg error'; msg.textContent = '❌ Error al guardar. Intenta de nuevo.';
+      btn.disabled = false; btn.textContent = 'Registrar usuario';
+    }
+  };
+
+  // Form agregar mascota
+  var formAM = document.getElementById('formAgregarMascotaAdmin');
+  if (formAM) formAM.onsubmit = async function(e) {
+    e.preventDefault();
+    var userEmail = document.getElementById('am-usuario').value;
+    var nombre    = document.getElementById('am-nombre').value.trim();
+    var especie   = document.getElementById('am-especie').value;
+    var raza      = document.getElementById('am-raza').value.trim();
+    var edad      = document.getElementById('am-edad').value;
+    var peso      = document.getElementById('am-peso').value;
+    var msg       = document.getElementById('am-msg');
+    var valido    = true;
+    if (!userEmail) { document.getElementById('ame-usuario').textContent = 'Selecciona un usuario'; valido = false; } else { document.getElementById('ame-usuario').textContent = ''; }
+    if (!nombre)    { document.getElementById('ame-nombre').textContent  = 'Requerido';              valido = false; } else { document.getElementById('ame-nombre').textContent = ''; }
+    if (!especie)   { document.getElementById('ame-especie').textContent = 'Selecciona la especie';  valido = false; } else { document.getElementById('ame-especie').textContent = ''; }
+    if (!valido) return;
+
+    var btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true; btn.textContent = 'Guardando...';
+    try {
+      var user = getUsers().find(function(u) { return u.email === userEmail; });
+      if (!user) { msg.className = 'form-msg error'; msg.textContent = '❌ Usuario no encontrado.'; btn.disabled = false; btn.textContent = 'Agregar mascota'; return; }
+      var mascotas = user.mascotas || [];
+      mascotas.push({ id: Date.now().toString(), nombre: nombre, especie: especie, raza: raza, edad: edad || '', peso: peso || '', historial: [], fechaRegistro: new Date().toISOString() });
+      await actualizarUsuario(userEmail, { mascotas: mascotas });
+      msg.className = 'form-msg success'; msg.textContent = '✅ Mascota agregada correctamente.';
+      e.target.reset();
+      btn.disabled = false; btn.textContent = 'Agregar mascota';
+      await cargarDatosFirebase();
+      renderClientes();
+      setTimeout(function() { msg.textContent = ''; msg.className = 'form-msg'; }, 3000);
+    } catch(err) {
+      msg.className = 'form-msg error'; msg.textContent = '❌ Error al guardar. Intenta de nuevo.';
+      btn.disabled = false; btn.textContent = 'Agregar mascota';
+    }
+  };
+}
+
+function poblarSelectUsuarios() {
+  var sel = document.getElementById('am-usuario');
+  if (!sel) return;
+  var users = getUsers();
+  sel.innerHTML = '<option value="">Selecciona un usuario</option>' +
+    users.map(function(u) {
+      return '<option value="' + u.email + '">' + (u.nombre||'') + ' ' + (u.apellido||'') + ' — ' + u.email + '</option>';
+    }).join('');
 }
 
 // ===== INVENTARIO =====
