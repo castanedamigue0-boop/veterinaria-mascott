@@ -218,9 +218,35 @@ function citaItemHtml(c) {
     cancelada:  '<span class="cita-badge badge-cancelada">❌ Cancelada</span>',
   };
   const badge = badgeMap[c.estado] || '';
-  const btnCompletar = (c.estado === 'confirmada' || c.estado === 'pendiente')
-    ? `<button class="btn-completar" data-id="${c.id}" data-email="${c.userEmail}">✔ Marcar completada</button>`
-    : '';
+
+  // Verificar si ya tiene historial clínico registrado para ESTA cita
+  let tieneHistorial = false;
+  if (c.estado === 'confirmada' || c.estado === 'pendiente') {
+    const user = allUsers.find(u => u.email === c.userEmail);
+    const mascota = (user?.mascotas || []).find(m =>
+      m.nombre.toLowerCase() === c.mascota.toLowerCase()
+    );
+    // Hay historial si existe al menos un registro del mismo doctor en la misma fecha
+    tieneHistorial = (mascota?.historial || []).some(h =>
+      h.fecha === c.fecha && h.doctorId === doctor.id
+    );
+  }
+
+  let btnCompletar = '';
+  if (c.estado === 'confirmada' || c.estado === 'pendiente') {
+    if (tieneHistorial) {
+      btnCompletar = `<button class="btn-completar"
+        data-id="${c.id}" data-email="${c.userEmail}">
+        ✔ Marcar completada
+      </button>`;
+    } else {
+      btnCompletar = `<button class="btn-completar-bloqueado"
+        data-id="${c.id}" data-email="${c.userEmail}" data-mascota="${c.mascota}"
+        title="Debes llenar el historial clínico antes de completar">
+        📋 Llenar historial primero
+      </button>`;
+    }
+  }
 
   return `
     <div class="cita-item ${c.estado}">
@@ -228,8 +254,13 @@ function citaItemHtml(c) {
         <h4>${c.servicio}</h4>
         <p>🐾 ${c.mascota} &nbsp;|&nbsp; 👤 ${c.userName.trim()}</p>
         <p>📅 ${c.fecha} &nbsp;·&nbsp; 🕐 ${c.hora}</p>
-        ${c.notas ? `<p>📝 ${c.notas}</p>` : ''}
+        ${c.notas   ? `<p>📝 ${c.notas}</p>`   : ''}
         ${c.userTel ? `<p>📞 ${c.userTel}</p>` : ''}
+        ${!tieneHistorial && (c.estado === 'confirmada' || c.estado === 'pendiente')
+          ? `<p style="color:#e65100;font-size:.78rem;font-weight:600;margin-top:.3rem">
+              ⚠️ Pendiente de historial clínico
+             </p>`
+          : ''}
       </div>
       <div class="cita-acciones">
         ${badge}
@@ -239,11 +270,12 @@ function citaItemHtml(c) {
 }
 
 function bindCompletarBtns(container) {
+  // Botón completar (con historial ya llenado)
   container.querySelectorAll('.btn-completar').forEach(btn => {
     btn.addEventListener('click', async () => {
-      const citaId   = btn.dataset.id;
-      const email    = btn.dataset.email;
-      const user     = allUsers.find(u => u.email === email);
+      const citaId = btn.dataset.id;
+      const email  = btn.dataset.email;
+      const user   = allUsers.find(u => u.email === email);
       if (!user) return;
       user.citas = (user.citas || []).map(c => {
         if (c.id === citaId) c.estado = 'completada';
@@ -254,6 +286,28 @@ function bindCompletarBtns(container) {
       await cargarDatos();
       renderCitas();
       renderInicio();
+    });
+  });
+
+  // Botón bloqueado — redirige a llenar historial
+  container.querySelectorAll('.btn-completar-bloqueado').forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Ir a sección pacientes y abrir historial de esa mascota
+      const email   = btn.dataset.email;
+      const mascota = btn.dataset.mascota;
+      const user    = allUsers.find(u => u.email === email);
+      const mascotaData = (user?.mascotas || []).find(m =>
+        m.nombre.toLowerCase() === mascota.toLowerCase()
+      );
+      _pacienteSeleccionado = {
+        nombre:    mascota,
+        userEmail: email,
+        mascotaId: mascotaData?.id || '',
+      };
+      showSection('pacientes');
+      // Pequeño delay para que renderice la sección
+      setTimeout(() => abrirHistorial(), 300);
+      mostrarToast('📋 Llena el historial clínico para poder completar la cita');
     });
   });
 }

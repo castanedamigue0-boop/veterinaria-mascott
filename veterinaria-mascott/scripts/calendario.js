@@ -1,6 +1,6 @@
 import {
   obtenerTodosUsuarios, actualizarUsuario,
-  obtenerDoctores,
+  obtenerDoctores, obtenerUsuario,
   getSession
 } from '../scripts/base-de-datos.js';
 
@@ -37,6 +37,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     obtenerDoctores().catch(() => [])
   ]);
 
+  // Cargar mascotas del usuario en el select
+  await cargarMascotasUsuario();
+
   // Pre-calcular horas ocupadas de todo el mes
   precalcularMes(anioActual, mesActual);
   renderCalendario();
@@ -66,10 +69,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('formCita').addEventListener('submit', confirmarCita);
 
   // Nueva cita (desde éxito)
-  document.getElementById('btnNuevaCita').addEventListener('click', () => {
+  document.getElementById('btnNuevaCita').addEventListener('click', async () => {
     fechaSel = null; horaSel = null;
     irPaso(1);
     renderCalendario();
+    await cargarMascotasUsuario();
   });
 });
 
@@ -263,10 +267,63 @@ function renderResumen() {
     <div class="res-item"><span>👤</span><strong>${session.nombre}</strong></div>`;
 }
 
+// ===== CARGAR MASCOTAS DEL USUARIO EN EL SELECT =====
+async function cargarMascotasUsuario() {
+  const sel      = document.getElementById('c-mascota');
+  const inputNueva = document.getElementById('c-mascota-nueva');
+  if (!sel) return;
+
+  try {
+    const userData = await obtenerUsuario(session.email);
+    const mascotas = userData?.mascotas || [];
+
+    if (mascotas.length > 0) {
+      sel.innerHTML =
+        '<option value="">Selecciona tu mascota</option>' +
+        mascotas.map(m =>
+          `<option value="${m.nombre}">${m.especie.split(' ')[0]} ${m.nombre}${m.raza ? ' — ' + m.raza : ''}</option>`
+        ).join('') +
+        '<option value="__nueva__">➕ Otra mascota (escribir nombre)</option>';
+    } else {
+      // No tiene mascotas registradas — mostrar input libre
+      sel.innerHTML = '<option value="__nueva__">No tienes mascotas registradas — escribe el nombre</option>';
+      if (inputNueva) inputNueva.style.display = 'block';
+    }
+  } catch(e) {
+    sel.innerHTML = '<option value="__nueva__">Escribe el nombre de tu mascota</option>';
+    if (inputNueva) inputNueva.style.display = 'block';
+  }
+
+  // Mostrar/ocultar input libre según selección
+  if (sel) {
+    sel.addEventListener('change', () => {
+      if (sel.value === '__nueva__') {
+        inputNueva.style.display = 'block';
+        inputNueva.required = true;
+        inputNueva.focus();
+      } else {
+        inputNueva.style.display = 'none';
+        inputNueva.required = false;
+        inputNueva.value = '';
+      }
+    });
+  }
+}
+
+// ===== OBTENER NOMBRE MASCOTA SELECCIONADA =====
+function obtenerNombreMascota() {
+  const sel = document.getElementById('c-mascota');
+  if (!sel) return '';
+  if (sel.value === '__nueva__') {
+    return document.getElementById('c-mascota-nueva')?.value.trim() || '';
+  }
+  return sel.value.trim();
+}
+
 // ===== CONFIRMAR CITA =====
 async function confirmarCita(e) {
   e.preventDefault();
-  const mascota  = document.getElementById('c-mascota').value.trim();
+  const mascota  = obtenerNombreMascota();
   const servicio = document.getElementById('c-servicio').value;
   const notas    = document.getElementById('c-notas').value.trim();
   const msg      = document.getElementById('cita-msg');
@@ -274,7 +331,7 @@ async function confirmarCita(e) {
   // Validar
   let valido = true;
   if (!mascota) {
-    document.getElementById('e-mascota').textContent = 'Ingresa el nombre de tu mascota.';
+    document.getElementById('e-mascota').textContent = 'Selecciona o escribe el nombre de tu mascota.';
     document.getElementById('c-mascota').style.borderColor = '#e53935';
     valido = false;
   } else {

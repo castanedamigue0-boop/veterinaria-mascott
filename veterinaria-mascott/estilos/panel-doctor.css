@@ -287,3 +287,21 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
   .doc-form-grid { grid-template-columns: 1fr; }
   .doc-form-full { grid-column: 1; }
 }
+
+/* ===== BOTÓN COMPLETAR BLOQUEADO ===== */
+.btn-completar-bloqueado {
+  background: linear-gradient(135deg, #e65100, #f57c00);
+  color: #fff; border: none; padding: .4rem 1rem;
+  border-radius: 20px; font-size: .82rem; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+  transition: background .2s, transform .15s;
+  animation: pulse-orange 2s ease-in-out infinite;
+}
+.btn-completar-bloqueado:hover {
+  background: linear-gradient(135deg, #bf360c, #e64a19);
+  transform: translateY(-1px);
+}
+@keyframes pulse-orange {
+  0%,100% { box-shadow: 0 0 0 0 rgba(230,81,0,.4); }
+  50%      { box-shadow: 0 0 0 6px rgba(230,81,0,0); }
+}
