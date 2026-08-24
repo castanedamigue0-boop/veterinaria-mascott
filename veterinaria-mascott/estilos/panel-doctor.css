@@ -305,3 +305,33 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
   0%,100% { box-shadow: 0 0 0 0 rgba(230,81,0,.4); }
   50%      { box-shadow: 0 0 0 6px rgba(230,81,0,0); }
 }
+
+/* ===== HISTORIAL DOCTOR ===== */
+.doc-hist-filtros {
+  display: flex; align-items: center; gap: .6rem; flex-wrap: wrap;
+}
+.doc-hist-filtros input[type="date"] {
+  padding: .5rem .9rem; border: 2px solid #c8e6c9; border-radius: 10px;
+  font-size: .88rem; color: #1a1a2e; background: #fff;
+  transition: border-color .2s;
+}
+.doc-hist-filtros input[type="date"]:focus { border-color: #2e7d32; outline: none; }
+
+.doc-hist-table {
+  width: 100%; border-collapse: collapse; font-size: .83rem;
+  background: #fff;
+}
+.doc-hist-table thead { background: linear-gradient(135deg, #1b5e20, #2e7d32); color: #fff; }
+.doc-hist-table th {
+  padding: .7rem 1rem; text-align: left; font-weight: 700;
+  white-space: nowrap;
+}
+.doc-hist-table td {
+  padding: .6rem 1rem; border-bottom: 1px solid #f0f7f0;
+  vertical-align: top;
+}
+.doc-hist-table tbody tr:hover { background: #f1f8e9; }
+.doc-hist-table tbody tr:last-child td { border-bottom: none; }
+.doc-hist-table .badge-completada { background: #e8f5e9; color: #2e7d32; padding: .2rem .7rem; border-radius: 20px; font-size: .72rem; font-weight: 700; }
+.doc-hist-table .badge-cancelada  { background: #ffebee; color: #c62828; padding: .2rem .7rem; border-radius: 20px; font-size: .72rem; font-weight: 700; }
+.doc-hist-count { font-size: .82rem; color: var(--muted); margin-top: .75rem; text-align: right; }

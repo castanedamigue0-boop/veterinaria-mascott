@@ -35,6 +35,7 @@
         <li><button class="doc-link active" data-section="inicio"><span>🏠</span> Inicio</button></li>
         <li><button class="doc-link" data-section="citas"><span>📅</span> Mis Citas</button></li>
         <li><button class="doc-link" data-section="pacientes"><span>🐾</span> Pacientes</button></li>
+        <li><button class="doc-link" data-section="historial"><span>📊</span> Mi Historial</button></li>
         <li><button class="doc-link" data-section="perfil"><span>👤</span> Mi Perfil</button></li>
       </ul>
     </nav>
@@ -80,11 +81,19 @@
         </div>
         <div class="doc-stat">
           <div class="doc-stat-icon">✅</div>
-          <div><span class="doc-stat-num" id="statAtendidas">0</span><p>Atendidas</p></div>
+          <div><span class="doc-stat-num" id="statAtendidas">0</span><p>Atendidas hoy</p></div>
         </div>
         <div class="doc-stat">
           <div class="doc-stat-icon">🐾</div>
           <div><span class="doc-stat-num" id="statPacientes">0</span><p>Pacientes</p></div>
+        </div>
+        <div class="doc-stat">
+          <div class="doc-stat-icon">📊</div>
+          <div><span class="doc-stat-num" id="statTotalAtendidas">0</span><p>Total atendidas</p></div>
+        </div>
+        <div class="doc-stat">
+          <div class="doc-stat-icon">📋</div>
+          <div><span class="doc-stat-num" id="statHistoriales">0</span><p>Registros clínicos</p></div>
         </div>
       </div>
 
@@ -237,6 +246,69 @@
 
         <!-- LISTA DE REGISTROS -->
         <div id="docHistorialList" class="doc-hc-lista" style="margin-top:1.25rem"></div>
+      </div>
+    </section>
+
+    <!-- ══ HISTORIAL DEL DOCTOR ══ -->
+    <section class="doc-section" id="sec-historial" hidden>
+      <div class="section-header reveal">
+        <h2>📊 Mi Historial</h2>
+        <div class="doc-hist-filtros">
+          <input type="date" id="histFechaDesde" title="Desde"/>
+          <input type="date" id="histFechaHasta" title="Hasta"/>
+          <button class="doc-btn-primary" id="btnFiltrarHist" style="padding:.5rem 1rem;font-size:.85rem">Filtrar</button>
+          <button class="doc-btn-outline"  id="btnHoyHist"    style="padding:.45rem .9rem;font-size:.85rem">Hoy</button>
+          <button class="doc-btn-outline"  id="btnTodoHist"   style="padding:.45rem .9rem;font-size:.85rem">Todo</button>
+        </div>
+      </div>
+
+      <!-- Resumen stats -->
+      <div class="doc-stats reveal" id="histStats">
+        <div class="doc-stat">
+          <div class="doc-stat-icon">✅</div>
+          <div><span class="doc-stat-num" id="hstatAtendidas">0</span><p>Citas atendidas</p></div>
+        </div>
+        <div class="doc-stat">
+          <div class="doc-stat-icon">📋</div>
+          <div><span class="doc-stat-num" id="hstatRegistros">0</span><p>Registros clínicos</p></div>
+        </div>
+        <div class="doc-stat">
+          <div class="doc-stat-icon">🐾</div>
+          <div><span class="doc-stat-num" id="hstatPacientes">0</span><p>Pacientes únicos</p></div>
+        </div>
+        <div class="doc-stat">
+          <div class="doc-stat-icon">🕐</div>
+          <div><span class="doc-stat-num" id="hstatHoras">0h</span><p>Horas trabajadas</p></div>
+        </div>
+      </div>
+
+      <!-- Tabla de citas atendidas -->
+      <div class="doc-card reveal" style="margin-top:1.5rem">
+        <h3>📅 Citas atendidas</h3>
+        <div style="overflow-x:auto;margin-top:1rem">
+          <table class="doc-hist-table" id="histTabla">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Hora entrada</th>
+                <th>Hora salida</th>
+                <th>Paciente</th>
+                <th>Dueño</th>
+                <th>Servicio</th>
+                <th>Diagnóstico</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="histTbody"></tbody>
+          </table>
+        </div>
+        <p class="doc-hist-count" id="histCount"></p>
+      </div>
+
+      <!-- Registros clínicos detallados -->
+      <div class="doc-card reveal" style="margin-top:1.5rem">
+        <h3>📋 Registros clínicos realizados</h3>
+        <div id="histRegistrosList" class="doc-hc-lista" style="margin-top:1rem"></div>
       </div>
     </section>
 
