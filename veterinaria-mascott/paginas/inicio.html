@@ -820,7 +820,47 @@
 
     /* ===== MODOS ACCESIBILIDAD ===== */
     body.acc-contraste {
-      filter: contrast(1.5) !important;
+      --acc-text: #000000;
+      --acc-bg:   #ffffff;
+      background: #ffffff !important;
+      color: #000000 !important;
+    }
+    body.acc-contraste .sidebar,
+    body.acc-contraste .topbar,
+    body.acc-contraste .hero,
+    body.acc-contraste .card,
+    body.acc-contraste .review-card,
+    body.acc-contraste .modal,
+    body.acc-contraste .footer,
+    body.acc-contraste .section,
+    body.acc-contraste .stats {
+      background: #ffffff !important;
+      color: #000000 !important;
+      border-color: #000000 !important;
+    }
+    body.acc-contraste a,
+    body.acc-contraste button,
+    body.acc-contraste h1,
+    body.acc-contraste h2,
+    body.acc-contraste h3,
+    body.acc-contraste p,
+    body.acc-contraste span,
+    body.acc-contraste li {
+      color: #000000 !important;
+    }
+    body.acc-contraste .btn-cita,
+    body.acc-contraste .btn-outline,
+    body.acc-contraste .sidebar-link,
+    body.acc-contraste .hero-badge {
+      background: #000000 !important;
+      color: #ffffff !important;
+      border-color: #000000 !important;
+    }
+    /* El panel y botones de accesibilidad NUNCA se afectan */
+    .acc-toggle-btn,
+    .acc-panel,
+    .whatsapp-float {
+      filter: none !important;
     }
     body.acc-oscuro {
       background: #121212 !important;
