@@ -217,7 +217,7 @@ function toast(msg) {
   if (!t) {
     t = document.createElement('div');
     t.id = 'aToast';
-    t.inicio.cssText = 'position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);' +
+    t.style.cssText = 'position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);' +
       'background:#0d47a1;color:#fff;padding:.75rem 1.5rem;border-radius:50px;font-size:.9rem;' +
       'font-weight:600;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.25);' +
       'transition:transform .3s,opacity .3s;opacity:0;white-space:nowrap;';

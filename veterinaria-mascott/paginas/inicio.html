@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -671,327 +671,326 @@
           aria-label="Abrir panel de accesibilidad"
           aria-expanded="false"
           aria-controls="accPanel">
-    ♿
+    <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22" aria-hidden="true">
+      <path d="M12 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm0 6c1.1 0 2 .9 2 2v5h1a1 1 0 1 1 0 2h-1v3a1 1 0 1 1-2 0v-3H9a1 1 0 1 1 0-2h1v-4.28A5 5 0 0 1 7 11a1 1 0 1 1 2 0 3 3 0 0 0 6 0 1 1 0 1 1 2 0 5 5 0 0 1-3 4.58V17h1a1 1 0 1 1 0 2h-1v3a1 1 0 1 1-2 0v-3h-2v3a1 1 0 1 1-2 0v-3H7a1 1 0 1 1 0-2h1v-2.58A5 5 0 0 1 7 11a1 1 0 1 1 2 0 3 3 0 0 0 6 0 1 1 0 1 1 2 0 5 5 0 0 1-3 4.58V17h1a1 1 0 1 1 0 2h-1v3a1 1 0 1 1-2 0v-3h-2"/>
+    </svg>
+    <span class="acc-btn-tooltip">Accesibilidad</span>
   </button>
 
   <div class="acc-panel" id="accPanel" role="dialog"
        aria-label="Panel de accesibilidad" aria-modal="false" hidden>
+
+    <!-- Header -->
     <div class="acc-panel-header">
-      <h2 class="acc-panel-title">♿ Accesibilidad</h2>
+      <div class="acc-header-left">
+        <div class="acc-header-icon">♿</div>
+        <div>
+          <h2 class="acc-panel-title">Accesibilidad</h2>
+          <p class="acc-panel-sub">Personaliza tu experiencia</p>
+        </div>
+      </div>
       <button class="acc-close" id="accClose" aria-label="Cerrar panel de accesibilidad">✕</button>
     </div>
 
     <!-- Tamaño de fuente -->
     <div class="acc-section">
-      <p class="acc-label">🔠 Tamaño de texto</p>
+      <p class="acc-label"><span aria-hidden="true">🔠</span> Tamaño de texto</p>
       <div class="acc-font-controls" role="group" aria-label="Controles de tamaño de texto">
-        <button class="acc-btn" id="accFontDec" aria-label="Reducir tamaño de texto">A−</button>
-        <span class="acc-font-val" id="accFontVal" aria-live="polite">100%</span>
-        <button class="acc-btn" id="accFontInc" aria-label="Aumentar tamaño de texto">A+</button>
+        <button class="acc-font-btn" id="accFontDec" aria-label="Reducir tamaño de texto">
+          <span aria-hidden="true">A</span><sub>−</sub>
+        </button>
+        <div class="acc-font-bar" aria-hidden="true">
+          <div class="acc-font-fill" id="accFontFill"></div>
+        </div>
+        <span class="acc-font-val" id="accFontVal" aria-live="polite" aria-atomic="true">100%</span>
+        <button class="acc-font-btn acc-font-btn-big" id="accFontInc" aria-label="Aumentar tamaño de texto">
+          <span aria-hidden="true">A</span><sup>+</sup>
+        </button>
       </div>
     </div>
 
-    <!-- Contraste -->
+    <!-- Opciones visuales -->
     <div class="acc-section">
-      <p class="acc-label">🎨 Contraste</p>
-      <div class="acc-toggle-group" role="group" aria-label="Opciones de contraste">
-        <button class="acc-toggle" id="accContraste" role="switch" aria-checked="false">
-          Alto contraste
+      <p class="acc-label"><span aria-hidden="true">🎨</span> Visual</p>
+      <div class="acc-opts-grid">
+        <button class="acc-opt" id="accContraste" role="switch" aria-checked="false"
+                data-icon="◑" data-label="Alto contraste">
+          <span class="acc-opt-icon" aria-hidden="true">◑</span>
+          <span class="acc-opt-label">Alto contraste</span>
+          <span class="acc-opt-pill">OFF</span>
         </button>
-        <button class="acc-toggle" id="accOscuro" role="switch" aria-checked="false">
-          Modo oscuro
+        <button class="acc-opt" id="accOscuro" role="switch" aria-checked="false"
+                data-icon="🌙" data-label="Modo oscuro">
+          <span class="acc-opt-icon" aria-hidden="true">🌙</span>
+          <span class="acc-opt-label">Modo oscuro</span>
+          <span class="acc-opt-pill">OFF</span>
+        </button>
+        <button class="acc-opt" id="accLinks" role="switch" aria-checked="false"
+                data-icon="🔗" data-label="Subrayar enlaces">
+          <span class="acc-opt-icon" aria-hidden="true">🔗</span>
+          <span class="acc-opt-label">Subrayar links</span>
+          <span class="acc-opt-pill">OFF</span>
+        </button>
+        <button class="acc-opt" id="accGuia" role="switch" aria-checked="false"
+                data-icon="📏" data-label="Guía de lectura">
+          <span class="acc-opt-icon" aria-hidden="true">📏</span>
+          <span class="acc-opt-label">Guía lectura</span>
+          <span class="acc-opt-pill">OFF</span>
+        </button>
+        <button class="acc-opt" id="accAnimaciones" role="switch" aria-checked="false"
+                data-icon="⏸️" data-label="Reducir animaciones">
+          <span class="acc-opt-icon" aria-hidden="true">⏸️</span>
+          <span class="acc-opt-label">Sin animaciones</span>
+          <span class="acc-opt-pill">OFF</span>
         </button>
       </div>
     </div>
 
-    <!-- Otros -->
-    <div class="acc-section">
-      <p class="acc-label">🔗 Otros</p>
-      <div class="acc-toggle-group" role="group" aria-label="Otras opciones de accesibilidad">
-        <button class="acc-toggle" id="accLinks" role="switch" aria-checked="false">
-          Subrayar enlaces
-        </button>
-        <button class="acc-toggle" id="accGuia" role="switch" aria-checked="false">
-          Guía de lectura
-        </button>
-        <button class="acc-toggle" id="accAnimaciones" role="switch" aria-checked="false">
-          Reducir animaciones
-        </button>
-      </div>
-    </div>
-
-    <button class="acc-reset" id="accReset" aria-label="Restablecer configuración de accesibilidad">
-      ↺ Restablecer
+    <button class="acc-reset" id="accReset" aria-label="Restablecer toda la configuración de accesibilidad">
+      <span aria-hidden="true">↺</span> Restablecer todo
     </button>
   </div>
 
   <!-- Línea guía de lectura -->
   <div id="guiaLine" aria-hidden="true" style="
-    display:none; position:fixed; left:0; right:0; height:3px;
-    background:rgba(255,111,0,.6); pointer-events:none; z-index:8888;
-    box-shadow:0 0 12px rgba(255,111,0,.4);">
+    display:none;position:fixed;left:0;right:0;height:4px;
+    background:linear-gradient(90deg,#ff6f00,#ffcc02,#ff6f00);
+    pointer-events:none;z-index:8888;
+    box-shadow:0 0 16px rgba(255,111,0,.5);">
   </div>
 
   <style>
-    /* ===== PANEL ACCESIBILIDAD ===== */
+    /* ===== BOTÓN FLOTANTE ACC ===== */
     .acc-toggle-btn {
-      position:fixed; bottom:5.5rem; right:1.5rem;
-      width:48px; height:48px; border-radius:50%;
-      background:#0d47a1; color:#fff; border:none;
-      font-size:1.3rem; cursor:pointer; z-index:8900;
-      box-shadow:0 4px 16px rgba(13,71,161,.4);
-      transition:transform .2s, box-shadow .2s;
-      display:flex; align-items:center; justify-content:center;
+      position: fixed; bottom: 5.5rem; right: 1.5rem;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: linear-gradient(135deg, #1565c0, #0d47a1);
+      color: #fff; border: none; cursor: pointer; z-index: 8900;
+      box-shadow: 0 4px 20px rgba(13,71,161,.45);
+      transition: transform .25s, box-shadow .25s;
+      display: flex; align-items: center; justify-content: center;
     }
-    .acc-toggle-btn:hover { transform:scale(1.1); box-shadow:0 6px 24px rgba(13,71,161,.5); }
-    .acc-toggle-btn:focus-visible { outline:3px solid #ff6f00; outline-offset:3px; }
+    .acc-toggle-btn:hover {
+      transform: scale(1.12);
+      box-shadow: 0 8px 32px rgba(13,71,161,.6);
+    }
+    .acc-toggle-btn:focus-visible { outline: 3px solid #ff6f00; outline-offset: 3px; }
+    .acc-btn-tooltip {
+      position: absolute; right: 62px; top: 50%; transform: translateY(-50%);
+      background: #0d47a1; color: #fff; font-size: .75rem; font-weight: 700;
+      padding: .3rem .7rem; border-radius: 8px; white-space: nowrap; opacity: 0;
+      pointer-events: none; transition: opacity .2s;
+    }
+    .acc-toggle-btn:hover .acc-btn-tooltip { opacity: 1; }
 
+    /* ===== PANEL ===== */
     .acc-panel {
-      position:fixed; bottom:10rem; right:1.5rem;
-      width:280px; background:#fff; border-radius:18px;
-      box-shadow:0 12px 48px rgba(0,0,0,.2);
-      z-index:8900; padding:1.25rem;
-      border:2px solid #e3f2fd;
-      animation:accSlideIn .25s ease;
+      position: fixed; bottom: 10.5rem; right: 1.5rem;
+      width: 300px; border-radius: 22px;
+      background: #fff;
+      box-shadow: 0 20px 60px rgba(0,0,0,.18), 0 4px 16px rgba(13,71,161,.12);
+      z-index: 8900; padding: 1.4rem;
+      border: 1.5px solid rgba(21,101,192,.15);
     }
-    .acc-panel[hidden] { display:none; }
-    @keyframes accSlideIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    .acc-panel[hidden] { display: none; }
 
+    /* ===== HEADER ===== */
     .acc-panel-header {
-      display:flex; align-items:center; justify-content:space-between;
-      margin-bottom:1rem; padding-bottom:.75rem;
-      border-bottom:1px solid #e3f2fd;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.1rem; padding-bottom: .85rem;
+      border-bottom: 2px solid #f0f4ff;
     }
-    .acc-panel-title { font-size:1rem; font-weight:800; color:#0d47a1; margin:0; }
+    .acc-header-left { display: flex; align-items: center; gap: .75rem; }
+    .acc-header-icon {
+      width: 38px; height: 38px; border-radius: 12px;
+      background: linear-gradient(135deg, #1565c0, #0d47a1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .acc-panel-title { font-size: .97rem; font-weight: 800; color: #0d47a1; margin: 0; }
+    .acc-panel-sub { font-size: .72rem; color: #90a4ae; margin: 0; }
     .acc-close {
-      background:none; border:none; font-size:1.1rem; cursor:pointer;
-      color:#546e7a; padding:.25rem; border-radius:6px;
-      transition:background .15s;
+      width: 30px; height: 30px; border-radius: 8px;
+      background: #f5f7ff; border: none; font-size: 1rem;
+      cursor: pointer; color: #546e7a; display: flex;
+      align-items: center; justify-content: center;
+      transition: background .15s, color .15s;
     }
-    .acc-close:hover { background:#f5f5f5; }
-    .acc-close:focus-visible { outline:2px solid #0d47a1; }
+    .acc-close:hover { background: #ffebee; color: #c62828; }
+    .acc-close:focus-visible { outline: 2px solid #0d47a1; outline-offset: 2px; }
 
-    .acc-section { margin-bottom:.85rem; }
-    .acc-label { font-size:.78rem; font-weight:700; color:#546e7a; margin-bottom:.4rem; text-transform:uppercase; letter-spacing:.5px; }
+    /* ===== SECCIONES ===== */
+    .acc-section { margin-bottom: 1rem; }
+    .acc-label {
+      font-size: .72rem; font-weight: 700; color: #90a4ae;
+      text-transform: uppercase; letter-spacing: .8px;
+      margin-bottom: .55rem; display: flex; align-items: center; gap: .35rem;
+    }
 
-    .acc-font-controls { display:flex; align-items:center; gap:.5rem; }
-    .acc-btn {
-      width:36px; height:36px; border-radius:10px;
-      border:2px solid #e3f2fd; background:#f8faff;
-      font-weight:800; cursor:pointer; color:#0d47a1;
-      transition:background .15s, border-color .15s;
-      font-family:inherit;
+    /* ===== CONTROL FUENTE ===== */
+    .acc-font-controls {
+      display: flex; align-items: center; gap: .6rem;
+      background: #f8faff; border-radius: 12px; padding: .6rem .85rem;
+      border: 1.5px solid #e3f2fd;
     }
-    .acc-btn:hover { background:#e3f2fd; border-color:#1565c0; }
-    .acc-btn:focus-visible { outline:2px solid #ff6f00; outline-offset:2px; }
-    .acc-font-val { font-weight:700; color:#0d47a1; font-size:.9rem; min-width:40px; text-align:center; }
+    .acc-font-btn {
+      width: 34px; height: 34px; border-radius: 10px;
+      border: 1.5px solid #e3f2fd; background: #fff;
+      font-weight: 800; cursor: pointer; color: #0d47a1;
+      transition: all .15s; font-family: inherit;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .85rem; flex-shrink: 0;
+    }
+    .acc-font-btn-big { font-size: 1rem; }
+    .acc-font-btn:hover { background: #e3f2fd; border-color: #1565c0; transform: scale(1.08); }
+    .acc-font-btn:focus-visible { outline: 2px solid #ff6f00; outline-offset: 2px; }
+    .acc-font-bar {
+      flex: 1; height: 6px; background: #e3f2fd; border-radius: 10px; overflow: hidden;
+    }
+    .acc-font-fill {
+      height: 100%; width: 43%; background: linear-gradient(90deg, #42a5f5, #1565c0);
+      border-radius: 10px; transition: width .2s ease;
+    }
+    .acc-font-val {
+      font-weight: 800; color: #0d47a1; font-size: .82rem;
+      min-width: 38px; text-align: center;
+    }
 
-    .acc-toggle-group { display:flex; flex-direction:column; gap:.4rem; }
-    .acc-toggle {
-      width:100%; padding:.5rem .85rem; border-radius:10px;
-      border:2px solid #e3f2fd; background:#f8faff;
-      font-size:.85rem; font-weight:600; color:#546e7a;
-      cursor:pointer; text-align:left; font-family:inherit;
-      transition:all .15s; display:flex; align-items:center; gap:.5rem;
+    /* ===== GRID OPCIONES ===== */
+    .acc-opts-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: .45rem;
     }
-    .acc-toggle::before {
-      content:''; width:14px; height:14px; border-radius:4px;
-      border:2px solid #cfd8dc; background:#fff; flex-shrink:0;
-      transition:all .15s;
+    .acc-opt {
+      display: flex; flex-direction: column; align-items: center; gap: .3rem;
+      padding: .7rem .5rem; border-radius: 14px;
+      border: 1.5px solid #e3f2fd; background: #f8faff;
+      cursor: pointer; font-family: inherit;
+      transition: all .2s; position: relative;
     }
-    .acc-toggle[aria-checked="true"] {
-      background:#e3f2fd; border-color:#1565c0; color:#0d47a1;
+    .acc-opt:hover { border-color: #1565c0; background: #e8f0fe; transform: translateY(-2px); }
+    .acc-opt:focus-visible { outline: 2px solid #ff6f00; outline-offset: 2px; }
+    .acc-opt-icon { font-size: 1.4rem; line-height: 1; }
+    .acc-opt-label { font-size: .72rem; font-weight: 700; color: #546e7a; text-align: center; line-height: 1.2; }
+    .acc-opt-pill {
+      font-size: .62rem; font-weight: 800; padding: .1rem .45rem;
+      border-radius: 20px; background: #e0e0e0; color: #757575;
+      transition: all .2s; letter-spacing: .3px;
     }
-    .acc-toggle[aria-checked="true"]::before {
-      background:#1565c0; border-color:#1565c0;
+    .acc-opt[aria-checked="true"] {
+      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+      border-color: #1565c0;
     }
-    .acc-toggle:hover { border-color:#1565c0; }
-    .acc-toggle:focus-visible { outline:2px solid #ff6f00; outline-offset:2px; }
+    .acc-opt[aria-checked="true"] .acc-opt-label { color: #0d47a1; }
+    .acc-opt[aria-checked="true"] .acc-opt-pill {
+      background: #1565c0; color: #fff;
+    }
+    /* Para que la última opción (impar) ocupe todo el ancho */
+    .acc-opts-grid .acc-opt:last-child:nth-child(odd) { grid-column: 1 / -1; }
 
+    /* ===== RESET ===== */
     .acc-reset {
-      width:100%; padding:.55rem; border-radius:10px;
-      border:2px solid #e3f2fd; background:#fff;
-      font-size:.85rem; font-weight:600; color:#546e7a;
-      cursor:pointer; font-family:inherit; margin-top:.25rem;
-      transition:background .15s, color .15s;
+      width: 100%; padding: .65rem; border-radius: 12px;
+      border: 1.5px solid #e3f2fd; background: #f8faff;
+      font-size: .85rem; font-weight: 700; color: #546e7a;
+      cursor: pointer; font-family: inherit; margin-top: .35rem;
+      transition: all .15s; display: flex; align-items: center;
+      justify-content: center; gap: .4rem;
     }
-    .acc-reset:hover { background:#ffebee; color:#c62828; border-color:#ef9a9a; }
-    .acc-reset:focus-visible { outline:2px solid #ff6f00; outline-offset:2px; }
+    .acc-reset:hover { background: #ffebee; color: #c62828; border-color: #ef9a9a; }
+    .acc-reset:focus-visible { outline: 2px solid #ff6f00; outline-offset: 2px; }
 
-    /* ===== MODOS ACCESIBILIDAD ===== */
-    body.acc-contraste {
-      --acc-text: #000000;
-      --acc-bg:   #ffffff;
-      background: #ffffff !important;
-      color: #000000 !important;
-    }
-    body.acc-contraste .sidebar,
-    body.acc-contraste .topbar,
-    body.acc-contraste .hero,
-    body.acc-contraste .card,
-    body.acc-contraste .review-card,
-    body.acc-contraste .modal,
-    body.acc-contraste .footer,
-    body.acc-contraste .section,
-    body.acc-contraste .stats {
-      background: #ffffff !important;
-      color: #000000 !important;
-      border-color: #000000 !important;
-    }
-    body.acc-contraste a,
-    body.acc-contraste button,
-    body.acc-contraste h1,
-    body.acc-contraste h2,
-    body.acc-contraste h3,
-    body.acc-contraste p,
-    body.acc-contraste span,
-    body.acc-contraste li {
-      color: #000000 !important;
-    }
-    body.acc-contraste .btn-cita,
-    body.acc-contraste .btn-outline,
-    body.acc-contraste .sidebar-link,
-    body.acc-contraste .hero-badge {
-      background: #000000 !important;
-      color: #ffffff !important;
-      border-color: #000000 !important;
-    }
-    /* El panel y botones de accesibilidad NUNCA se afectan */
-    .acc-toggle-btn,
-    .acc-panel,
-    .whatsapp-float {
-      filter: none !important;
-    }
+    /* ===== MODO OSCURO ===== */
     body.acc-oscuro {
-      background: #121212 !important;
-      color: #e0e0e0 !important;
+      background: #0f0f0f !important;
+      color: #e8e8e8 !important;
     }
-    body.acc-oscuro .sidebar,
-    body.acc-oscuro .topbar,
-    body.acc-oscuro .modal,
+    body.acc-oscuro .main-content,
+    body.acc-oscuro .section,
+    body.acc-oscuro .section-alt,
+    body.acc-oscuro .stats,
+    body.acc-oscuro .hero { background: #0f0f0f !important; }
+    body.acc-oscuro .sidebar  { background: #1a1a2e !important; }
+    body.acc-oscuro .topbar   { background: #1a1a2e !important; }
     body.acc-oscuro .card,
-    body.acc-oscuro .review-card,
-    body.acc-oscuro .footer {
-      background: #1e1e1e !important;
-      color: #e0e0e0 !important;
+    body.acc-oscuro .review-card {
+      background: #1e1e2e !important;
+      border-color: #333 !important;
+      color: #e8e8e8 !important;
     }
+    body.acc-oscuro .card h3,
+    body.acc-oscuro .card p,
+    body.acc-oscuro .review-card p,
+    body.acc-oscuro .review-card strong { color: #e8e8e8 !important; }
+    body.acc-oscuro .footer    { background: #0a0a0a !important; color: #aaa !important; }
+    body.acc-oscuro .modal     { background: #1e1e2e !important; color: #e8e8e8 !important; }
+    body.acc-oscuro .section-title,
+    body.acc-oscuro h1, body.acc-oscuro h2, body.acc-oscuro h3 { color: #90caf9 !important; }
+    body.acc-oscuro .sidebar-link,
+    body.acc-oscuro .footer a  { color: #90caf9 !important; }
+    body.acc-oscuro input, body.acc-oscuro select, body.acc-oscuro textarea {
+      background: #2a2a3a !important; color: #e8e8e8 !important; border-color: #444 !important;
+    }
+    /* Panel ACC siempre visible y estilizado en modo oscuro */
+    body.acc-oscuro .acc-panel {
+      background: #1e1e2e !important; border-color: #333 !important;
+      color: #e8e8e8 !important;
+    }
+    body.acc-oscuro .acc-panel-title { color: #90caf9 !important; }
+    body.acc-oscuro .acc-panel-sub   { color: #777 !important; }
+    body.acc-oscuro .acc-font-controls,
+    body.acc-oscuro .acc-opt { background: #2a2a3a !important; border-color: #444 !important; }
+    body.acc-oscuro .acc-opt-label,
+    body.acc-oscuro .acc-font-val { color: #e8e8e8 !important; }
+    body.acc-oscuro .acc-label { color: #777 !important; }
+    body.acc-oscuro .acc-reset { background: #2a2a3a !important; color: #aaa !important; border-color: #444 !important; }
+    body.acc-oscuro .acc-close { background: #2a2a3a !important; color: #aaa !important; }
+    body.acc-oscuro .acc-panel-header { border-bottom-color: #333 !important; }
+    body.acc-oscuro .acc-opt[aria-checked="true"] { background: #1565c0 !important; border-color: #42a5f5 !important; }
+    body.acc-oscuro .acc-opt[aria-checked="true"] .acc-opt-label { color: #fff !important; }
+
+    /* ===== ALTO CONTRASTE ===== */
+    body.acc-contraste {
+      background: #fff !important; color: #000 !important;
+    }
+    body.acc-contraste .sidebar, body.acc-contraste .topbar,
+    body.acc-contraste .hero, body.acc-contraste .card,
+    body.acc-contraste .review-card, body.acc-contraste .modal,
+    body.acc-contraste .footer, body.acc-contraste .section,
+    body.acc-contraste .stats {
+      background: #fff !important; color: #000 !important; border-color: #000 !important;
+    }
+    body.acc-contraste a, body.acc-contraste button,
+    body.acc-contraste h1, body.acc-contraste h2, body.acc-contraste h3,
+    body.acc-contraste p, body.acc-contraste span, body.acc-contraste li {
+      color: #000 !important;
+    }
+    body.acc-contraste .btn-cita, body.acc-contraste .btn-outline,
+    body.acc-contraste .sidebar-link, body.acc-contraste .hero-badge {
+      background: #000 !important; color: #fff !important; border-color: #000 !important;
+    }
+
+    /* ===== OTROS MODOS ===== */
     body.acc-links a { text-decoration: underline !important; text-underline-offset: 3px; }
     body.acc-sin-animaciones *,
     body.acc-sin-animaciones *::before,
     body.acc-sin-animaciones *::after {
-      animation-duration: 0.01ms !important;
-      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important; transition-duration: 0.01ms !important;
     }
+
+    /* El panel y flotantes NUNCA se afectan */
+    .acc-toggle-btn, .acc-panel, .whatsapp-float { filter: none !important; }
 
     /* ===== WHATSAPP ===== */
     .whatsapp-float {
-      position:fixed; bottom:1.5rem; right:1.5rem;
-      width:56px; height:56px; background:#25d366; color:#fff;
-      border-radius:50%; display:flex; align-items:center; justify-content:center;
-      box-shadow:0 4px 20px rgba(37,211,102,.5); z-index:9000;
-      transition:transform .2s; text-decoration:none;
+      position: fixed; bottom: 1.5rem; right: 1.5rem;
+      width: 56px; height: 56px; background: #25d366; color: #fff;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,.5); z-index: 9000;
+      transition: transform .2s; text-decoration: none;
     }
-    .whatsapp-float:hover { transform:scale(1.1); }
-    .whatsapp-float:focus-visible { outline:3px solid #fff; outline-offset:3px; }
+    .whatsapp-float:hover { transform: scale(1.1); }
+    .whatsapp-float:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
   </style>
-
-  <script>
-    // ===== ACCESIBILIDAD =====
-    (function() {
-      var fontSize    = parseInt(localStorage.getItem('acc_font') || '100');
-      var guiaOn      = false;
-      var panel       = document.getElementById('accPanel');
-      var toggleBtn   = document.getElementById('accToggleBtn');
-      var closeBtn    = document.getElementById('accClose');
-      var guiaLine    = document.getElementById('guiaLine');
-
-      // Restaurar preferencias guardadas
-      document.documentElement.style.fontSize = fontSize + '%';
-      document.getElementById('accFontVal').textContent = fontSize + '%';
-      if (localStorage.getItem('acc_contraste')    === '1') { document.body.classList.add('acc-contraste');      document.getElementById('accContraste').setAttribute('aria-checked','true'); }
-      if (localStorage.getItem('acc_oscuro')       === '1') { document.body.classList.add('acc-oscuro');         document.getElementById('accOscuro').setAttribute('aria-checked','true'); }
-      if (localStorage.getItem('acc_links')        === '1') { document.body.classList.add('acc-links');          document.getElementById('accLinks').setAttribute('aria-checked','true'); }
-      if (localStorage.getItem('acc_animaciones')  === '1') { document.body.classList.add('acc-sin-animaciones');document.getElementById('accAnimaciones').setAttribute('aria-checked','true'); }
-
-      // Abrir/cerrar panel
-      toggleBtn.addEventListener('click', function() {
-        var open = panel.hidden;
-        panel.hidden = !open;
-        toggleBtn.setAttribute('aria-expanded', String(!open));
-        if (!open) toggleBtn.focus();
-        else setTimeout(function(){ closeBtn.focus(); }, 50);
-      });
-      closeBtn.addEventListener('click', function() {
-        panel.hidden = true;
-        toggleBtn.setAttribute('aria-expanded', 'false');
-        toggleBtn.focus();
-      });
-      // Cerrar con Escape
-      panel.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') { panel.hidden = true; toggleBtn.setAttribute('aria-expanded','false'); toggleBtn.focus(); }
-      });
-
-      // Tamaño fuente
-      document.getElementById('accFontInc').addEventListener('click', function() {
-        if (fontSize >= 150) return;
-        fontSize += 10;
-        document.documentElement.style.fontSize = fontSize + '%';
-        document.getElementById('accFontVal').textContent = fontSize + '%';
-        localStorage.setItem('acc_font', fontSize);
-      });
-      document.getElementById('accFontDec').addEventListener('click', function() {
-        if (fontSize <= 70) return;
-        fontSize -= 10;
-        document.documentElement.style.fontSize = fontSize + '%';
-        document.getElementById('accFontVal').textContent = fontSize + '%';
-        localStorage.setItem('acc_font', fontSize);
-      });
-
-      // Toggles
-      function makeToggle(btnId, cssClass, storageKey) {
-        document.getElementById(btnId).addEventListener('click', function() {
-          var on = this.getAttribute('aria-checked') === 'true';
-          this.setAttribute('aria-checked', String(!on));
-          document.body.classList.toggle(cssClass, !on);
-          localStorage.setItem(storageKey, on ? '0' : '1');
-        });
-      }
-      makeToggle('accContraste',   'acc-contraste',       'acc_contraste');
-      makeToggle('accOscuro',      'acc-oscuro',          'acc_oscuro');
-      makeToggle('accLinks',       'acc-links',           'acc_links');
-      makeToggle('accAnimaciones', 'acc-sin-animaciones', 'acc_animaciones');
-
-      // Guía de lectura
-      document.getElementById('accGuia').addEventListener('click', function() {
-        guiaOn = !guiaOn;
-        this.setAttribute('aria-checked', String(guiaOn));
-        guiaLine.style.display = guiaOn ? 'block' : 'none';
-        localStorage.setItem('acc_guia', guiaOn ? '1' : '0');
-      });
-      if (localStorage.getItem('acc_guia') === '1') {
-        guiaOn = true;
-        guiaLine.style.display = 'block';
-        document.getElementById('accGuia').setAttribute('aria-checked', 'true');
-      }
-      document.addEventListener('mousemove', function(e) {
-        if (guiaOn) guiaLine.style.top = (e.clientY - 1) + 'px';
-      });
-
-      // Restablecer todo
-      document.getElementById('accReset').addEventListener('click', function() {
-        fontSize = 100;
-        document.documentElement.style.fontSize = '100%';
-        document.getElementById('accFontVal').textContent = '100%';
-        ['acc-contraste','acc-oscuro','acc-links','acc-sin-animaciones'].forEach(function(c){ document.body.classList.remove(c); });
-        guiaOn = false; guiaLine.style.display = 'none';
-        ['accContraste','accOscuro','accLinks','accGuia','accAnimaciones'].forEach(function(id){
-          var el = document.getElementById(id);
-          if (el) el.setAttribute('aria-checked','false');
-        });
-        ['acc_font','acc_contraste','acc_oscuro','acc_links','acc_guia','acc_animaciones'].forEach(function(k){ localStorage.removeItem(k); });
-      });
-    })();
-  </script>
 
   <script>
     ['btnLogin','btnLoginTop'].forEach(function(id){
