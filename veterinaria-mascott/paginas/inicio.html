@@ -718,18 +718,18 @@
     .chat-fab {
       position: fixed; bottom: 9.5rem; right: 1.5rem;
       width: 54px; height: 54px; border-radius: 50%;
-      background: linear-gradient(135deg, #ff6f00, #ff8f00);
+      background: linear-gradient(135deg, #00c3ff, #0077ff);
       color: #fff; border: none; cursor: pointer; z-index: 8800;
-      box-shadow: 0 6px 24px rgba(255,111,0,.45);
+      box-shadow: 0 6px 24px rgba(0, 217, 255, 0.45);
       display: flex; align-items: center; justify-content: center;
       transition: transform .25s, box-shadow .25s;
       animation: chatPulse 3s ease-in-out infinite;
     }
-    .chat-fab:hover { transform: scale(1.12); box-shadow: 0 10px 36px rgba(255,111,0,.6); animation: none; }
+    .chat-fab:hover { transform: scale(1.12); box-shadow: 0 10px 36px rgba(0, 102, 255, 0.6); animation: none; }
     .chat-fab:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
     @keyframes chatPulse {
-      0%,100% { box-shadow: 0 6px 24px rgba(255,111,0,.45); }
-      50%      { box-shadow: 0 6px 32px rgba(255,111,0,.75), 0 0 0 8px rgba(255,111,0,.1); }
+      0%,100% { box-shadow: 0 6px 24px rgba(0, 162, 255, 0.45); }
+      50%      { box-shadow: 0 6px 32px rgba(0, 119, 255, 0.75), 0 0 0 8px rgba(0, 119, 255, 0.1); }
     }
     .chat-fab-icon { display: flex; align-items: center; justify-content: center; }
     .chat-notif {
@@ -768,7 +768,7 @@
 
     /* Header */
     .chat-header {
-      background: linear-gradient(135deg, #ff6f00, #e65100);
+      background: linear-gradient(135deg, #0084ff, #0049e6);
       padding: .85rem 1.1rem;
       display: flex; align-items: center; justify-content: space-between;
       flex-shrink: 0;
@@ -784,7 +784,7 @@
     .chat-online-dot {
       position: absolute; bottom: 1px; right: 1px;
       width: 11px; height: 11px; border-radius: 50%;
-      background: #69f0ae; border: 2px solid #ff6f00;
+      background: #69f0ae; border: 2px solid #00a2ff;
       animation: onlinePulse 2s ease-in-out infinite;
     }
     @keyframes onlinePulse { 0%,100%{opacity:1} 50%{opacity:.5} }
