@@ -658,6 +658,460 @@
   </script>
 
   <!-- WHATSAPP FLOTANTE -->
+  <!-- ===== CHATBOT MASCOTT ===== -->
+  <button class="chat-fab" id="chatFab" aria-label="Abrir chat de soporte" aria-expanded="false">
+    <span class="chat-fab-icon" id="chatFabIcon">
+      <svg viewBox="0 0 24 24" fill="none" width="26" height="26" aria-hidden="true">
+        <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.956 9.956 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2Z" fill="currentColor" opacity=".2"/>
+        <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.956 9.956 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2Z" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M8 10h8M8 14h5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </span>
+    <span class="chat-notif" id="chatNotif" aria-hidden="true">1</span>
+    <span class="chat-fab-tooltip">¿Necesitas ayuda?</span>
+  </button>
+
+  <div class="chat-window" id="chatWindow" hidden aria-label="Chat de soporte Mascott" role="dialog">
+    <!-- Header -->
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <div class="chat-avatar-wrap">
+          <div class="chat-avatar">🐾</div>
+          <span class="chat-online-dot" aria-hidden="true"></span>
+        </div>
+        <div>
+          <p class="chat-header-name">Mascott Bot</p>
+          <p class="chat-header-status">En línea · responde al instante</p>
+        </div>
+      </div>
+      <button class="chat-close" id="chatClose" aria-label="Cerrar chat">✕</button>
+    </div>
+
+    <!-- Mensajes -->
+    <div class="chat-body" id="chatBody" role="log" aria-live="polite" aria-label="Mensajes del chat"></div>
+
+    <!-- Sugerencias rápidas -->
+    <div class="chat-sugerencias" id="chatSugerencias" aria-label="Preguntas frecuentes">
+      <button class="chat-sug" data-q="¿Cuáles son los servicios?">🩺 Servicios</button>
+      <button class="chat-sug" data-q="¿Cuál es el horario?">🕐 Horario</button>
+      <button class="chat-sug" data-q="¿Cómo agendo una cita?">📅 Citas</button>
+      <button class="chat-sug" data-q="¿Cuánto cuesta una consulta?">💰 Precios</button>
+      <button class="chat-sug" data-q="¿Dónde están ubicados?">📍 Ubicación</button>
+      <button class="chat-sug" data-q="¿Atienden urgencias?">🚨 Urgencias</button>
+    </div>
+
+    <!-- Input -->
+    <div class="chat-footer">
+      <input type="text" class="chat-input" id="chatInput"
+             placeholder="Escribe tu pregunta..."
+             autocomplete="off" aria-label="Escribe tu mensaje"/>
+      <button class="chat-send" id="chatSend" aria-label="Enviar mensaje">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <style>
+    /* ===== FAB CHATBOT ===== */
+    .chat-fab {
+      position: fixed; bottom: 9.5rem; right: 1.5rem;
+      width: 54px; height: 54px; border-radius: 50%;
+      background: linear-gradient(135deg, #ff6f00, #ff8f00);
+      color: #fff; border: none; cursor: pointer; z-index: 8800;
+      box-shadow: 0 6px 24px rgba(255,111,0,.45);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform .25s, box-shadow .25s;
+      animation: chatPulse 3s ease-in-out infinite;
+    }
+    .chat-fab:hover { transform: scale(1.12); box-shadow: 0 10px 36px rgba(255,111,0,.6); animation: none; }
+    .chat-fab:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+    @keyframes chatPulse {
+      0%,100% { box-shadow: 0 6px 24px rgba(255,111,0,.45); }
+      50%      { box-shadow: 0 6px 32px rgba(255,111,0,.75), 0 0 0 8px rgba(255,111,0,.1); }
+    }
+    .chat-fab-icon { display: flex; align-items: center; justify-content: center; }
+    .chat-notif {
+      position: absolute; top: -4px; right: -4px;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: #e53935; color: #fff; font-size: .65rem;
+      font-weight: 800; display: flex; align-items: center; justify-content: center;
+      border: 2px solid #fff; animation: notifBounce .6s ease infinite alternate;
+    }
+    @keyframes notifBounce { from { transform: scale(1); } to { transform: scale(1.2); } }
+    .chat-fab-tooltip {
+      position: absolute; right: 62px; top: 50%; transform: translateY(-50%);
+      background: #333; color: #fff; font-size: .75rem; font-weight: 600;
+      padding: .3rem .75rem; border-radius: 8px; white-space: nowrap;
+      opacity: 0; pointer-events: none; transition: opacity .2s;
+    }
+    .chat-fab:hover .chat-fab-tooltip { opacity: 1; }
+
+    /* ===== VENTANA CHAT ===== */
+    .chat-window {
+      position: fixed; bottom: 10.5rem; right: 1.5rem;
+      width: 360px; max-width: calc(100vw - 2rem);
+      height: 520px; max-height: calc(100vh - 14rem);
+      border-radius: 22px; overflow: hidden;
+      display: flex; flex-direction: column;
+      background: #fff; z-index: 8800;
+      box-shadow: 0 24px 64px rgba(0,0,0,.2), 0 4px 16px rgba(0,0,0,.1);
+      border: 1px solid rgba(255,111,0,.15);
+      animation: chatSlideIn .3s cubic-bezier(.34,1.56,.64,1);
+    }
+    .chat-window[hidden] { display: none; }
+    @keyframes chatSlideIn {
+      from { opacity: 0; transform: translateY(20px) scale(.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Header */
+    .chat-header {
+      background: linear-gradient(135deg, #ff6f00, #e65100);
+      padding: .85rem 1.1rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .chat-header-info { display: flex; align-items: center; gap: .75rem; }
+    .chat-avatar-wrap { position: relative; flex-shrink: 0; }
+    .chat-avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: rgba(255,255,255,.2); display: flex;
+      align-items: center; justify-content: center; font-size: 1.4rem;
+      border: 2px solid rgba(255,255,255,.4);
+    }
+    .chat-online-dot {
+      position: absolute; bottom: 1px; right: 1px;
+      width: 11px; height: 11px; border-radius: 50%;
+      background: #69f0ae; border: 2px solid #ff6f00;
+      animation: onlinePulse 2s ease-in-out infinite;
+    }
+    @keyframes onlinePulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+    .chat-header-name { color: #fff; font-weight: 800; font-size: .95rem; margin: 0; }
+    .chat-header-status { color: rgba(255,255,255,.8); font-size: .72rem; margin: .1rem 0 0; }
+    .chat-close {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: rgba(255,255,255,.2); border: none; color: #fff;
+      font-size: .95rem; cursor: pointer; display: flex;
+      align-items: center; justify-content: center; transition: background .15s;
+    }
+    .chat-close:hover { background: rgba(255,255,255,.35); }
+    .chat-close:focus-visible { outline: 2px solid #fff; }
+
+    /* Body mensajes */
+    .chat-body {
+      flex: 1; overflow-y: auto; padding: 1rem;
+      display: flex; flex-direction: column; gap: .6rem;
+      background: #fafafa;
+      scroll-behavior: smooth;
+    }
+    .chat-body::-webkit-scrollbar { width: 4px; }
+    .chat-body::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 4px; }
+
+    /* Mensajes */
+    .chat-msg { display: flex; gap: .5rem; max-width: 85%; animation: msgIn .25s ease; }
+    @keyframes msgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    .chat-msg.bot  { align-self: flex-start; }
+    .chat-msg.user { align-self: flex-end; flex-direction: row-reverse; }
+    .chat-msg-avatar {
+      width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem; background: #fff3e0; margin-top: auto;
+    }
+    .chat-msg.user .chat-msg-avatar { background: #e3f2fd; }
+    .chat-msg-bubble {
+      padding: .65rem .95rem; border-radius: 18px;
+      font-size: .87rem; line-height: 1.5; max-width: 100%;
+    }
+    .chat-msg.bot  .chat-msg-bubble {
+      background: #fff; color: #1a1a2e;
+      border-radius: 4px 18px 18px 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      border: 1px solid #f0f0f0;
+    }
+    .chat-msg.user .chat-msg-bubble {
+      background: linear-gradient(135deg, #ff6f00, #ff8f00);
+      color: #fff; border-radius: 18px 4px 18px 18px;
+    }
+    .chat-msg-time {
+      font-size: .63rem; color: #bbb; margin-top: .25rem;
+      text-align: right;
+    }
+    .chat-msg.bot .chat-msg-time { text-align: left; }
+
+    /* Typing indicator */
+    .chat-typing { display: flex; gap: 4px; padding: .65rem .95rem;
+      background: #fff; border-radius: 4px 18px 18px 18px;
+      width: fit-content; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+    .chat-typing span {
+      width: 7px; height: 7px; border-radius: 50%; background: #bbb;
+      animation: typingDot 1.2s ease-in-out infinite;
+    }
+    .chat-typing span:nth-child(2) { animation-delay: .2s; }
+    .chat-typing span:nth-child(3) { animation-delay: .4s; }
+    @keyframes typingDot { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+    /* Sugerencias */
+    .chat-sugerencias {
+      padding: .6rem .8rem; display: flex; flex-wrap: wrap; gap: .35rem;
+      border-top: 1px solid #f0f0f0; background: #fff; flex-shrink: 0;
+    }
+    .chat-sug {
+      padding: .35rem .8rem; border-radius: 20px;
+      border: 1.5px solid #ff6f00; background: #fff3e0;
+      color: #e65100; font-size: .75rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: all .15s;
+      white-space: nowrap;
+    }
+    .chat-sug:hover { background: #ff6f00; color: #fff; transform: translateY(-1px); }
+    .chat-sug:focus-visible { outline: 2px solid #ff6f00; outline-offset: 2px; }
+
+    /* Footer input */
+    .chat-footer {
+      padding: .75rem 1rem; display: flex; gap: .5rem;
+      border-top: 1px solid #f0f0f0; background: #fff; flex-shrink: 0;
+    }
+    .chat-input {
+      flex: 1; padding: .6rem 1rem; border: 1.5px solid #e0e0e0;
+      border-radius: 50px; font-size: .88rem; color: #1a1a2e;
+      background: #fafafa; outline: none; font-family: inherit;
+      transition: border-color .2s;
+    }
+    .chat-input:focus { border-color: #ff6f00; background: #fff; }
+    .chat-send {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg, #ff6f00, #e65100);
+      border: none; color: #fff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform .15s, box-shadow .15s; flex-shrink: 0;
+    }
+    .chat-send:hover { transform: scale(1.1); box-shadow: 0 4px 16px rgba(255,111,0,.4); }
+    .chat-send:focus-visible { outline: 2px solid #ff6f00; outline-offset: 2px; }
+
+    @media (max-width: 480px) {
+      .chat-window { bottom: 9rem; right: .75rem; width: calc(100vw - 1.5rem); height: 70vh; }
+      .chat-fab    { bottom: 9rem; right: .75rem; }
+    }
+  </style>
+
+  <script>
+  (function() {
+    // ===== BASE DE CONOCIMIENTO =====
+    var KB = [
+      {
+        tags: ['servicio','servicios','ofrecen','hacen','atienden','qué hacen'],
+        resp: '🩺 <strong>Nuestros servicios:</strong><br>• Consulta general y especializada<br>• 💉 Vacunación y desparasitación<br>• ✂️ Estética canina y baño<br>• 🦷 Limpieza dental<br>• 🔬 Análisis de laboratorio<br>• 🩻 Radiografía y ecografía<br>• 🏥 Cirugías y urgencias 24h'
+      },
+      {
+        tags: ['horario','hora','horarios','cuando','abren','cierran','tiempo'],
+        resp: '🕐 <strong>Horarios de atención:</strong><br>• Lunes a Sábado: 9:00 am – 7:00 pm<br>• Domingos: Solo urgencias<br>• 🚨 Urgencias: 24 horas'
+      },
+      {
+        tags: ['cita','citas','agendar','reservar','turno','appointment'],
+        resp: '📅 <strong>Agendar una cita es muy fácil:</strong><br>1. Inicia sesión en tu cuenta<br>2. Ve a "Mis Citas" o haz clic en "Agendar Cita"<br>3. Selecciona fecha, hora y servicio<br>4. ¡Listo! Recibirás confirmación<br><br><a href="login-registro.html" style="color:#ff6f00;font-weight:700">→ Iniciar sesión</a>'
+      },
+      {
+        tags: ['precio','precios','costo','cuanto','cobran','vale','tarifa'],
+        resp: '💰 <strong>Precios aproximados:</strong><br>• Consulta general: desde $80,000<br>• Vacunación: desde $45,000<br>• Baño y estética: desde $60,000<br>• Desparasitación: desde $35,000<br><br>Los precios varían según la especie y tamaño. <a href="#contacto" style="color:#ff6f00;font-weight:700">Contáctanos</a> para más info.'
+      },
+      {
+        tags: ['ubicacion','ubicación','donde','dirección','direccion','encuentran','quedan','mapa'],
+        resp: '📍 <strong>Nos encontramos en:</strong><br>Calle Principal #123, Col. Centro<br>Sogamoso, Boyacá<br><br>🗺️ <a href="#ubicacion" style="color:#ff6f00;font-weight:700">Ver mapa en la página</a>'
+      },
+      {
+        tags: ['urgencia','urgencias','emergencia','emergencias','noche','madrugada','grave'],
+        resp: '🚨 <strong>Urgencias 24 horas:</strong><br>Atendemos emergencias veterinarias a cualquier hora del día o la noche.<br><br>📞 <strong>Llama ahora:</strong> <a href="tel:+573114569768" style="color:#ff6f00;font-weight:700">(+57) 311 456 9768</a><br>💬 <a href="https://wa.me/573114569768" style="color:#ff6f00;font-weight:700" target="_blank">WhatsApp de urgencias</a>'
+      },
+      {
+        tags: ['whatsapp','contacto','contact','llamar','teléfono','telefono','número'],
+        resp: '📞 <strong>Contáctanos:</strong><br>• WhatsApp: <a href="https://wa.me/573114569768" style="color:#ff6f00;font-weight:700" target="_blank">(+57) 311 456 9768</a><br>• Email: <a href="mailto:contacto@mascott.com" style="color:#ff6f00;font-weight:700">contacto@mascott.com</a><br>• Teléfono: (+57) 300 0000000'
+      },
+      {
+        tags: ['tienda','producto','productos','alimento','comida','comprar','venta'],
+        resp: '🛒 <strong>Tienda Mascott:</strong><br>Tenemos más de 26 productos:<br>• 🦴 Alimentos premium (Royal Canin, Hill\'s, Purina...)<br>• 🧴 Higiene y cuidado<br>• 💊 Medicamentos<br>• 🎾 Accesorios y juguetes<br><br><a href="tienda-productos.html" style="color:#ff6f00;font-weight:700">→ Ver tienda completa</a>'
+      },
+      {
+        tags: ['registrar','registro','cuenta','crear','inscribir'],
+        resp: '👤 <strong>Crear una cuenta es gratis:</strong><br>1. Ve a <a href="login-registro.html?tab=register" style="color:#ff6f00;font-weight:700">Registrarse</a><br>2. Ingresa tus datos<br>3. ¡Ya puedes agendar citas, ver historial de tus mascotas y comprar!'
+      },
+      {
+        tags: ['mascota','mascotas','animales','especie','perro','gato','conejo','ave'],
+        resp: '🐾 <strong>Atendemos a:</strong><br>• 🐕 Perros (todas las razas)<br>• 🐈 Gatos<br>• 🐇 Conejos<br>• 🐦 Aves<br>• 🐠 Peces y reptiles<br><br>¡Tu mascota siempre es bienvenida!'
+      },
+      {
+        tags: ['doctor','doctores','veterinario','veterinarios','medico','especialista'],
+        resp: '👨‍⚕️ <strong>Nuestro equipo médico:</strong><br>• Dr. Andrés García – Medicina General<br>• Dra. Laura Martínez – Cirugía<br>• Dr. Carlos Pérez – Dermatología<br>• Dra. Sofia Ramírez – Nutrición<br>• Dr. Miguel Torres – Urgencias 24h'
+      },
+      {
+        tags: ['hola','buenas','buenos','hey','hi','hello','buen','saludos'],
+        resp: '¡Hola! 👋 Soy <strong>Mascott Bot</strong>, tu asistente virtual. Estoy aquí para ayudarte con todo lo que necesites sobre nuestra clínica veterinaria. ¿En qué te puedo ayudar hoy? 🐾'
+      },
+      {
+        tags: ['gracias','thanks','ty','genial','perfecto','excelente','listo'],
+        resp: '¡Con mucho gusto! 😊 Si tienes más preguntas o necesitas agendar una cita, aquí estamos. <a href="https://wa.me/573114569768" style="color:#ff6f00;font-weight:700" target="_blank">¿Hablamos por WhatsApp?</a> 🐾'
+      },
+      {
+        tags: ['adios','chao','bye','hasta','salir'],
+        resp: '¡Hasta luego! 👋 Que tú y tu mascota tengan un excelente día. Recuerda que puedes contactarnos cuando quieras. 🐾💙'
+      }
+    ];
+
+    var DEFAULT_RESP = '🤔 No estoy seguro de entender tu pregunta. ¿Puedes reformularla? <br><br>Puedo ayudarte con:<br>• Servicios y horarios<br>• Agendar citas<br>• Precios y ubicación<br>• Urgencias<br><br>O escríbenos por <a href="https://wa.me/573114569768" style="color:#ff6f00;font-weight:700" target="_blank">WhatsApp</a> para atención personalizada.';
+
+    function getRespuesta(texto) {
+      var lower = texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      for (var i = 0; i < KB.length; i++) {
+        for (var j = 0; j < KB[i].tags.length; j++) {
+          if (lower.indexOf(KB[i].tags[j]) !== -1) return KB[i].resp;
+        }
+      }
+      return DEFAULT_RESP;
+    }
+
+    // ===== DOM =====
+    var fab      = document.getElementById('chatFab');
+    var win      = document.getElementById('chatWindow');
+    var closeBtn = document.getElementById('chatClose');
+    var body     = document.getElementById('chatBody');
+    var input    = document.getElementById('chatInput');
+    var sendBtn  = document.getElementById('chatSend');
+    var notif    = document.getElementById('chatNotif');
+    var sugs     = document.getElementById('chatSugerencias');
+    var isOpen   = false;
+
+    // ===== TOGGLE =====
+    fab.addEventListener('click', function() {
+      isOpen = !isOpen;
+      win.hidden = !isOpen;
+      fab.setAttribute('aria-expanded', String(isOpen));
+      if (notif) { notif.style.display = 'none'; }
+      if (isOpen) {
+        if (body.children.length === 0) bienvenida();
+        setTimeout(function() { input.focus(); }, 100);
+      } else {
+        fab.focus();
+      }
+    });
+
+    closeBtn.addEventListener('click', function() {
+      isOpen = false; win.hidden = true;
+      fab.setAttribute('aria-expanded', 'false');
+      fab.focus();
+    });
+
+    win.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') { isOpen = false; win.hidden = true; fab.setAttribute('aria-expanded','false'); fab.focus(); }
+    });
+
+    // ===== MENSAJES =====
+    function hora() {
+      var d = new Date();
+      return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+    }
+
+    function addMsg(texto, tipo) {
+      var wrap = document.createElement('div');
+      wrap.className = 'chat-msg ' + tipo;
+
+      var avatar = document.createElement('div');
+      avatar.className = 'chat-msg-avatar';
+      avatar.setAttribute('aria-hidden', 'true');
+      avatar.textContent = tipo === 'bot' ? '🐾' : '👤';
+
+      var inner = document.createElement('div');
+
+      var bubble = document.createElement('div');
+      bubble.className = 'chat-msg-bubble';
+      bubble.innerHTML = texto;
+
+      var time = document.createElement('div');
+      time.className = 'chat-msg-time';
+      time.setAttribute('aria-hidden', 'true');
+      time.textContent = hora();
+
+      inner.appendChild(bubble);
+      inner.appendChild(time);
+      wrap.appendChild(avatar);
+      wrap.appendChild(inner);
+      body.appendChild(wrap);
+      body.scrollTop = body.scrollHeight;
+    }
+
+    function typing() {
+      var wrap = document.createElement('div');
+      wrap.className = 'chat-msg bot';
+      wrap.id = 'chatTyping';
+
+      var avatar = document.createElement('div');
+      avatar.className = 'chat-msg-avatar';
+      avatar.setAttribute('aria-hidden', 'true');
+      avatar.textContent = '🐾';
+
+      var dots = document.createElement('div');
+      dots.className = 'chat-typing';
+      dots.innerHTML = '<span></span><span></span><span></span>';
+
+      wrap.appendChild(avatar);
+      wrap.appendChild(dots);
+      body.appendChild(wrap);
+      body.scrollTop = body.scrollHeight;
+    }
+
+    function removeTyping() {
+      var t = document.getElementById('chatTyping');
+      if (t) t.remove();
+    }
+
+    function responderBot(pregunta) {
+      addMsg(pregunta, 'user');
+      sugs.style.display = 'none';
+      typing();
+      var delay = 600 + Math.random() * 600;
+      setTimeout(function() {
+        removeTyping();
+        addMsg(getRespuesta(pregunta), 'bot');
+        sugs.style.display = 'flex';
+      }, delay);
+    }
+
+    function bienvenida() {
+      typing();
+      setTimeout(function() {
+        removeTyping();
+        addMsg('¡Hola! 👋 Soy <strong>Mascott Bot</strong>. ¿En qué te puedo ayudar hoy?<br>Usa los botones de abajo o escribe tu pregunta. 🐾', 'bot');
+      }, 800);
+    }
+
+    // ===== ENVIAR =====
+    function enviar() {
+      var txt = input.value.trim();
+      if (!txt) return;
+      input.value = '';
+      responderBot(txt);
+    }
+
+    sendBtn.addEventListener('click', enviar);
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') enviar();
+    });
+
+    // ===== SUGERENCIAS =====
+    sugs.querySelectorAll('.chat-sug').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        responderBot(btn.dataset.q);
+      });
+    });
+
+    // Notificación inicial con delay
+    setTimeout(function() {
+      if (!isOpen && notif) {
+        notif.style.display = 'flex';
+        fab.style.animation = 'chatPulse .6s ease';
+      }
+    }, 3000);
+  })();
+  </script>
   <a href="https://wa.me/573114569768?text=Hola%20Mascott%2C%20quiero%20información" 
      target="_blank" rel="noopener noreferrer"
      class="whatsapp-float" aria-label="Contactar por WhatsApp (abre en nueva pestaña)">
