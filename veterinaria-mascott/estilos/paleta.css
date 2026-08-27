@@ -1,0 +1,218 @@
+/* ================================================================
+   PALETA DE COLORES — Veterinaria Mascott
+   Color principal: #87CEEB (Sky Blue)
+   ================================================================
+
+   PALETA COMPLETA:
+   ┌─────────────────────────────────────────────────────────────┐
+   │  AZUL CIELO (Principal)                                      │
+   │  #87CEEB  — Sky Blue        (base)                           │
+   │  #5BB8E0  — Cerulean        (medio, hover)                   │
+   │  #2E9FD4  — Dodger Blue     (activo, CTA)                    │
+   │  #1A7FAD  — Deep Sky        (oscuro, textos)                 │
+   │  #0D5C82  — Navy Sky        (muy oscuro, headers)            │
+   │                                                              │
+   │  CLAROS (fondos, cards)                                      │
+   │  #EBF7FD  — Ice Blue        (fondo muy claro)                │
+   │  #D0ECFA  — Baby Blue       (cards, paneles)                 │
+   │  #B3DFF7  — Pale Blue       (hover suave)                    │
+   │                                                              │
+   │  COMPLEMENTARIO — Melocotón/Coral (contraste cálido)         │
+   │  #FF8A65  — Coral           (accent, CTA secundario)         │
+   │  #FF6B3D  — Deep Coral      (hover accent)                   │
+   │  #FFF3EE  — Peach Pale      (fondo accent)                   │
+   │                                                              │
+   │  ANÁLOGO — Verde menta (salud/veterinaria)                   │
+   │  #4CAF88  — Mint Green      (éxito, disponible)              │
+   │  #E8F8F2  — Mint Pale       (fondo éxito)                    │
+   │                                                              │
+   │  ANÁLOGO — Lavanda (premium)                                 │
+   │  #9B8FD4  — Lavender        (badge, especial)                │
+   │  #EEF0FB  — Lavender Pale   (fondo badge)                    │
+   │                                                              │
+   │  NEUTRALES                                                   │
+   │  #1A2332  — Midnight        (texto principal)                │
+   │  #4A5568  — Slate           (texto secundario)               │
+   │  #718096  — Cool Gray       (texto muted)                    │
+   │  #A0AEC0  — Silver          (bordes, placeholders)           │
+   │  #E2E8F0  — Light Gray      (bordes suaves)                  │
+   │  #F7FAFC  — Off White       (fondos)                         │
+   │  #FFFFFF  — White           (cards, modales)                 │
+   └─────────────────────────────────────────────────────────────┘
+   ================================================================ */
+
+:root {
+
+  /* ── Azul cielo — Color principal ── */
+  --color-primary-100:  #EBF7FD;   /* fondo muy claro */
+  --color-primary-200:  #D0ECFA;   /* cards, paneles  */
+  --color-primary-300:  #B3DFF7;   /* hover suave     */
+  --color-primary-400:  #87CEEB;   /* BASE ← principal */
+  --color-primary-500:  #5BB8E0;   /* medio, hover    */
+  --color-primary-600:  #2E9FD4;   /* activo, CTA     */
+  --color-primary-700:  #1A7FAD;   /* oscuro, textos  */
+  --color-primary-800:  #0D5C82;   /* headers, dark   */
+  --color-primary-900:  #073D58;   /* muy oscuro      */
+
+  /* ── Coral — Acento cálido ── */
+  --color-accent-100:   #FFF3EE;
+  --color-accent-400:   #FF8A65;
+  --color-accent-500:   #FF7043;
+  --color-accent-600:   #FF6B3D;
+  --color-accent-700:   #E64A19;
+
+  /* ── Verde menta — Éxito/salud ── */
+  --color-success-100:  #E8F8F2;
+  --color-success-400:  #4CAF88;
+  --color-success-500:  #38A169;
+  --color-success-600:  #276749;
+
+  /* ── Lavanda — Especial/premium ── */
+  --color-special-100:  #EEF0FB;
+  --color-special-400:  #9B8FD4;
+  --color-special-600:  #6B5CB8;
+
+  /* ── Advertencia ── */
+  --color-warning-100:  #FFFBEB;
+  --color-warning-400:  #F6C347;
+  --color-warning-600:  #D69E2E;
+
+  /* ── Error/peligro ── */
+  --color-error-100:    #FFF5F5;
+  --color-error-400:    #FC8181;
+  --color-error-600:    #C53030;
+
+  /* ── Neutrales ── */
+  --color-gray-50:      #F7FAFC;
+  --color-gray-100:     #EDF2F7;
+  --color-gray-200:     #E2E8F0;
+  --color-gray-300:     #CBD5E0;
+  --color-gray-400:     #A0AEC0;
+  --color-gray-500:     #718096;
+  --color-gray-600:     #4A5568;
+  --color-gray-700:     #2D3748;
+  --color-gray-800:     #1A2332;
+  --color-gray-900:     #0F1923;
+  --color-white:        #FFFFFF;
+
+  /* ── Aliases semánticos ── */
+  --primary:            var(--color-primary-400);   /* #87CEEB */
+  --primary-dark:       var(--color-primary-800);   /* #0D5C82 */
+  --primary-light:      var(--color-primary-200);   /* #D0ECFA */
+  --primary-hover:      var(--color-primary-500);   /* #5BB8E0 */
+  --primary-active:     var(--color-primary-600);   /* #2E9FD4 */
+
+  --accent:             var(--color-accent-400);    /* #FF8A65 */
+  --accent-dark:        var(--color-accent-600);    /* #FF6B3D */
+  --accent-light:       var(--color-accent-100);    /* #FFF3EE */
+
+  --success:            var(--color-success-500);
+  --success-light:      var(--color-success-100);
+  --warning:            var(--color-warning-600);
+  --warning-light:      var(--color-warning-100);
+  --error:              var(--color-error-600);
+  --error-light:        var(--color-error-100);
+
+  --text-primary:       var(--color-gray-800);      /* #1A2332 */
+  --text-secondary:     var(--color-gray-600);      /* #4A5568 */
+  --text-muted:         var(--color-gray-500);      /* #718096 */
+  --text-on-primary:    var(--color-white);
+  --text-on-dark:       var(--color-primary-100);
+
+  --bg-page:            #F0F8FF;   /* Alice Blue — fondo global */
+  --bg-card:            var(--color-white);
+  --bg-subtle:          var(--color-primary-100);
+  --bg-sidebar:         var(--color-primary-800);
+
+  --border-color:       var(--color-gray-200);
+  --border-focus:       var(--color-primary-400);
+
+  /* ── Gradientes predefinidos ── */
+  --gradient-primary:   linear-gradient(135deg, var(--color-primary-600), var(--color-primary-800));
+  --gradient-hero:      linear-gradient(135deg, var(--color-primary-800) 0%, var(--color-primary-600) 50%, var(--color-primary-500) 100%);
+  --gradient-sidebar:   linear-gradient(180deg, var(--color-primary-900) 0%, var(--color-primary-800) 50%, var(--color-primary-700) 100%);
+  --gradient-accent:    linear-gradient(135deg, var(--color-accent-400), var(--color-accent-600));
+  --gradient-card:      linear-gradient(135deg, var(--color-primary-100), var(--color-white));
+
+  /* ── Sombras ── */
+  --shadow-sm:          0 1px 3px rgba(135, 206, 235, .15), 0 1px 2px rgba(0, 0, 0, .06);
+  --shadow-md:          0 4px 16px rgba(135, 206, 235, .2),  0 2px 6px rgba(0, 0, 0, .08);
+  --shadow-lg:          0 10px 32px rgba(135, 206, 235, .25), 0 4px 12px rgba(0, 0, 0, .1);
+  --shadow-xl:          0 20px 60px rgba(13, 92, 130, .2),   0 8px 24px rgba(0, 0, 0, .12);
+
+  /* ── Bordes ── */
+  --radius-sm:   8px;
+  --radius-md:   14px;
+  --radius-lg:   20px;
+  --radius-xl:   28px;
+  --radius-full: 9999px;
+
+  /* ── Transiciones ── */
+  --transition-fast:   .15s ease;
+  --transition-base:   .25s ease;
+  --transition-slow:   .4s ease;
+}
+
+/* ================================================================
+   MODO OSCURO — sobreescritura
+   ================================================================ */
+body.acc-oscuro {
+  --primary:          #87CEEB;
+  --primary-dark:     #B3DFF7;
+  --primary-light:    #0D3A52;
+  --primary-hover:    #A8DAF0;
+  --text-primary:     #E8F4FD;
+  --text-secondary:   #9EC8E0;
+  --text-muted:       #6B9EB8;
+  --bg-page:          #0A0F18;
+  --bg-card:          #111827;
+  --bg-subtle:        #0D1F2D;
+  --bg-sidebar:       #070D14;
+  --border-color:     #1E3448;
+  --gradient-hero:    linear-gradient(135deg, #070D14 0%, #0D2233 50%, #112B3C 100%);
+  --gradient-sidebar: linear-gradient(180deg, #050A10 0%, #0A1520 50%, #0D1F2D 100%);
+}
+
+/* ================================================================
+   ALTO CONTRASTE — sobreescritura
+   ================================================================ */
+body.acc-contraste {
+  --primary:          #005A9E;
+  --primary-dark:     #003D6B;
+  --primary-hover:    #0073CC;
+  --accent:           #CC4400;
+  --text-primary:     #000000;
+  --text-secondary:   #1A1A1A;
+  --bg-page:          #FFFFFF;
+  --bg-card:          #FFFFFF;
+  --border-color:     #000000;
+}
+
+/* ================================================================
+   UTILIDADES GLOBALES DE COLOR
+   ================================================================ */
+
+.text-primary-color  { color: var(--primary); }
+.text-accent-color   { color: var(--accent); }
+.text-success-color  { color: var(--success); }
+.text-error-color    { color: var(--error); }
+.text-muted-color    { color: var(--text-muted); }
+
+.bg-primary          { background: var(--primary); }
+.bg-primary-dark     { background: var(--primary-dark); }
+.bg-primary-light    { background: var(--primary-light); }
+.bg-accent           { background: var(--accent); }
+.bg-success          { background: var(--success); }
+.bg-page             { background: var(--bg-page); }
+.bg-card             { background: var(--bg-card); }
+
+.border-primary      { border-color: var(--primary); }
+.border-accent       { border-color: var(--accent); }
+
+/* Badge de estado usando la paleta */
+.badge-disponible  { background: var(--success-light); color: var(--success); }
+.badge-ocupado     { background: var(--error-light);   color: var(--error); }
+.badge-pendiente   { background: var(--warning-light); color: var(--warning); }
+.badge-completada  { background: var(--success-light); color: var(--success); }
+.badge-cancelada   { background: var(--error-light);   color: var(--error); }
+.badge-confirmada  { background: var(--primary-light); color: var(--primary-dark); }

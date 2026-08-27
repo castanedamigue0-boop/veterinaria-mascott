@@ -1,3 +1,5 @@
+@import url('./paleta.css');
+
 *,
 *::before,
 *::after {
@@ -8,16 +10,16 @@
 
 :root {
   --sidebar-w:  260px;
-  --blue-dark:  #0d47a1;
-  --blue:       #1565c0;
-  --blue-mid:   #1976d2;
-  --blue-light: #42a5f5;
-  --blue-pale:  #e3f2fd;
-  --accent:     #ff6f00;
-  --white:      #ffffff;
-  --text:       #1a1a2e;
-  --muted:      #546e7a;
-  --bg:         #f0f4ff;
+  --blue-dark:  var(--color-primary-800);
+  --blue:       var(--color-primary-700);
+  --blue-mid:   var(--color-primary-600);
+  --blue-light: var(--color-primary-400);
+  --blue-pale:  var(--color-primary-100);
+  --accent:     var(--accent);
+  --white:      var(--color-white);
+  --text:       var(--text-primary);
+  --muted:      var(--text-muted);
+  --bg:         var(--bg-page);
   --radius:     14px;
   --shadow:     0 4px 24px rgba(13,71,161,.1);
   --t:          0.3s ease;
@@ -110,7 +112,7 @@ body {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--blue-light), #1e88e5);
+  background: linear-gradient(135deg, var(--blue-light), var(--color-primary-600));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -494,7 +496,7 @@ body {
   flex-wrap: wrap;
 }
 .cita-item.completada {
-  border-left-color: #43a047;
+  border-left-color: var(--color-primary-600);
   opacity: .75;
 }
 .cita-item.cancelada {
@@ -518,8 +520,8 @@ body {
   font-size: .75rem;
   font-weight: 700;
 }
-.badge-pendiente  { background: #e3f2fd; color: var(--blue-dark); }
-.badge-completada { background: #e8f5e9; color: #2e7d32; }
+.badge-pendiente  { background: var(--color-primary-100); color: var(--blue-dark); }
+.badge-completada { background: var(--color-primary-100); color: var(--color-primary-800); }
 .badge-cancelada  { background: #ffebee; color: #c62828; }
 
 .cita-actions {
@@ -655,7 +657,7 @@ body {
   font-size: .88rem;
   min-height: 1rem;
 }
-.form-msg.success { background: #e8f5e9; color: #2e7d32; }
+.form-msg.success { background: var(--color-primary-100); color: var(--color-primary-800); }
 .form-msg.error   { background: #ffebee; color: #c62828; }
 
 /* ===== PERFIL ===== */
@@ -912,7 +914,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: .75rem 0;
-  border-top: 2px solid #e3f2fd;
+  border-top: 2px solid var(--color-primary-100);
   margin-bottom: 1rem;
   font-size: 1rem;
   color: var(--text);
@@ -995,10 +997,10 @@ body {
 }
 .inv-table td {
   padding: .65rem 1rem;
-  border-bottom: 1px solid #f0f4ff;
+  border-bottom: 1px solid var(--bg-page);
 }
 .inv-table tbody tr:hover {
-  background: #f0f4ff;
+  background: var(--bg-page);
 }
 .inv-table tbody tr:last-child td {
   border-bottom: none;
@@ -1013,7 +1015,7 @@ body {
   text-transform: uppercase;
 }
 .inv-badge.oferta { background: #ffebee; color: #c62828; }
-.inv-badge.nuevo  { background: #e8f5e9; color: #2e7d32; }
+.inv-badge.nuevo  { background: var(--color-primary-100); color: var(--color-primary-800); }
 
 .inv-count {
   font-size: .85rem;
@@ -1025,7 +1027,7 @@ body {
 .prod-img-wrap {
   position: relative;
   height: 140px;
-  background: #f0f4ff;
+  background: var(--bg-page);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1045,7 +1047,7 @@ body {
   justify-content: center;
   flex-direction: column;
   gap: .25rem;
-  color: #90a4ae;
+  color: var(--color-gray-400);
   font-size: .8rem;
   border: 2px dashed #cfd8dc;
   border-radius: 12px 12px 0 0;
@@ -1093,7 +1095,7 @@ body {
   border-radius: 8px;
   overflow: hidden;
   flex-shrink: 0;
-  background: #f0f4ff;
+  background: var(--bg-page);
 }
 .ci-img {
   width: 100%;
@@ -1107,7 +1109,7 @@ body {
   align-items: center;
   justify-content: center;
   font-size: .6rem;
-  color: #90a4ae;
+  color: var(--color-gray-400);
   text-align: center;
 }
 .ci-info {
@@ -1149,7 +1151,7 @@ body {
   height: 44px;
   object-fit: cover;
   border-radius: 8px;
-  border: 1px solid #e3f2fd;
+  border: 1px solid var(--color-primary-100);
 }
 .inv-img-placeholder {
   width: 44px;
@@ -1160,7 +1162,7 @@ body {
   align-items: center;
   justify-content: center;
   font-size: .6rem;
-  color: #90a4ae;
+  color: var(--color-gray-400);
   text-align: center;
   flex-shrink: 0;
 }
@@ -1328,7 +1330,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.25rem;
-  background: #0d47a1;
+  background: var(--color-primary-800);
   color: #fff;
 }
 .notif-header h3 { font-size: .95rem; }
@@ -1339,13 +1341,13 @@ body {
   border-radius: 10px;
   font-size: .85rem;
   line-height: 1.4;
-  border-left: 4px solid #0d47a1;
-  background: #f0f4ff;
+  border-left: 4px solid var(--color-primary-800);
+  background: var(--bg-page);
 }
-.notif-item.confirmada { border-color: #2e7d32; background: #e8f5e9; }
+.notif-item.confirmada { border-color: var(--color-primary-800); background: var(--color-primary-100); }
 .notif-item.cancelada  { border-color: #c62828; background: #ffebee; }
-.notif-fecha { font-size: .72rem; color: #546e7a; margin-top: .25rem; }
-.notif-empty { text-align: center; padding: 2rem; color: #546e7a; font-size: .88rem; }
+.notif-fecha { font-size: .72rem; color: var(--text-muted); margin-top: .25rem; }
+.notif-empty { text-align: center; padding: 2rem; color: var(--text-muted); font-size: .88rem; }
 
 .ds-notif-btn {
   background: transparent;
@@ -1389,7 +1391,7 @@ body {
 }
 
 /* ===== BANNER CALENDARIO ===== */
-.cal-banner{background:linear-gradient(135deg,#0d47a1,#1976d2);border-radius:20px;
+.cal-banner{background:linear-gradient(135deg,var(--color-primary-800),var(--color-primary-600));border-radius:20px;
   padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;
   gap:1.5rem;flex-wrap:wrap;margin-top:1.5rem;box-shadow:0 8px 28px rgba(13,71,161,.25)}
 .cal-banner-content{display:flex;align-items:center;gap:1.25rem;flex:1}

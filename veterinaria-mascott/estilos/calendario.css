@@ -1,10 +1,12 @@
+@import url('./paleta.css');
+
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --blue-dark:#0d47a1;--blue:#1565c0;--blue-mid:#1976d2;--blue-light:#42a5f5;--blue-pale:#e3f2fd;
-  --green:#2e7d32;--green-pale:#e8f5e9;
-  --orange:#e65100;--orange-pale:#fff3e0;
+  --blue-dark:var(--color-primary-800);--blue:var(--color-primary-700);--blue-mid:var(--color-primary-600);--blue-light:var(--color-primary-400);--blue-pale:var(--color-primary-100);
+  --green:var(--color-primary-800);--green-pale:var(--color-primary-100);
+  --orange:var(--accent-dark);--orange-pale:var(--accent-light);
   --red:#c62828;--red-pale:#ffebee;
-  --white:#fff;--text:#1a1a2e;--muted:#546e7a;--bg:#f0f4ff;
+  --white:#fff;--text:var(--text-primary);--muted:var(--text-muted);--bg:var(--bg-page);
   --radius:16px;--shadow:0 4px 24px rgba(13,71,161,.12);--t:.25s ease;
 }
 html{scroll-behavior:smooth}
@@ -69,11 +71,11 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .cal-dia.vacio{background:transparent;cursor:default;border:none}
 .cal-dia.pasado{background:#f5f5f5;color:#bdbdbd;cursor:not-allowed}
 .cal-dia.hoy{border-color:var(--blue-mid);background:var(--blue-pale);color:var(--blue-dark)}
-.cal-dia.disponible{background:#fff;border-color:#e3f2fd;color:var(--text)}
+.cal-dia.disponible{background:#fff;border-color:var(--color-primary-100);color:var(--text)}
 .cal-dia.disponible:hover{background:var(--blue-pale);border-color:var(--blue);
   transform:scale(1.05);box-shadow:0 4px 16px rgba(13,71,161,.2)}
 .cal-dia.parcial{background:var(--orange-pale);border-color:#ffcc80;color:var(--orange)}
-.cal-dia.parcial:hover{background:#ffe0b2;border-color:var(--orange);transform:scale(1.05)}
+.cal-dia.parcial:hover{background:var(--accent-light);border-color:var(--orange);transform:scale(1.05)}
 .cal-dia.lleno{background:var(--red-pale);border-color:#ef9a9a;color:var(--red);cursor:not-allowed}
 .cal-dia.seleccionado{background:var(--blue);border-color:var(--blue);color:#fff;
   transform:scale(1.08);box-shadow:0 6px 20px rgba(13,71,161,.35)}
@@ -118,7 +120,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 
 /* ===== HORAS GRID ===== */
 .horas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.6rem;margin-bottom:1rem}
-.hora-btn{padding:.75rem .5rem;border-radius:12px;border:2px solid #e3f2fd;
+.hora-btn{padding:.75rem .5rem;border-radius:12px;border:2px solid var(--color-primary-100);
   background:#fff;font-size:.88rem;font-weight:600;color:var(--text);
   cursor:pointer;transition:all var(--t);text-align:center;font-family:inherit}
 .hora-btn:hover:not(:disabled){background:var(--blue-pale);border-color:var(--blue);

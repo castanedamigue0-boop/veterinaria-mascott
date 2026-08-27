@@ -1,3 +1,5 @@
+@import url('./paleta.css');
+
 /* ================================================================
    CHATBOT MASCOTT — chatbot.css
    Estilos del chat flotante de soporte
@@ -7,11 +9,11 @@
 :root {
   --chat-primary:     #0077ff;
   --chat-primary-2:   #0049e6;
-  --chat-accent:      #ff6f00;
-  --chat-accent-2:    #e65100;
+  --chat-accent:      var(--accent);
+  --chat-accent-2:    var(--accent-dark);
   --chat-bg:          #fafafa;
-  --chat-white:       #ffffff;
-  --chat-text:        #1a1a2e;
+  --chat-white:       var(--color-white);
+  --chat-text:        var(--text-primary);
   --chat-muted:       #bbb;
   --chat-border:      #f0f0f0;
   --chat-radius:      22px;
@@ -303,7 +305,7 @@
   align-items: center;
   justify-content: center;
   font-size: .9rem;
-  background: #e3f2fd;
+  background: var(--color-primary-100);
   margin-top: auto;
 }
 
