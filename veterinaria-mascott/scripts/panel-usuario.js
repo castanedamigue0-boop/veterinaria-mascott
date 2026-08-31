@@ -627,20 +627,6 @@ function confirmarPedido() {
   // Redirigir a pago QR
   window.location.href = '../paginas/pago-qr.html';
 }
-  var pedido = {
-    id: Date.now().toString(),
-    fecha: new Date().toLocaleDateString('es-MX'),
-    items: userData.carrito.slice(),
-    total: userData.carrito.reduce(function(a, i) { return a + i.precio * i.qty; }, 0)
-  };
-  userData.pedidos.push(pedido);
-  userData.carrito = [];
-  guardarUsuario(); //  { carrito: userData.carrito, pedidos: userData.pedidos });
-  actualizarBadgeCarrito();
-  renderCarrito();
-  msg.className = 'form-msg success'; msg.textContent = 'Pedido confirmado! Nos pondremos en contacto contigo.';
-  setTimeout(function() { msg.textContent = ''; msg.className = 'form-msg'; }, 4000);
-}
 
 // ===== INVENTARIO =====
 function initInventario() {
