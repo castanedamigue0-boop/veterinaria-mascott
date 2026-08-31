@@ -1099,5 +1099,145 @@
     });
   </script>
 
+  <!-- ===== JS ACCESIBILIDAD ===== -->
+  <script>
+  (function() {
+    var fontSize   = parseInt(localStorage.getItem('acc_font') || '100');
+    var guiaOn     = false;
+    var panel      = document.getElementById('accPanel');
+    var toggleBtn  = document.getElementById('accToggleBtn');
+    var closeBtn   = document.getElementById('accClose');
+    var guiaLine   = document.getElementById('guiaLine');
+
+    if (!panel || !toggleBtn) return; // seguridad
+
+    function actualizarBarra() {
+      var fill = document.getElementById('accFontFill');
+      if (!fill) return;
+      var pct = ((fontSize - 70) / (150 - 70)) * 100;
+      fill.style.width = Math.max(5, pct) + '%';
+    }
+
+    function setPill(btnId, on) {
+      var btn = document.getElementById(btnId);
+      if (!btn) return;
+      btn.setAttribute('aria-checked', String(on));
+      var pill = btn.querySelector('.acc-opt-pill');
+      if (pill) pill.textContent = on ? 'ON' : 'OFF';
+    }
+
+    // Restaurar preferencias guardadas
+    document.documentElement.style.fontSize = fontSize + '%';
+    var fv = document.getElementById('accFontVal');
+    if (fv) fv.textContent = fontSize + '%';
+    actualizarBarra();
+
+    if (localStorage.getItem('acc_contraste')   === '1') { document.body.classList.add('acc-contraste');       setPill('accContraste', true); }
+    if (localStorage.getItem('acc_oscuro')      === '1') { document.body.classList.add('acc-oscuro');          setPill('accOscuro', true); }
+    if (localStorage.getItem('acc_links')       === '1') { document.body.classList.add('acc-links');           setPill('accLinks', true); }
+    if (localStorage.getItem('acc_animaciones') === '1') { document.body.classList.add('acc-sin-animaciones'); setPill('accAnimaciones', true); }
+    if (localStorage.getItem('acc_guia')        === '1') { guiaOn = true; if (guiaLine) guiaLine.style.display = 'block'; setPill('accGuia', true); }
+
+    // Abrir / cerrar panel
+    toggleBtn.addEventListener('click', function() {
+      var open = panel.hidden;
+      panel.hidden = !open;
+      toggleBtn.setAttribute('aria-expanded', String(!open));
+      if (!open) toggleBtn.focus();
+      else setTimeout(function(){ if (closeBtn) closeBtn.focus(); }, 50);
+    });
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+        panel.hidden = true;
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        toggleBtn.focus();
+      });
+    }
+
+    panel.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        panel.hidden = true;
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        toggleBtn.focus();
+      }
+    });
+
+    // Tamaño fuente
+    var btnInc = document.getElementById('accFontInc');
+    var btnDec = document.getElementById('accFontDec');
+    if (btnInc) btnInc.addEventListener('click', function() {
+      if (fontSize >= 150) return;
+      fontSize += 10;
+      document.documentElement.style.fontSize = fontSize + '%';
+      if (fv) fv.textContent = fontSize + '%';
+      actualizarBarra();
+      localStorage.setItem('acc_font', fontSize);
+    });
+    if (btnDec) btnDec.addEventListener('click', function() {
+      if (fontSize <= 70) return;
+      fontSize -= 10;
+      document.documentElement.style.fontSize = fontSize + '%';
+      if (fv) fv.textContent = fontSize + '%';
+      actualizarBarra();
+      localStorage.setItem('acc_font', fontSize);
+    });
+
+    // Toggles visuales
+    function makeToggle(btnId, cssClass, storageKey) {
+      var btn = document.getElementById(btnId);
+      if (!btn) return;
+      btn.addEventListener('click', function() {
+        var on = btn.getAttribute('aria-checked') === 'true';
+        setPill(btnId, !on);
+        document.body.classList.toggle(cssClass, !on);
+        localStorage.setItem(storageKey, on ? '0' : '1');
+      });
+    }
+    makeToggle('accContraste',   'acc-contraste',       'acc_contraste');
+    makeToggle('accOscuro',      'acc-oscuro',          'acc_oscuro');
+    makeToggle('accLinks',       'acc-links',           'acc_links');
+    makeToggle('accAnimaciones', 'acc-sin-animaciones', 'acc_animaciones');
+
+    // Guía de lectura
+    var btnGuia = document.getElementById('accGuia');
+    if (btnGuia) btnGuia.addEventListener('click', function() {
+      guiaOn = !guiaOn;
+      setPill('accGuia', guiaOn);
+      if (guiaLine) guiaLine.style.display = guiaOn ? 'block' : 'none';
+      localStorage.setItem('acc_guia', guiaOn ? '1' : '0');
+    });
+    document.addEventListener('mousemove', function(e) {
+      if (guiaOn && guiaLine) guiaLine.style.top = (e.clientY - 2) + 'px';
+    });
+
+    // Restablecer todo
+    var btnReset = document.getElementById('accReset');
+    if (btnReset) btnReset.addEventListener('click', function() {
+      fontSize = 100;
+      document.documentElement.style.fontSize = '100%';
+      if (fv) fv.textContent = '100%';
+      actualizarBarra();
+      ['acc-contraste','acc-oscuro','acc-links','acc-sin-animaciones'].forEach(function(c) {
+        document.body.classList.remove(c);
+      });
+      guiaOn = false;
+      if (guiaLine) guiaLine.style.display = 'none';
+      ['accContraste','accOscuro','accLinks','accGuia','accAnimaciones'].forEach(function(id) {
+        setPill(id, false);
+      });
+      ['acc_font','acc_contraste','acc_oscuro','acc_links','acc_guia','acc_animaciones'].forEach(function(k) {
+        localStorage.removeItem(k);
+      });
+    });
+
+    // Notificación inicial
+    setTimeout(function() {
+      var notif = document.getElementById('chatNotif');
+      if (notif && !panel.hidden === false) notif.style.display = 'flex';
+    }, 3000);
+  })();
+  </script>
+
 </body>
 </html>
