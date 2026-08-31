@@ -477,6 +477,14 @@ async function confirmarPedido() {
   btn.disabled = true;
   btn.textContent = '⏳ Procesando...';
 
+  // Guardar carrito para la página de pago QR
+  localStorage.setItem('macott_carrito_checkout', JSON.stringify(carrito));
+
+  // Redirigir a pago QR
+  setTimeout(function() {
+    window.location.href = 'pago-qr.html';
+  }, 500);
+
   // Guardar pedido en Firebase si hay sesión activa
   const session = getSession();
   if (session) {

@@ -617,7 +617,16 @@ function actualizarBadgeCarrito() {
 
 function confirmarPedido() {
   var msg = document.getElementById('compra-msg');
-  if (!userData.carrito.length) { msg.className = 'form-msg error'; msg.textContent = 'Tu carrito esta vacio.'; return; }
+  if (!userData.carrito.length) {
+    msg.className = 'form-msg error';
+    msg.textContent = 'Tu carrito esta vacio.';
+    return;
+  }
+  // Guardar carrito para la página de pago QR
+  localStorage.setItem('macott_carrito_checkout', JSON.stringify(userData.carrito));
+  // Redirigir a pago QR
+  window.location.href = '../paginas/pago-qr.html';
+}
   var pedido = {
     id: Date.now().toString(),
     fecha: new Date().toLocaleDateString('es-MX'),

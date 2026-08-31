@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pago QR · Veterinaria Mascott</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="icon" href="../imagenes/logo.png"/>
+  <link rel="stylesheet" href="../estilos/paleta.css"/>
+  <link rel="stylesheet" href="../estilos/pago-qr.css"/>
+  <!-- QR Generator -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+  <a href="#pago-main" class="skip-link">Saltar al contenido</a>
+
+  <!-- TOPBAR -->
+  <header class="pago-topbar">
+    <a href="tienda-productos.html" class="pago-back" aria-label="Volver a la tienda">
+      ← Volver
+    </a>
+    <div class="pago-topbar-brand">
+      <img src="../imagenes/logo.png" alt="Mascott" width="32" height="32"/>
+      <span>Mascott · Pago seguro</span>
+    </div>
+    <div class="pago-secure-badge">
+      <span>🔒 SSL</span>
+    </div>
+  </header>
+
+  <main class="pago-main" id="pago-main">
+
+    <!-- ══ PASO 1: RESUMEN + QR ══ -->
+    <section class="pago-step active" id="step-qr">
+      <div class="pago-grid">
+
+        <!-- Resumen del pedido -->
+        <div class="pago-card">
+          <h2 class="pago-card-title">
+            <span class="pago-step-num">1</span>
+            Resumen del pedido
+          </h2>
+          <div class="pedido-items" id="pedidoItems">
+            <!-- se llena con JS -->
+          </div>
+          <div class="pedido-totales">
+            <div class="pedido-total-row">
+              <span>Subtotal</span>
+              <span id="pedidoSubtotal">$0</span>
+            </div>
+            <div class="pedido-total-row">
+              <span>Envío</span>
+              <span class="color-success">Gratis 🎉</span>
+            </div>
+            <div class="pedido-total-row total-final">
+              <span>Total a pagar</span>
+              <strong id="pedidoTotal">$0</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- QR de pago -->
+        <div class="pago-card pago-qr-card">
+          <h2 class="pago-card-title">
+            <span class="pago-step-num">2</span>
+            Escanea y paga
+          </h2>
+
+          <div class="pago-instrucciones">
+            <div class="instruccion-item">
+              <span class="instruccion-num">1</span>
+              <p>Abre tu app bancaria o Nequi</p>
+            </div>
+            <div class="instruccion-item">
+              <span class="instruccion-num">2</span>
+              <p>Selecciona "Pagar con QR"</p>
+            </div>
+            <div class="instruccion-item">
+              <span class="instruccion-num">3</span>
+              <p>Escanea el código y confirma</p>
+            </div>
+          </div>
+
+          <!-- QR Code -->
+          <div class="qr-wrap">
+            <div class="qr-frame">
+              <div class="qr-corner qr-tl"></div>
+              <div class="qr-corner qr-tr"></div>
+              <div class="qr-corner qr-bl"></div>
+              <div class="qr-corner qr-br"></div>
+              <div id="qrCode"></div>
+            </div>
+            <div class="qr-scan-line" id="qrScanLine"></div>
+          </div>
+
+          <div class="qr-info">
+            <p class="qr-cuenta-label">Cuenta Veterinaria Mascott</p>
+            <p class="qr-nequi">📱 Nequi: <strong>+57 311 456 9768</strong></p>
+            <p class="qr-monto" id="qrMonto">Total: $0 COP</p>
+          </div>
+
+          <!-- Temporizador -->
+          <div class="qr-timer">
+            <svg class="timer-ring" width="48" height="48" viewBox="0 0 48 48" aria-hidden="true">
+              <circle cx="24" cy="24" r="20" fill="none" stroke="#e0e0e0" stroke-width="3"/>
+              <circle cx="24" cy="24" r="20" fill="none" stroke="var(--primary)" stroke-width="3"
+                      stroke-dasharray="125.6" stroke-dashoffset="0" id="timerCircle"
+                      stroke-linecap="round" transform="rotate(-90 24 24)"/>
+            </svg>
+            <span id="timerText">5:00</span>
+          </div>
+          <p class="qr-timer-label">El QR expira en</p>
+
+          <!-- BOTÓN SIMULADOR -->
+          <div class="sim-wrap">
+            <p class="sim-label">— Simulador de pago —</p>
+            <button class="btn-sim-pago" id="btnSimularPago">
+              <span>📱</span> Simular escaneo del QR
+            </button>
+            <p class="sim-desc">Solo para pruebas — confirma el pago automáticamente</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ PASO 2: PROCESANDO ══ -->
+    <section class="pago-step" id="step-procesando" hidden>
+      <div class="pago-card pago-center">
+        <div class="procesando-icon">
+          <div class="procesando-spinner"></div>
+          <span>💳</span>
+        </div>
+        <h2>Procesando pago...</h2>
+        <p>Verificando la transacción. Por favor espera.</p>
+      </div>
+    </section>
+
+    <!-- ══ PASO 3: ÉXITO ══ -->
+    <section class="pago-step" id="step-exito" hidden>
+      <div class="pago-card pago-center pago-exito">
+        <div class="exito-icon" id="exitoIcon">✅</div>
+        <h2>¡Pago confirmado!</h2>
+        <p>Tu pedido fue registrado exitosamente.</p>
+
+        <div class="exito-detalle" id="exitoDetalle">
+          <!-- se llena con JS -->
+        </div>
+
+        <div class="exito-estado">
+          <div class="estado-item">
+            <span class="estado-icon">💰</span>
+            <div>
+              <p class="estado-label">Estado del pago</p>
+              <p class="estado-val color-success">✅ Pago recibido</p>
+            </div>
+          </div>
+          <div class="estado-item">
+            <span class="estado-icon">📦</span>
+            <div>
+              <p class="estado-label">Estado del pedido</p>
+              <p class="estado-val" id="estadoPedido">⏳ Esperando autorización</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="exito-nota">
+          El administrador revisará tu pedido y autorizará la salida.
+          Recibirás una notificación cuando esté listo. 🐾
+        </p>
+
+        <div class="exito-btns">
+          <a href="panel-usuario.html" class="btn-pago-primary">
+            📋 Ver mis pedidos
+          </a>
+          <a href="tienda-productos.html" class="btn-pago-outline">
+            🛒 Seguir comprando
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script type="module" src="../scripts/pago-qr.js"></script>
+</body>
+</html>

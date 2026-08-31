@@ -675,61 +675,109 @@ function renderInventario() {
 
 // ===== VENTAS =====
 function renderVentas() {
-  var users = getUsers();
-  var pedidos = [];
-  var totalIngresos = 0;
-  var totalUnidades = 0;
-  var ventasPorCat  = {};
+  cargarDatosFirebase().then(function() {
+    var users = getUsers();
+    var pedidos = [];
+    var totalIngresos = 0;
+    var totalUnidades = 0;
 
-  users.forEach(function(u) {
-    (u.pedidos || []).forEach(function(p) {
-      pedidos.push({ p: p, nombre: (u.nombre||'') + ' ' + (u.apellido||''), email: u.email });
-      totalIngresos += p.total || 0;
-      (p.items || []).forEach(function(i) {
-        totalUnidades += i.qty || 1;
-        var cat = i.cat || 'otro';
-        ventasPorCat[cat] = (ventasPorCat[cat] || 0) + (i.qty || 1);
+    users.forEach(function(u) {
+      (u.pedidos || []).forEach(function(p) {
+        pedidos.push({ p: p, nombre: (u.nombre||'') + ' ' + (u.apellido||''), email: u.email });
+        totalIngresos += p.total || 0;
+        (p.items || []).forEach(function(i) { totalUnidades += i.qty || 1; });
       });
     });
+
+    // Ordenar — primero los que necesitan autorización
+    pedidos.sort(function(a, b) {
+      var prioA = a.p.estadoSalida === 'pendiente_auth' ? 0 : 1;
+      var prioB = b.p.estadoSalida === 'pendiente_auth' ? 0 : 1;
+      return prioA - prioB;
+    });
+
+    document.getElementById('ventasStats').innerHTML =
+      stat('🧾', pedidos.length,                       'Pedidos totales') +
+      stat('📦', totalUnidades,                         'Unidades vendidas') +
+      stat('💰', '$' + totalIngresos.toLocaleString(),  'Ingresos totales') +
+      stat('⏳', pedidos.filter(function(e){ return e.p.estadoSalida === 'pendiente_auth'; }).length, 'Por autorizar');
+
+    var tbody = document.getElementById('ventasBody');
+    var count = document.getElementById('ventasCount');
+
+    tbody.innerHTML = pedidos.length
+      ? pedidos.map(function(entry) {
+          var p     = entry.p;
+          var items = (p.items||[]).map(function(i){ return i.nombre + ' x' + (i.qty||1); }).join(', ');
+
+          // Badge de estado pago
+          var pagoBadge = p.estado === 'pagado'
+            ? '<span style="background:#e8f5e9;color:#2e7d32;padding:.2rem .6rem;border-radius:20px;font-size:.72rem;font-weight:700">💰 Pagado</span>'
+            : '<span style="background:#fff3e0;color:#e65100;padding:.2rem .6rem;border-radius:20px;font-size:.72rem;font-weight:700">⏳ Pendiente</span>';
+
+          // Badge de estado salida
+          var salidaBadge = '';
+          var btnAutorizar = '';
+          if (p.estadoSalida === 'pendiente_auth') {
+            salidaBadge = '<span style="background:#fff3e0;color:#e65100;padding:.2rem .6rem;border-radius:20px;font-size:.72rem;font-weight:700">⏳ Sin autorizar</span>';
+            btnAutorizar = '<button class="btn-autorizar-salida" ' +
+              'data-email="' + entry.email + '" ' +
+              'data-pedido-id="' + p.id + '" ' +
+              'style="background:linear-gradient(135deg,#2E9FD4,#0D5C82);color:#fff;' +
+              'border:none;padding:.4rem .9rem;border-radius:20px;font-size:.78rem;' +
+              'font-weight:700;cursor:pointer;display:flex;align-items:center;gap:.3rem">' +
+              '✅ Autorizar salida</button>';
+          } else if (p.estadoSalida === 'autorizado') {
+            salidaBadge = '<span style="background:#e8f5e9;color:#2e7d32;padding:.2rem .6rem;border-radius:20px;font-size:.72rem;font-weight:700">✅ Autorizado</span>';
+          } else {
+            salidaBadge = '<span style="background:#e8f5e9;color:#2e7d32;padding:.2rem .6rem;border-radius:20px;font-size:.72rem;font-weight:700">✅ Entregado</span>';
+          }
+
+          return '<tr>' +
+            '<td><strong>#' + (p.id||'').slice(-4) + '</strong><br><small style="color:#90a4ae">' + (p.metodoPago||'—') + '</small></td>' +
+            '<td>' + entry.nombre.trim() + '<br><small>' + entry.email + '</small></td>' +
+            '<td>' + (p.fecha||'-') + (p.hora ? '<br><small>' + p.hora + '</small>' : '') + '</td>' +
+            '<td style="font-size:.78rem;max-width:200px;color:#546e7a">' + items + '</td>' +
+            '<td><strong style="color:#0D5C82">$' + (p.total||0).toLocaleString() + '</strong></td>' +
+            '<td>' + pagoBadge + '</td>' +
+            '<td style="display:flex;flex-direction:column;gap:.35rem;align-items:flex-start">' + salidaBadge + btnAutorizar + '</td>' +
+          '</tr>';
+        }).join('')
+      : '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#546e7a">Sin ventas registradas.</td></tr>';
+
+    if (count) count.textContent = pedidos.length + ' pedidos · Ingresos: $' + totalIngresos.toLocaleString();
+
+    // Bind botones autorizar
+    tbody.querySelectorAll('.btn-autorizar-salida').forEach(function(btn) {
+      btn.onclick = function() {
+        autorizarSalida(btn.dataset.email, btn.dataset.pedidoId);
+      };
+    });
+  });
+}
+
+function autorizarSalida(email, pedidoId) {
+  var users = getUsers();
+  var user  = users.find(function(u) { return u.email === email; });
+  if (!user) return;
+
+  (user.pedidos || []).forEach(function(p) {
+    if (p.id === pedidoId) {
+      p.estadoSalida = 'autorizado';
+      p.fechaAutorizacion = new Date().toISOString();
+    }
   });
 
-  document.getElementById('ventasStats').innerHTML =
-    stat('🧾', pedidos.length,                     'Pedidos totales') +
-    stat('📦', totalUnidades,                       'Unidades vendidas') +
-    stat('💰', '$' + totalIngresos.toLocaleString(), 'Ingresos totales') +
-    stat('👥', users.length,                        'Clientes registrados');
+  actualizarUsuario(email, { pedidos: user.pedidos });
 
-  var topCats = Object.keys(ventasPorCat).sort(function(a,b){ return ventasPorCat[b]-ventasPorCat[a]; });
-  var topEl = document.getElementById('ventasTopCats');
-  if (topEl) {
-    topEl.innerHTML = topCats.length
-      ? '<div style="margin-bottom:1.5rem"><h3 style="color:#b71c1c;margin-bottom:.75rem">📊 Ventas por categoría</h3>' +
-        '<div style="display:flex;flex-wrap:wrap;gap:.5rem">' +
-        topCats.map(function(c) {
-          return '<span style="background:#ffebee;color:#b71c1c;padding:.35rem .85rem;border-radius:20px;font-size:.85rem;font-weight:700">' +
-            c + ': ' + ventasPorCat[c] + ' uds</span>';
-        }).join('') + '</div></div>'
-      : '';
-  }
+  // Notificar al cliente
+  agregarNotificacion(email,
+    '🚚 ¡Tu pedido #' + pedidoId.slice(-4) +
+    ' fue autorizado! Está listo para entrega/retiro. 🐾'
+  );
 
-  var tbody = document.getElementById('ventasBody');
-  var count = document.getElementById('ventasCount');
-
-  tbody.innerHTML = pedidos.length
-    ? pedidos.map(function(entry) {
-        var p = entry.p;
-        var items = (p.items||[]).map(function(i){ return i.nombre + ' x' + i.qty; }).join(', ');
-        return '<tr>' +
-          '<td><strong>#' + (p.id||'').slice(-4) + '</strong></td>' +
-          '<td>' + entry.nombre.trim() + '<br><small>' + entry.email + '</small></td>' +
-          '<td>' + (p.fecha||'-') + '</td>' +
-          '<td style="font-size:.8rem;max-width:220px;color:#546e7a">' + items + '</td>' +
-          '<td><strong style="color:#2e7d32">$' + (p.total||0) + '</strong></td>' +
-        '</tr>';
-      }).join('')
-    : '<tr><td colspan="5" style="text-align:center;padding:2rem;color:#546e7a">Sin ventas registradas.</td></tr>';
-
-  if (count) count.textContent = pedidos.length + ' pedidos · Ingresos: $' + totalIngresos.toLocaleString() + ' MXN';
+  toast('✅ Pedido autorizado — notificación enviada al cliente');
+  renderVentas();
 }
 
 // ===== DOCTORES =====
