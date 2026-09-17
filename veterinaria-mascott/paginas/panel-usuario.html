@@ -303,14 +303,213 @@
     <div class="dash-carrito-footer">
       <div class="dash-carrito-total-row">
         <span>Total:</span>
-        <strong id="carritoTotal">$0 MXN</strong>
+        <strong id="carritoTotal">$0 COP</strong>
       </div>
       <button class="btn-dash" id="btnComprar" style="width:100%;justify-content:center;">
-        💳 Confirmar pedido
+        💳 Pagar con QR
       </button>
       <div class="form-msg" id="compra-msg" role="status" aria-live="polite"></div>
     </div>
   </aside>
+
+  <!-- ===== MODAL QR PAGO ===== -->
+  <div class="qr-modal-overlay" id="qrModalOverlay" hidden aria-hidden="true">
+    <div class="qr-modal" role="dialog" aria-modal="true" aria-labelledby="qrModalTitle">
+
+      <!-- Header -->
+      <div class="qr-modal-header">
+        <div>
+          <h2 id="qrModalTitle">💳 Pago con QR</h2>
+          <p>Escanea el código con tu app bancaria o Nequi</p>
+        </div>
+        <button class="qr-modal-close" id="qrModalClose" aria-label="Cerrar">✕</button>
+      </div>
+
+      <!-- Body -->
+      <div class="qr-modal-body">
+
+        <!-- Resumen -->
+        <div class="qr-resumen" id="qrResumen"></div>
+
+        <!-- QR -->
+        <div class="qr-box">
+          <div class="qr-frame" id="qrCanvas"></div>
+          <div class="qr-scan-anim" aria-hidden="true"></div>
+        </div>
+
+        <div class="qr-cuenta-info">
+          <p>📱 <strong>Nequi:</strong> +57 311 456 9768</p>
+          <p>🏦 <strong>Bancolombia:</strong> 123-456789-00</p>
+          <p class="qr-monto-total" id="qrMontoTotal">Total: $0 COP</p>
+        </div>
+
+        <!-- Timer -->
+        <div class="qr-timer-wrap">
+          <svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true">
+            <circle cx="22" cy="22" r="18" fill="none" stroke="#e0e0e0" stroke-width="3"/>
+            <circle cx="22" cy="22" r="18" fill="none" stroke="var(--color-primary-600)" stroke-width="3"
+                    stroke-dasharray="113.1" stroke-dashoffset="0" id="qrTimerCircle"
+                    stroke-linecap="round" transform="rotate(-90 22 22)"/>
+          </svg>
+          <span id="qrTimerText">5:00</span>
+          <span style="font-size:.75rem;color:var(--text-muted)">expira en</span>
+        </div>
+
+        <!-- Simulador -->
+        <div class="qr-sim-wrap">
+          <p class="qr-sim-label">— Simulador (solo pruebas) —</p>
+          <button class="qr-sim-btn" id="qrSimBtn">
+            📱 Simular escaneo → Confirmar pago
+          </button>
+        </div>
+
+        <!-- Estado procesando -->
+        <div class="qr-procesando" id="qrProcesando" style="display:none">
+          <div class="qr-spinner"></div>
+          <p>Verificando pago...</p>
+        </div>
+
+        <!-- Estado éxito -->
+        <div class="qr-exito" id="qrExito" style="display:none">
+          <div class="qr-exito-icon">✅</div>
+          <h3>¡Pago confirmado!</h3>
+          <p id="qrExitoMsg">Tu pedido fue registrado.</p>
+          <button class="btn-dash" id="qrExitoClose" style="margin-top:1rem">
+            Ver mis pedidos
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* ── Modal QR ── */
+    .qr-modal-overlay {
+      position: fixed; inset: 0; z-index: 9500;
+      background: rgba(0,0,0,.55); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 1rem;
+      animation: qrFadeIn .2s ease;
+    }
+    .qr-modal-overlay[hidden] { display: none; }
+    @keyframes qrFadeIn { from{opacity:0} to{opacity:1} }
+
+    .qr-modal {
+      background: #fff; border-radius: 24px;
+      width: 100%; max-width: 420px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.25);
+      overflow: hidden;
+      animation: qrSlideUp .3s cubic-bezier(.34,1.56,.64,1);
+    }
+    @keyframes qrSlideUp {
+      from { transform: translateY(30px) scale(.95); opacity: 0; }
+      to   { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .qr-modal-header {
+      background: var(--gradient-primary, linear-gradient(135deg,#2E9FD4,#0D5C82));
+      padding: 1.1rem 1.4rem;
+      display: flex; align-items: center; justify-content: space-between; color: #fff;
+    }
+    .qr-modal-header h2 { font-size: 1rem; font-weight: 800; margin: 0 0 .15rem; }
+    .qr-modal-header p  { font-size: .75rem; opacity: .8; margin: 0; }
+    .qr-modal-close {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: rgba(255,255,255,.2); border: none; color: #fff;
+      font-size: 1rem; cursor: pointer; display: flex;
+      align-items: center; justify-content: center; flex-shrink: 0;
+      transition: background .15s;
+    }
+    .qr-modal-close:hover { background: rgba(255,255,255,.35); }
+
+    .qr-modal-body {
+      padding: 1.4rem;
+      display: flex; flex-direction: column; align-items: center; gap: 1rem;
+      max-height: 80vh; overflow-y: auto;
+    }
+
+    /* Resumen */
+    .qr-resumen {
+      width: 100%; background: #f0f8ff; border-radius: 12px;
+      padding: .75rem 1rem; font-size: .82rem; color: #1a2332;
+      border: 1px solid #d0ecfa;
+    }
+    .qr-resumen-item {
+      display: flex; justify-content: space-between; gap: .5rem;
+      padding: .2rem 0;
+    }
+    .qr-resumen-item:last-child {
+      border-top: 1px solid #d0ecfa; margin-top: .35rem;
+      padding-top: .5rem; font-weight: 800; font-size: .9rem;
+    }
+
+    /* QR */
+    .qr-box {
+      position: relative;
+      padding: 12px; background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(13,92,130,.15);
+      border: 2px solid #87CEEB;
+    }
+    .qr-scan-anim {
+      position: absolute; left: 12px; right: 12px; height: 2px;
+      background: linear-gradient(90deg,transparent,#2E9FD4,transparent);
+      animation: qrScan 2s ease-in-out infinite;
+      top: 12px; border-radius: 2px;
+    }
+    @keyframes qrScan {
+      0%   { top: 12px; }
+      50%  { top: calc(100% - 14px); }
+      100% { top: 12px; }
+    }
+
+    .qr-cuenta-info { text-align: center; font-size: .83rem; color: #1a2332; line-height: 1.7; }
+    .qr-monto-total { font-weight: 800; font-size: 1rem; color: #0D5C82; margin-top: .25rem; }
+
+    /* Timer */
+    .qr-timer-wrap {
+      display: flex; align-items: center; gap: .5rem;
+      font-size: .88rem; color: #1a2332; font-weight: 700;
+    }
+
+    /* Simulador */
+    .qr-sim-wrap { text-align: center; width: 100%; }
+    .qr-sim-label { font-size: .72rem; color: #90a4ae; margin-bottom: .5rem; }
+    .qr-sim-btn {
+      width: 100%; padding: .85rem;
+      background: linear-gradient(135deg, #2E9FD4, #0D5C82);
+      color: #fff; border: none; border-radius: 50px;
+      font-size: .95rem; font-weight: 700; cursor: pointer;
+      font-family: inherit; transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 16px rgba(46,159,212,.4);
+      animation: simPulse 2.5s ease-in-out infinite;
+    }
+    .qr-sim-btn:hover { transform: translateY(-2px); animation: none; }
+    @keyframes simPulse {
+      0%,100% { box-shadow: 0 4px 16px rgba(46,159,212,.4); }
+      50%      { box-shadow: 0 4px 24px rgba(46,159,212,.7), 0 0 0 6px rgba(46,159,212,.1); }
+    }
+
+    /* Procesando */
+    .qr-procesando { text-align: center; padding: 1rem; }
+    .qr-spinner {
+      width: 48px; height: 48px; border-radius: 50%;
+      border: 4px solid #d0ecfa; border-top-color: #2E9FD4;
+      animation: spin 1s linear infinite; margin: 0 auto .75rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .qr-procesando p { font-size: .9rem; color: #546e7a; }
+
+    /* Éxito */
+    .qr-exito { text-align: center; padding: .5rem; }
+    .qr-exito-icon { font-size: 3.5rem; animation: exitoBounce .5s cubic-bezier(.34,1.56,.64,1); }
+    @keyframes exitoBounce { from{transform:scale(0)} to{transform:scale(1)} }
+    .qr-exito h3 { font-size: 1.2rem; font-weight: 800; color: #0D5C82; margin: .5rem 0 .25rem; }
+    .qr-exito p  { font-size: .88rem; color: #546e7a; }
+  </style>
+
+  <!-- QR Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <script type="module" src="../scripts/panel-usuario.js"></script>
 </body>

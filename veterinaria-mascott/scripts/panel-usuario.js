@@ -1,4 +1,4 @@
-﻿import { obtenerUsuario, actualizarUsuario, getSession, clearSession, obtenerTodosUsuarios } from '../scripts/base-de-datos.js';
+import { obtenerUsuario, actualizarUsuario, getSession, clearSession, obtenerTodosUsuarios } from '../scripts/base-de-datos.js';
 
 // ===== SESION =====
 const session = getSession();
@@ -31,182 +31,182 @@ const PRODUCTOS = [
   {
     id:1, nombre:'Royal Canin Cachorro 3kg',
     animal:'perro', etapa:'cachorro', cat:'alimento',
-    precio:420, precioOld:480, marca:'Royal Canin',
+    precio:85000, precioOld:95000, marca:'Royal Canin',
     img:IMG+'image1.png',
     badge:'oferta', desc:'Formula especial para cachorros hasta 12 meses.'
   },
   {
     id:2, nombre:'Purina Pro Plan Cachorro 4kg',
     animal:'perro', etapa:'cachorro', cat:'alimento',
-    precio:390, precioOld:null, marca:'Purina',
+    precio:79000, precioOld:null, marca:'Purina',
     img:IMG+'image2.png',
     badge:'nuevo', desc:'Proteina de pollo real como primer ingrediente.'
   },
   {
     id:3, nombre:'Snack Dental Cachorro x20',
     animal:'perro', etapa:'cachorro', cat:'snack',
-    precio:120, precioOld:null, marca:'Pedigree',
+    precio:25000, precioOld:null, marca:'Pedigree',
     img:IMG+'image3.png',
     badge:null, desc:'Cuida los dientes desde pequeno.'
   },
   {
     id:4, nombre:'Collar Ajustable Cachorro',
     animal:'perro', etapa:'cachorro', cat:'accesorio',
-    precio:85, precioOld:null, marca:'PetStyle',
+    precio:18000, precioOld:null, marca:'PetStyle',
     img:IMG+'image4.png',
     badge:null, desc:'Collar suave de nylon, ajustable 20-35 cm.'
   },
   {
     id:5, nombre:'Hills Science Diet Adulto 7kg',
     animal:'perro', etapa:'adulto', cat:'alimento',
-    precio:650, precioOld:720, marca:"Hill's",
+    precio:130000, precioOld:145000, marca:"Hill's",
     img:IMG+'image5.png',
     badge:'oferta', desc:'Nutricion balanceada para perros adultos activos.'
   },
   {
     id:6, nombre:'Eukanuba Adulto Razas Grandes',
     animal:'perro', etapa:'adulto', cat:'alimento',
-    precio:580, precioOld:null, marca:'Eukanuba',
+    precio:115000, precioOld:null, marca:'Eukanuba',
     img:IMG+'image6.png',
     badge:null, desc:'Especial para razas grandes. Cuida articulaciones.'
   },
   {
     id:7, nombre:'Shampoo Perro Pelo Corto 500ml',
     animal:'perro', etapa:'adulto', cat:'higiene',
-    precio:95, precioOld:null, marca:'BioGroom',
+    precio:22000, precioOld:null, marca:'BioGroom',
     img:IMG+'image7.png',
     badge:null, desc:'Formula suave con aloe vera.'
   },
   {
     id:8, nombre:'Juguete Kong Classic M',
     animal:'perro', etapa:'adulto', cat:'juguete',
-    precio:210, precioOld:null, marca:'Kong',
+    precio:42000, precioOld:null, marca:'Kong',
     img:IMG+'image8.png',
     badge:'nuevo', desc:'Resistente caucho natural. Rellenable con premios.'
   },
   {
     id:9, nombre:'Antipulgas Spot-On Perro',
     animal:'perro', etapa:'adulto', cat:'salud',
-    precio:180, precioOld:200, marca:'Frontline',
+    precio:7800000, precioOld:45000, marca:'Frontline',
     img:IMG+'image9.png',
     badge:'oferta', desc:'Proteccion 30 dias contra pulgas y garrapatas.'
   },
   {
     id:10, nombre:'Cama Ortopedica Perro M',
     animal:'perro', etapa:'adulto', cat:'accesorio',
-    precio:450, precioOld:null, marca:'PetComfort',
+    precio:90000, precioOld:null, marca:'PetComfort',
     img:IMG+'image10.png',
     badge:null, desc:'Espuma viscoelastica. Ideal para artritis.'
   },
   {
     id:11, nombre:'Royal Canin Senior 8+ 3kg',
     animal:'perro', etapa:'senior', cat:'alimento',
-    precio:480, precioOld:520, marca:'Royal Canin',
+    precio:95000, precioOld:105000, marca:'Royal Canin',
     img:IMG+'image11.png',
     badge:'oferta', desc:'Formula adaptada para perros mayores de 8 anos.'
   },
   {
     id:12, nombre:'Suplemento Articular Perro',
     animal:'perro', etapa:'senior', cat:'salud',
-    precio:260, precioOld:null, marca:'Vetri-Science',
+    precio:2300000000, precioOld:null, marca:'Vetri-Science',
     img:IMG+'image12.png',
     badge:null, desc:'Glucosamina y condroitina para articulaciones.'
   },
   {
     id:13, nombre:'Royal Canin Kitten 2kg',
     animal:'gato', etapa:'cachorro', cat:'alimento',
-    precio:350, precioOld:390, marca:'Royal Canin',
+    precio:70000, precioOld:79000, marca:'Royal Canin',
     img:IMG+'image13.png',
     badge:'oferta', desc:'Nutricion completa para gatitos hasta 12 meses.'
   },
   {
     id:14, nombre:'Juguete Raton con Catnip',
     animal:'gato', etapa:'cachorro', cat:'juguete',
-    precio:65, precioOld:null, marca:'Catit',
+    precio:14000, precioOld:null, marca:'Catit',
     img:IMG+'image14.png',
     badge:null, desc:'Estimula el instinto cazador. Hierba gatera natural.'
   },
   {
     id:15, nombre:'Whiskas Adulto Pollo 3kg',
     animal:'gato', etapa:'adulto', cat:'alimento',
-    precio:280, precioOld:null, marca:'Whiskas',
+    precio:58000, precioOld:null, marca:'Whiskas',
     img:IMG+'image15.png',
     badge:null, desc:'Croquetas con pollo real. Apoya salud urinaria.'
   },
   {
     id:16, nombre:'Arena Sanitaria Aglomerante 5kg',
     animal:'gato', etapa:'adulto', cat:'higiene',
-    precio:130, precioOld:150, marca:'Ever Clean',
+    precio:28000, precioOld:32000, marca:'Ever Clean',
     img:IMG+'image16.png',
     badge:'oferta', desc:'Control de olores 7 dias. Aglomeracion instantanea.'
   },
   {
     id:17, nombre:'Rascador Torre Gato',
     animal:'gato', etapa:'adulto', cat:'accesorio',
-    precio:320, precioOld:null, marca:'Catit',
+    precio:65000, precioOld:null, marca:'Catit',
     img:IMG+'image17.png',
     badge:'nuevo', desc:'Sisal natural, plataforma y juguete colgante.'
   },
   {
     id:18, nombre:'Snack Temptations Gato x85g',
     animal:'gato', etapa:'adulto', cat:'snack',
-    precio:75, precioOld:null, marca:'Temptations',
+    precio:3500000, precioOld:null, marca:'Temptations',
     img:IMG+'image18.png',
     badge:null, desc:'Crujientes por fuera, suaves por dentro.'
   },
   {
     id:19, nombre:'Antipulgas Gato Spot-On',
     animal:'gato', etapa:'adulto', cat:'salud',
-    precio:160, precioOld:180, marca:'Frontline',
+    precio:35000, precioOld:180, marca:'Frontline',
     img:IMG+'image19.png',
     badge:'oferta', desc:'Proteccion mensual contra pulgas y garrapatas.'
   },
   {
     id:20, nombre:'Hills Science Diet Gato 7+ 1.5kg',
     animal:'gato', etapa:'senior', cat:'alimento',
-    precio:390, precioOld:null, marca:"Hill's",
+    precio:79000, precioOld:null, marca:"Hill's",
     img:IMG+'image20.png',
     badge:null, desc:'Cuida rinones y articulaciones en gatos mayores.'
   },
   {
     id:21, nombre:'Alimento Conejo Adulto 1.5kg',
     animal:'conejo', etapa:'adulto', cat:'alimento',
-    precio:150, precioOld:null, marca:'Versele-Laga',
+    precio:32000, precioOld:null, marca:'Versele-Laga',
     img:IMG+'image21.png',
     badge:null, desc:'Mezcla de heno, verduras y cereales. Sin colorantes.'
   },
   {
     id:22, nombre:'Jaula Conejo Mediana',
     animal:'conejo', etapa:'adulto', cat:'accesorio',
-    precio:520, precioOld:600, marca:'Ferplast',
+    precio:23000000, precioOld:125000, marca:'Ferplast',
     img:IMG+'image22.png',
     badge:'oferta', desc:'Bandeja extraible y comedero incluido.'
   },
   {
     id:23, nombre:'Snack Heno Timothy Conejo',
     animal:'conejo', etapa:'adulto', cat:'snack',
-    precio:90, precioOld:null, marca:'Oxbow',
+    precio:19000, precioOld:null, marca:'Oxbow',
     img:IMG+'image23.png',
     badge:'nuevo', desc:'Heno de primera calidad. Esencial para la digestion.'
   },
   {
     id:24, nombre:'Alimento Periquito Mezcla 1kg',
     animal:'ave', etapa:'adulto', cat:'alimento',
-    precio:95, precioOld:null, marca:'Versele-Laga',
+    precio:22000, precioOld:null, marca:'Versele-Laga',
     img:IMG+'image24.png',
     badge:null, desc:'Mezcla de semillas seleccionadas para periquitos.'
   },
   {
     id:25, nombre:'Jaula Canario Decorativa',
     animal:'ave', etapa:'adulto', cat:'accesorio',
-    precio:380, precioOld:420, marca:'Ferplast',
+    precio:78000, precioOld:88000, marca:'Ferplast',
     img:IMG+'image25.png',
     badge:'oferta', desc:'Diseno elegante con comederos y bebederos incluidos.'
   },
   {
     id:26, nombre:'Vitaminas Aves Liquidas 30ml',
     animal:'ave', etapa:'adulto', cat:'salud',
-    precio:110, precioOld:null, marca:'Nekton',
+    precio:23000, precioOld:null, marca:'Nekton',
     img:IMG+'image26.png',
     badge:null, desc:'Complejo vitaminico para aves en epoca de muda.'
   },
@@ -544,7 +544,7 @@ function renderProductos() {
       + '<p class="prod-marca">' + p.marca + '</p>'
       + '</div>'
       + '<div class="producto-footer">'
-      + '<div><span class="producto-precio">$' + p.precio + ' MXN</span>' + oldHtml + '</div>'
+      + '<div><span class="producto-precio">$' + p.precio + ' COP</span>' + oldHtml + '</div>'
       + '<button class="btn-agregar" data-id="' + p.id + '">+ Agregar</button>'
       + '</div></div>';
   }).join('');
@@ -571,7 +571,7 @@ function renderCarrito() {
   var total = document.getElementById('carritoTotal');
   if (!userData.carrito.length) {
     items.innerHTML = '<p class="empty-msg">Tu carrito esta vacio.</p>';
-    total.textContent = '$0 MXN';
+    total.textContent = '$0 COP';
     return;
   }
 
@@ -583,7 +583,7 @@ function renderCarrito() {
       + '<div class="ci-thumb">' + imgHtml + '</div>'
       + '<div class="ci-info"><p class="ci-nombre">' + i.nombre + '</p><p class="ci-marca">' + i.marca + '</p></div>'
       + '<div class="ci-controls">'
-      + '<span class="ci-precio">$' + (i.precio * i.qty) + ' MXN</span>'
+      + '<span class="ci-precio">$' + (i.precio * i.qty) + ' COP</span>'
       + '<div class="carrito-qty">'
       + '<button class="qty-btn" data-action="menos" data-id="' + i.id + '">-</button>'
       + '<span>' + i.qty + '</span>'
@@ -594,7 +594,7 @@ function renderCarrito() {
   }).join('');
 
   var sum = userData.carrito.reduce(function(a, i) { return a + i.precio * i.qty; }, 0);
-  total.textContent = '$' + sum + ' MXN';
+  total.textContent = '$' + sum + ' COP';
 
   items.querySelectorAll('[data-action]').forEach(function(btn) {
     btn.addEventListener('click', function() {
@@ -622,10 +622,195 @@ function confirmarPedido() {
     msg.textContent = 'Tu carrito esta vacio.';
     return;
   }
-  // Guardar carrito para la página de pago QR
-  localStorage.setItem('macott_carrito_checkout', JSON.stringify(userData.carrito));
-  // Redirigir a pago QR
-  window.location.href = '../paginas/pago-qr.html';
+  // Abrir modal QR en vez de redirigir
+  abrirModalQR();
+}
+
+// ===== MODAL QR =====
+var _qrTimer = null;
+var _qrSecs  = 300;
+var _qrObj   = null;
+
+function abrirModalQR() {
+  var overlay = document.getElementById('qrModalOverlay');
+  if (!overlay) return;
+
+  // Calcular total
+  var total = userData.carrito.reduce(function(s, i) {
+    return s + (i.precio * (i.qty || 1));
+  }, 0);
+
+  // Resumen
+  var resumen = document.getElementById('qrResumen');
+  if (resumen) {
+    resumen.innerHTML = userData.carrito.map(function(i) {
+      return '<div class="qr-resumen-item">' +
+        '<span>' + i.nombre + ' x' + (i.qty||1) + '</span>' +
+        '<span>$' + ((i.precio*(i.qty||1)).toLocaleString('es-CO')) + '</span>' +
+        '</div>';
+    }).join('') +
+    '<div class="qr-resumen-item">' +
+      '<span>💰 Total</span>' +
+      '<span>$' + total.toLocaleString('es-CO') + ' COP</span>' +
+    '</div>';
+  }
+
+  // Monto
+  var montoEl = document.getElementById('qrMontoTotal');
+  if (montoEl) montoEl.textContent = 'Total: $' + total.toLocaleString('es-CO') + ' COP';
+
+  // Generar QR
+  var canvas = document.getElementById('qrCanvas');
+  if (canvas) {
+    canvas.innerHTML = '';
+    try {
+      _qrObj = new QRCode(canvas, {
+        text: JSON.stringify({
+          comercio:  'Veterinaria Mascott',
+          nequi:     '3114569768',
+          monto:     total,
+          moneda:    'COP',
+          ref:       'PED-' + Date.now(),
+          cliente:   session.email
+        }),
+        width:        160,
+        height:       160,
+        colorDark:    '#0D5C82',
+        colorLight:   '#FFFFFF',
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    } catch(e) {
+      canvas.innerHTML = '<div style="width:160px;height:160px;background:#e0f0ff;' +
+        'display:flex;align-items:center;justify-content:center;font-size:3rem;' +
+        'border-radius:8px">📱</div>';
+    }
+  }
+
+  // Mostrar modal
+  overlay.hidden = false;
+  overlay.setAttribute('aria-hidden', 'false');
+
+  // Ocultar estados anteriores
+  var proc  = document.getElementById('qrProcesando');
+  var exito = document.getElementById('qrExito');
+  var sim   = document.getElementById('qrSimBtn');
+  var timer = document.getElementById('qrTimerCircle');
+  if (proc)  proc.style.display  = 'none';
+  if (exito) exito.style.display = 'none';
+  if (sim)   sim.style.display   = '';
+  if (canvas) canvas.style.display = '';
+
+  // Iniciar timer
+  _qrSecs = 300;
+  clearInterval(_qrTimer);
+  _qrTimer = setInterval(function() {
+    _qrSecs--;
+    var min = Math.floor(_qrSecs / 60);
+    var seg = _qrSecs % 60;
+    var txt = document.getElementById('qrTimerText');
+    if (txt) txt.textContent = min + ':' + String(seg).padStart(2,'0');
+    if (timer) {
+      var pct = _qrSecs / 300;
+      timer.style.strokeDashoffset = 113.1 * (1 - pct);
+      timer.style.stroke = _qrSecs < 60 ? '#c53030' : _qrSecs < 120 ? '#d69e2e' : '#2E9FD4';
+    }
+    if (_qrSecs <= 0) {
+      clearInterval(_qrTimer);
+      if (sim) { sim.disabled = true; sim.textContent = '⏱ QR expirado'; }
+    }
+  }, 1000);
+
+  // Bind cerrar
+  var closeBtn = document.getElementById('qrModalClose');
+  if (closeBtn) closeBtn.onclick = cerrarModalQR;
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) cerrarModalQR();
+  });
+
+  // Bind simular
+  var simBtn = document.getElementById('qrSimBtn');
+  if (simBtn) simBtn.onclick = simularPagoQR;
+}
+
+function cerrarModalQR() {
+  clearInterval(_qrTimer);
+  var overlay = document.getElementById('qrModalOverlay');
+  if (overlay) { overlay.hidden = true; overlay.setAttribute('aria-hidden','true'); }
+}
+
+async function simularPagoQR() {
+  clearInterval(_qrTimer);
+  var simBtn  = document.getElementById('qrSimBtn');
+  var proc    = document.getElementById('qrProcesando');
+  var canvas  = document.getElementById('qrCanvas');
+  if (simBtn) simBtn.style.display = 'none';
+  if (canvas) canvas.style.display = 'none';
+  if (proc)   proc.style.display = 'flex';
+
+  // Simular delay verificación
+  await new Promise(function(r) { setTimeout(r, 1800); });
+
+  // Guardar pedido
+  var total = userData.carrito.reduce(function(s, i) {
+    return s + (i.precio * (i.qty || 1));
+  }, 0);
+
+  var pedido = {
+    id:           'PED-' + Date.now(),
+    fecha:        new Date().toLocaleDateString('es-CO'),
+    hora:         new Date().toLocaleTimeString('es-CO', { hour:'2-digit', minute:'2-digit' }),
+    items:        userData.carrito.slice(),
+    total:        total,
+    estado:       'pagado',
+    estadoSalida: 'pendiente_auth',
+    metodoPago:   'QR / Nequi',
+    fechaISO:     new Date().toISOString()
+  };
+
+  userData.pedidos.push(pedido);
+  userData.carrito = [];
+  await guardarUsuario();
+
+  // Notificar al usuario
+  if (!userData.notificaciones) userData.notificaciones = [];
+  userData.notificaciones.unshift({
+    msg: '💰 Pago de $' + total.toLocaleString('es-CO') + ' COP recibido. Pedido #' +
+         pedido.id.slice(-4) + ' en espera de autorización.',
+    fecha: new Date().toLocaleString('es-CO'),
+    leida: false
+  });
+  await guardarUsuario();
+
+  // Notificar admin
+  try {
+    var { agregarNotificacion: notifAdmin } = await import('../scripts/base-de-datos.js');
+    await notifAdmin('admin@mascott.com',
+      '💰 PAGO RECIBIDO — ' + (userData.nombre||'') + ' ' + (userData.apellido||'') +
+      ' pagó $' + total.toLocaleString('es-CO') + ' COP. Pedido #' + pedido.id.slice(-4) +
+      ' — Autorizar en Ventas.'
+    );
+  } catch(e) { console.warn('Notif admin:', e); }
+
+  // Mostrar éxito
+  if (proc) proc.style.display = 'none';
+  var exito    = document.getElementById('qrExito');
+  var exitoMsg = document.getElementById('qrExitoMsg');
+  if (exitoMsg) exitoMsg.textContent =
+    'Pedido #' + pedido.id.slice(-4) + ' · $' + total.toLocaleString('es-CO') + ' COP recibidos.';
+  if (exito) exito.style.display = 'block';
+
+  // Actualizar UI
+  actualizarBadgeCarrito();
+  renderCarrito();
+  renderHistorial();
+  renderInicio();
+
+  // Botón cerrar éxito
+  var exitoClose = document.getElementById('qrExitoClose');
+  if (exitoClose) exitoClose.onclick = function() {
+    cerrarModalQR();
+    showSection('historial');
+  };
 }
 
 // ===== INVENTARIO =====
@@ -726,7 +911,7 @@ function renderHistorial() {
   document.getElementById('pedidos-hist').innerHTML = userData.pedidos.length
     ? userData.pedidos.map(function(p) {
         var itemsStr = p.items.map(function(i) { return i.nombre + ' x' + i.qty; }).join(', ');
-        return '<div class="cita-item"><div class="cita-info"><h4>Pedido #' + p.id.slice(-4) + '</h4><p>' + p.fecha + ' - ' + p.items.length + ' producto(s)</p><p style="margin-top:.25rem;font-size:.8rem;color:var(--muted)">' + itemsStr + '</p></div><span class="cita-badge badge-completada">$' + p.total + ' MXN</span></div>';
+        return '<div class="cita-item"><div class="cita-info"><h4>Pedido #' + p.id.slice(-4) + '</h4><p>' + p.fecha + ' - ' + p.items.length + ' producto(s)</p><p style="margin-top:.25rem;font-size:.8rem;color:var(--muted)">' + itemsStr + '</p></div><span class="cita-badge badge-completada">$' + p.total + ' COP</span></div>';
       }).join('')
     : '<p class="empty-msg">No hay pedidos registrados.</p>';
 }

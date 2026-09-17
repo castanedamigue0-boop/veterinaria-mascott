@@ -50,8 +50,12 @@ WSGI_APPLICATION = 'wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'veterinaria_mascott',  # El nombre exacto de tu base de datos en MySQL
+        'USER': 'root',                # Tu usuario de MySQL (por defecto suele ser root)
+        'PASSWORD': '12345',                # Tu contraseña de MySQL (si no tienes, déjala vacía entre comillas)
+        'HOST': 'localhost',           # O '127.0.0.1'
+        'PORT': '3306',                # Puerto por defecto de MySQL
     }
 }
 
