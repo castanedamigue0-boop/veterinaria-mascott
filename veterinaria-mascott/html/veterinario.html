@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel Admin · Clínica Veterinaria Mascott</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="manifest" href="../configuracion/manifest.json"/>
+  <meta name="theme-color" content="#1565c0"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <link rel="apple-touch-icon" href="../img/logo.png"/>
+  <link rel="icon" href="../img/logo.png"/>
+  <link rel="stylesheet" href="../css/paleta.css"/>
+  <link rel="stylesheet" href="../css/panel-administrador.css"/>
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  
+</head>
+<body>
+
+  <!-- LOGIN ADMIN -->
+  <div class="Veterinario" id="vetrinarioLoginWrap">
+    <div class="admin-login-card">
+      <div class="veterinario-login-logo">
+        <img src="../img/logo.png" alt="Mascott" class="veterinario-logo-img"/>
+        <span>Mascott</span>
+      </div>
+      <h2>Panel Veterinario</h2>
+      <p>Acceso exclusivo para personal autorizado</p>
+      <form id="veterinaioLoginForm" novalidate>
+        <div class="form-group">
+          <label for="a-user">Usuario</label>
+          <input type="text" id="a-user" placeholder="veterinarios" required autocomplete="username"/>
+          <span class="field-error" id="ae-user" role="alert"></span>
+        </div>
+        <div class="form-group">
+          <label for="a-pass">Contraseña</label>
+          <div class="pass-wrap">
+            <input type="password" id="a-pass" placeholder="••••••••" required autocomplete="current-password"/>
+            <button type="button" class="toggle-pass" data-target="a-pass" aria-label="Mostrar">👁</button>
+          </div>
+          <span class="field-error" id="ae-pass" role="alert"></span>
+        </div>
+        <button type="submit" class="btn-admin-login">🔓 Acceder al Panel</button>
+        <div class="form-msg" id="veteinario-login-msg" role="status" aria-live="polite"></div>
+      </form>
+      <a href="../html/inicio.html" class="back-link">← Volver al sitio</a>
+    </div>
+  </div>
+
+  <!-- PANEL VETERINARIO --> 
+  <div class="Veterinario" id="Veterinario" style="display:none">
+
+   
+
+    <!-- TOPBAR MÓVIL -->
+    <header class="veterinario-topbar">
+      <button class="veterinario-menu-btn" id="veterinarioMenuBtn" aria-label="Menú">☰</button>
+      <span>🔐 veterinario Mascott</span>
+      <button class="as-logout-top" id="btnveterinaioLogoutTop">🚪</button>
+    </header>
+
+    <div class="veterinario-overlay" id="veterinarioOverlay"></div>
+
+    <!-- MAIN -->
+    <main class="veterinaio-main">
+
+      <!-- DASHBOARD -->
+      <section class="veterinario-section active" id="sec-dashboard">
+        <h2 class="veterinario-title">📊 Dashboard</h2>
+        <div class="veterinario-stats" id="adminStats"></div>
+        <div class="veterinario-grid">
+          <div class="veterinario-card">
+          <div class="veterinarios-card">
+            <h3>👥 Últimos clientes</h3>
+            <div id="dashUltimosClientes"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CITAS -->
+      <section class="veterinario-section" id="sec-citas" hidden>
+        <div class="veterinario-section-header">
+          <h2 class="veterinario-title">📅 Gestión de Citas</h2>
+          <div class="citas-filtros">
+           
+          </div>
+        </div>
+        <div id="veteriarioCitasList" class="veteriario-citas-list"></div>
+      </section>
+
+      <!-- CLIENTES -->
+      <section class="veterinario-section" id="sec-clientes" hidden>
+        <h2 class="veterinario-title">👥 Clientes Registrados</h2>
+        <div class="veterinario-search-wrap">
+          <input type="search" id="clienteSearch" placeholder="🔍 Buscar cliente..." aria-label="Buscar cliente"/>
+        </div>
+        <div id="clientesList" class="clientes-grid"></div>
+      </section>
+
+     
+        
+    

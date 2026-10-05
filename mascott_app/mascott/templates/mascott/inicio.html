@@ -1,0 +1,671 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Clínica Veterinaria Mascott | Sogamoso, Boyacá</title>
+  <meta name="description" content="30 años cuidando perros y gatos en Sogamoso. Laboratorio propio, rayos X, ecografía, cirugía y hospitalización."/>
+  <link rel="icon" href="../img/logo.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="../css/inicio.css"/>
+  <link rel="stylesheet" href="../css/chatbot.css"/>
+  <link rel="stylesheet" href="../css/accesibilidad.css"/>
+</head>
+<body>
+
+  <!-- SPLASH -->
+  <div id="splash" style="display:none">
+    <div class="splash-inner">
+      <img src="../img/logo.png" alt="Mascott" class="splash-logo"/>
+      <p class="splash-title">MASC<span>OTT</span></p>
+      <p class="splash-sub">Clínica Veterinaria</p>
+    </div>
+  </div>
+
+  <!-- ══ TOP BAR ══ -->
+  <div class="topbar-strip">
+    <div class="topbar-strip-inner">
+      <span>📍 Calle 15 #9-54, Sogamoso, Boyacá</span>
+      <span class="topbar-sep">|</span>
+      <span>🕐 Lun–Sáb 8:00–20:30 · Dom 10:00–12:00</span>
+      <span class="topbar-sep">|</span>
+      <span>🚨 Urgencias 24h: <a href="tel:+573114569768">(+57) 311 456 9768</a></span>
+    </div>
+  </div>
+
+  <!-- ══ NAVBAR ══ -->
+  <header class="navbar" id="navbar">
+    <div class="navbar-inner">
+
+      <!-- Logo -->
+      <a href="#inicio" class="navbar-logo">
+        <img src="../img/logo.png" alt="Mascott"/>
+        <span>Mascott</span>
+      </a>
+
+      <!-- Buscador -->
+      <div class="navbar-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="search" placeholder="¿Qué estás buscando?" aria-label="Buscar"/>
+      </div>
+
+      <!-- Links de navegación -->
+      <nav class="navbar-links" id="navbarLinks" role="navigation" aria-label="Menú principal">
+        <a href="#inicio">Inicio</a>
+        <a href="#servicios">Servicios</a>
+        <a href="tienda-productos.html">Tienda</a>
+        <a href="#resenas">Reseñas</a>
+        <a href="#ubicacion">Ubicación</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+
+      <!-- Acciones -->
+      <div class="navbar-actions">
+        <button class="btn-cita nav-btn-cita" id="btnCitaNav">
+          <i class="fa-solid fa-calendar-days"></i>
+          <span>Agendar Cita</span>
+        </button>
+        <button class="nav-icon-btn" id="btnLogin" aria-label="Mi cuenta">
+          <i class="fa-regular fa-user"></i>
+          <span>Mi cuenta</span>
+        </button>
+        <a href="tienda-productos.html" class="nav-icon-btn" aria-label="Tienda">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span>Tienda</span>
+        </a>
+      </div>
+
+      <!-- Burger móvil -->
+      <button class="navbar-burger" id="navbarBurger" aria-label="Menú" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Categorías -->
+    <nav class="navbar-cats" id="navbarCats" aria-label="Categorías">
+      <div class="navbar-cats-inner">
+        <a href="#servicios"><i class="fa-solid fa-stethoscope"></i> Consultas</a>
+        <a href="#servicios"><i class="fa-solid fa-syringe"></i> Vacunación</a>
+        <a href="#servicios"><i class="fa-solid fa-scissors"></i> Estética</a>
+        <a href="#servicios"><i class="fa-solid fa-flask"></i> Laboratorio</a>
+        <a href="#servicios"><i class="fa-solid fa-x-ray"></i> Rayos X</a>
+        <a href="#servicios"><i class="fa-solid fa-heart-pulse"></i> Cirugías</a>
+        <a href="#servicios"><i class="fa-solid fa-house-medical"></i> Hospitalización</a>
+        <a href="tienda-productos.html"><i class="fa-solid fa-store"></i> Tienda</a>
+        <a href="#ubicacion" class="cat-urgencias"><i class="fa-solid fa-truck-medical"></i> Urgencias 24h</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ══ HERO BANNER ══ -->
+    <section class="hero" id="inicio">
+      <div class="hero-bg"></div>
+      <div class="hero-overlay"></div>
+      <div class="hero-inner">
+        <div class="hero-content">
+          <div class="hero-tag">🏆 Nominada Mejor Clínica Veterinaria 2024 · 2025 · 2026</div>
+          <h1>Cuidamos a tu<br/><strong>mascota</strong> con amor</h1>
+          <p>30 años de experiencia en Sogamoso. Más de 8 médicos veterinarios, laboratorio propio, rayos X, ecografía y hospitalización en una sola sede.</p>
+          <div class="hero-btns">
+            <button class="btn-cita btn-hero-cita" id="btnCitaHero">
+              <i class="fa-solid fa-calendar-days"></i> Agendar Cita
+            </button>
+            <a href="#servicios" class="btn-hero-outline">Ver servicios</a>
+          </div>
+          <div class="hero-chips">
+            <span><i class="fa-solid fa-flask"></i> Laboratorio propio</span>
+            <span><i class="fa-solid fa-x-ray"></i> Rayos X y ecografía</span>
+            <span><i class="fa-solid fa-house-medical"></i> Quirófano</span>
+            <span><i class="fa-solid fa-truck-medical"></i> Urgencias 24h</span>
+          </div>
+        </div>
+
+        <!-- Card disponibilidad -->
+        <div class="hero-card">
+          <div class="hcard-header">
+            <img src="../img/logo.png" alt="Mascott" class="hcard-logo"/>
+            <div>
+              <p class="hcard-title">Próxima cita</p>
+              <p class="hcard-date" id="heroFecha">Cargando…</p>
+            </div>
+            <span class="hcard-open-badge" id="estadoBadge">●</span>
+          </div>
+          <ul class="hcard-list">
+            <li><i class="fa-solid fa-clock"></i><span>Lun–Sáb · 8:00 am – 8:30 pm</span></li>
+            <li><i class="fa-solid fa-location-dot"></i><span>Calle 15 #9-54, Sogamoso</span></li>
+            <li><i class="fa-solid fa-phone"></i><span id="estadoClinica">(+57) 311 456 9768</span></li>
+          </ul>
+          <button class="hcard-btn" id="btnCitaCard">
+            <i class="fa-solid fa-calendar-check"></i> Reservar ahora
+          </button>
+          <a href="https://wa.me/573114569768" target="_blank" rel="noopener" class="hcard-wa">
+            <i class="fa-brands fa-whatsapp"></i> Escribir por WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ STATS ══ -->
+    <section class="stats-bar">
+      <div class="stats-bar-inner">
+        <div class="stat-item">
+          <strong class="stat-num" data-target="30">0</strong><span>+</span>
+          <p>Años en Sogamoso</p>
+        </div>
+        <div class="stat-item">
+          <strong class="stat-num" data-target="8">0</strong><span>+</span>
+          <p>Médicos veterinarios</p>
+        </div>
+        <div class="stat-item">
+          <strong class="stat-num" data-target="5000">0</strong><span>+</span>
+          <p>Pacientes atendidos</p>
+        </div>
+        <div class="stat-item">
+          <strong>4,5</strong><span>★</span>
+          <p>Calificación Google</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ CATEGORÍAS VISUALES ══ -->
+    <section class="cats-section">
+      <div class="cats-inner">
+        <h2 class="section-title">¿Qué necesita tu mascota hoy?</h2>
+        <div class="cats-grid">
+          <a href="#servicios" class="cat-card">
+            <div class="cat-card-ico" style="background:#e3f2fd">🩺</div>
+            <span>Consulta</span>
+          </a>
+          <a href="#servicios" class="cat-card">
+            <div class="cat-card-ico" style="background:#fff3e0">💉</div>
+            <span>Vacunación</span>
+          </a>
+          <a href="#servicios" class="cat-card">
+            <div class="cat-card-ico" style="background:#e3f2fd">✂️</div>
+            <span>Estética</span>
+          </a>
+          <a href="#servicios" class="cat-card">
+            <div class="cat-card-ico" style="background:#f3e5f5">🔬</div>
+            <span>Laboratorio</span>
+          </a>
+          <a href="#servicios" class="cat-card">
+            <div class="cat-card-ico" style="background:#e3f2fd">🩻</div>
+            <span>Rayos X</span>
+          </a>
+          <a href="#servicios" class="cat-card">
+            <div class="cat-card-ico" style="background:#fff3e0">🏥</div>
+            <span>Cirugías</span>
+          </a>
+          <a href="#servicios" class="cat-card">
+            <div class="cat-card-ico" style="background:#e3f2fd">🏨</div>
+            <span>Hospitalización</span>
+          </a>
+          <a href="tienda-productos.html" class="cat-card">
+            <div class="cat-card-ico" style="background:#fce4ec">🛒</div>
+            <span>Tienda</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ SERVICIOS ══ -->
+    <section class="section bg-grey" id="servicios">
+      <div class="section-inner">
+        <div class="section-head">
+          <h2 class="section-title">Nuestros Servicios</h2>
+          <p class="section-sub">Todo lo que tu mascota necesita en un solo lugar, con el mismo equipo.</p>
+        </div>
+        <div class="services-grid">
+          <article class="serv-card reveal">
+            <div class="serv-card-img" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb)">🩺</div>
+            <div class="serv-card-body">
+              <h3>Consulta General</h3>
+              <p>Valoración clínica completa y seguimiento. Sin cita, por orden de llegada.</p>
+              <button class="serv-btn" onclick="document.getElementById('btnCitaHero').click()">Agendar →</button>
+            </div>
+          </article>
+          <article class="serv-card reveal">
+            <div class="serv-card-img" style="background:linear-gradient(135deg,#fff3e0,#ffe0b2)">💉</div>
+            <div class="serv-card-body">
+              <h3>Vacunación</h3>
+              <p>Esquemas completos para cachorros y adultos, con carné y recordatorios.</p>
+              <button class="serv-btn" onclick="document.getElementById('btnCitaHero').click()">Agendar →</button>
+            </div>
+          </article>
+          <article class="serv-card reveal">
+            <div class="serv-card-img" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb)">✂️</div>
+            <div class="serv-card-body">
+              <h3>Estética Canina</h3>
+              <p>Baño medicado, corte de raza, limpieza de oídos y corte de uñas.</p>
+              <button class="serv-btn" onclick="document.getElementById('btnCitaHero').click()">Agendar →</button>
+            </div>
+          </article>
+          <article class="serv-card reveal">
+            <div class="serv-card-img" style="background:linear-gradient(135deg,#f3e5f5,#e1bee7)">🔬</div>
+            <div class="serv-card-body">
+              <h3>Laboratorio Propio</h3>
+              <p>Cuadro hemático, química sanguínea, uroanálisis. Resultados el mismo día.</p>
+              <button class="serv-btn" onclick="document.getElementById('btnCitaHero').click()">Agendar →</button>
+            </div>
+          </article>
+          <article class="serv-card reveal">
+            <div class="serv-card-img" style="background:linear-gradient(135deg,#e0f7fa,#b2ebf2)">🩻</div>
+            <div class="serv-card-body">
+              <h3>Rayos X y Ecografía</h3>
+              <p>Diagnóstico de fracturas, tórax, abdomen y órganos internos.</p>
+              <button class="serv-btn" onclick="document.getElementById('btnCitaHero').click()">Agendar →</button>
+            </div>
+          </article>
+          <article class="serv-card reveal">
+            <div class="serv-card-img" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb)">🏥</div>
+            <div class="serv-card-body">
+              <h3>Cirugías</h3>
+              <p>Tejidos blandos, ortopedia, esterilizaciones, odontología y oftalmología.</p>
+              <button class="serv-btn" onclick="document.getElementById('btnCitaHero').click()">Agendar →</button>
+            </div>
+          </article>
+          <article class="serv-card reveal">
+            <div class="serv-card-img" style="background:linear-gradient(135deg,#fce4ec,#f8bbd0)">🏨</div>
+            <div class="serv-card-body">
+              <h3>Hospitalización</h3>
+              <p>Internación con vigilancia permanente y reportes para la familia.</p>
+              <button class="serv-btn" onclick="document.getElementById('btnCitaHero').click()">Agendar →</button>
+            </div>
+          </article>
+          <article class="serv-card reveal">
+            <div class="serv-card-img" style="background:linear-gradient(135deg,#ffebee,#ffcdd2)">🚨</div>
+            <div class="serv-card-body">
+              <h3>Urgencias 24h</h3>
+              <p>Atención de emergencias toda la noche. Llámanos antes de venir.</p>
+              <a href="tel:+573114569768" class="serv-btn">Llamar ahora →</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ BANNER URGENCIAS ══ -->
+    <section class="urgencia-banner">
+      <div class="urgencia-inner">
+        <div class="urgencia-ico">🚨</div>
+        <div>
+          <h3>Urgencias 24 horas · Lunes a Sábado</h3>
+          <p>Llámanos antes de salir y te esperamos listos. Describe qué le ocurre a tu mascota para que el equipo se prepare.</p>
+        </div>
+        <div class="urgencia-actions">
+          <a href="tel:+573114569768" class="btn-urgencia-call">
+            <i class="fa-solid fa-phone"></i> Llamar ahora
+          </a>
+          <a href="https://wa.me/573114569768" target="_blank" rel="noopener" class="btn-urgencia-wa">
+            <i class="fa-brands fa-whatsapp"></i> WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ PRODUCTOS DESTACADOS ══ -->
+    <section class="section" id="productos">
+      <div class="section-inner">
+        <div class="section-head">
+          <h2 class="section-title">Productos Destacados</h2>
+          <p class="section-sub">Farmacia veterinaria, alimento y accesorios en la misma sede.</p>
+          <a href="tienda-productos.html" class="ver-todos">Ver todos los productos →</a>
+        </div>
+        <div class="products-grid">
+          <article class="prod-card reveal">
+            <div class="prod-card-img">🦴</div>
+            <div class="prod-card-body">
+              <span class="prod-tag">Nutrición</span>
+              <h4>Alimento Premium</h4>
+              <p>Royal Canin, Hill's y Purina para todas las razas y edades.</p>
+              <div class="prod-footer">
+                <span class="prod-price">desde <strong>$45,000</strong></span>
+                <a href="tienda-productos.html" class="prod-btn">Ver →</a>
+              </div>
+            </div>
+          </article>
+          <article class="prod-card reveal">
+            <div class="prod-card-img">🧴</div>
+            <div class="prod-card-body">
+              <span class="prod-tag">Higiene</span>
+              <h4>Kit de Grooming</h4>
+              <p>Todo para el cuidado en casa de tu mejor amigo.</p>
+              <div class="prod-footer">
+                <span class="prod-price">desde <strong>$35,000</strong></span>
+                <a href="tienda-productos.html" class="prod-btn">Ver →</a>
+              </div>
+            </div>
+          </article>
+          <article class="prod-card reveal">
+            <div class="prod-card-img">💊</div>
+            <div class="prod-card-body">
+              <span class="prod-tag">Farmacia</span>
+              <h4>Medicamentos</h4>
+              <p>Antiparasitarios, vitaminas y medicamentos recetados.</p>
+              <div class="prod-footer">
+                <span class="prod-price">desde <strong>$15,000</strong></span>
+                <a href="tienda-productos.html" class="prod-btn">Ver →</a>
+              </div>
+            </div>
+          </article>
+          <article class="prod-card reveal">
+            <div class="prod-card-img">🎾</div>
+            <div class="prod-card-body">
+              <span class="prod-tag">Accesorios</span>
+              <h4>Juguetes y Accesorios</h4>
+              <p>Correas, collares, camas y juguetes para mantenerlos activos.</p>
+              <div class="prod-footer">
+                <span class="prod-price">desde <strong>$12,000</strong></span>
+                <a href="tienda-productos.html" class="prod-btn">Ver →</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ PROCESO ══ -->
+    <section class="section bg-verde" id="proceso">
+      <div class="section-inner">
+        <div class="section-head center-head">
+          <h2 class="section-title white">Tu visita en 4 pasos</h2>
+          <p class="section-sub white-muted">Sin cita para consulta general. Por orden de llegada.</p>
+        </div>
+        <div class="proceso-grid">
+          <div class="paso reveal">
+            <div class="paso-num">01</div>
+            <h3>Llegas sin cita</h3>
+            <p>La consulta se atiende por orden de llegada, como en un hospital.</p>
+          </div>
+          <div class="paso reveal">
+            <div class="paso-num">02</div>
+            <h3>Te valoramos</h3>
+            <p>Un médico examina a tu mascota de principio a fin y escucha la historia completa.</p>
+          </div>
+          <div class="paso reveal">
+            <div class="paso-num">03</div>
+            <h3>Diagnosticamos</h3>
+            <p>Los exámenes se procesan aquí mismo. Resultados el mismo día.</p>
+          </div>
+          <div class="paso reveal">
+            <div class="paso-num">04</div>
+            <h3>Te acompañamos</h3>
+            <p>Recibes un plan claro y hacemos seguimiento hasta que esté bien.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ RESEÑAS ══ -->
+    <section class="section" id="resenas">
+      <div class="section-inner">
+        <div class="section-head">
+          <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+          <div class="rating-row">
+            <span class="rating-stars">★★★★½</span>
+            <span class="rating-text">4,5 · 414 reseñas en Google · Verificadas</span>
+          </div>
+        </div>
+        <div class="reviews-grid">
+          <article class="review-card reveal">
+            <div class="review-stars">★★★★★</div>
+            <p>"Veterinaria muy completa. Instalaciones con altos estándares y muy buena calidad en cada servicio."</p>
+            <div class="reviewer">
+              <div class="reviewer-av">J</div>
+              <div><strong>Julio Ramón Sierra Castro</strong><span>Local Guide · 2024</span></div>
+            </div>
+          </article>
+          <article class="review-card reveal">
+            <div class="review-stars">★★★★★</div>
+            <p>"La atención en horas de la madrugada es excelente. Muy profesionales a cualquier hora del día."</p>
+            <div class="reviewer">
+              <div class="reviewer-av">V</div>
+              <div><strong>Veronica Huertas</strong><span>Agosto 2026</span></div>
+            </div>
+          </article>
+          <article class="review-card reveal">
+            <div class="review-stars">★★★★★</div>
+            <p>"Fui por una emergencia y me atendieron muy bien. El doctor muy profesional y su asistente también."</p>
+            <div class="reviewer">
+              <div class="reviewer-av">J</div>
+              <div><strong>Javier Welsch Prat</strong><span>Local Guide · Marzo 2026</span></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ UBICACIÓN ══ -->
+    <section class="section bg-grey" id="ubicacion">
+      <div class="section-inner">
+        <div class="section-head">
+          <h2 class="section-title">Dónde estamos</h2>
+          <p class="section-sub">A pocas cuadras del centro de Sogamoso. Sin cita previa.</p>
+        </div>
+        <div class="ubicacion-grid">
+          <div class="horario-box">
+            <h3>Horario de atención</h3>
+            <table class="horario-tabla">
+              <tr><td>Lunes – Viernes</td><td>8:00 – 20:30</td></tr>
+              <tr><td>Sábado</td><td>8:00 – 20:30</td></tr>
+              <tr><td>Domingo</td><td>10:00 – 12:00</td></tr>
+            </table>
+            <div class="urgencia-chip">🚨 Urgencias 24h · Lunes a Sábado</div>
+            <div class="ubicacion-btns">
+              <a href="tel:+573114569768" class="btn-cita">📞 Llamar</a>
+              <a href="https://wa.me/573114569768" target="_blank" rel="noopener" class="btn-wa-outline">💬 WhatsApp</a>
+            </div>
+          </div>
+          <div class="map-box">
+            <iframe
+              title="Ubicación Mascott"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3976.3!2d-72.9322!3d5.7167!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e6a5c!2sCalle+15+%239-54%2C+Sogamoso!5e0!3m2!1ses!2sco!4v1"
+              width="100%" height="360"
+              style="border:0;border-radius:12px;display:block"
+              allowfullscreen loading="lazy">
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ FOOTER ══ -->
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="../img/logo.png" alt="Mascott" width="40" height="40"/>
+          <div>
+            <p class="footer-name">Mascott</p>
+            <p class="footer-tagline">Clínica Veterinaria · desde 1997</p>
+          </div>
+        </div>
+        <div class="footer-cols">
+          <div>
+            <h4>Servicios</h4>
+            <a href="#servicios">Consulta General</a>
+            <a href="#servicios">Vacunación</a>
+            <a href="#servicios">Estética</a>
+            <a href="#servicios">Laboratorio</a>
+            <a href="#servicios">Cirugías</a>
+          </div>
+          <div>
+            <h4>Información</h4>
+            <a href="#resenas">Reseñas</a>
+            <a href="#ubicacion">Ubicación</a>
+            <a href="tienda-productos.html">Tienda</a>
+            <a href="login-registro.html">Mi cuenta</a>
+          </div>
+          <div>
+            <h4>Contacto</h4>
+            <a href="tel:+573114569768">📞 (57) 311 456 9768</a>
+            <a href="https://wa.me/573114569768" target="_blank" rel="noopener">💬 WhatsApp</a>
+            <a href="mailto:contacto@mascott.com">✉️ contacto@mascott.com</a>
+            <p style="margin-top:.5rem;opacity:.6;font-size:.82rem">Calle 15 #9-54<br/>Sogamoso, Boyacá</p>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Clínica Veterinaria Mascott · Sogamoso, Boyacá</p>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- ══ MODAL CITAS ══ -->
+  <div class="modal-overlay" id="modalCita" role="dialog" aria-modal="true" aria-labelledby="cita-title" aria-hidden="true">
+    <div class="modal modal-wide">
+      <button class="modal-close" id="citaClose" aria-label="Cerrar">✕</button>
+      <div class="modal-header">
+        <span>📅</span>
+        <h2 id="cita-title">Agendar Cita</h2>
+        <p>Elige fecha, hora y servicio</p>
+      </div>
+      <form class="modal-form" id="formCita" novalidate>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="c-nombre">Tu nombre</label>
+            <input type="text" id="c-nombre" placeholder="Ej. María García" required autocomplete="name"/>
+            <span class="field-error" id="err-nombre" role="alert"></span>
+          </div>
+          <div class="form-group">
+            <label for="c-mascota">Nombre de tu mascota</label>
+            <input type="text" id="c-mascota" placeholder="Ej. Firulais" required/>
+            <span class="field-error" id="err-mascota" role="alert"></span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="c-servicio">Servicio</label>
+          <select id="c-servicio" required>
+            <option value="">Selecciona un servicio</option>
+            <optgroup label="🩺 Consultas">
+              <option value="consulta-general">Consulta General</option>
+              <option value="consulta-especializada">Consulta Especializada</option>
+            </optgroup>
+            <optgroup label="💉 Prevención">
+              <option value="vacuna">Vacunación</option>
+              <option value="desparasitacion">Desparasitación</option>
+            </optgroup>
+            <optgroup label="✂️ Estética">
+              <option value="estetica">Estética Canina</option>
+              <option value="bano">Baño y Secado</option>
+            </optgroup>
+            <optgroup label="🔬 Diagnóstico">
+              <option value="radiografia">Radiografía</option>
+              <option value="ecografia">Ecografía</option>
+              <option value="laboratorio">Laboratorio</option>
+            </optgroup>
+            <optgroup label="🏥 Cirugías">
+              <option value="esterilizacion">Esterilización / Castración</option>
+              <option value="cirugia-general">Cirugía General</option>
+              <option value="cesarea">Cesárea</option>
+            </optgroup>
+            <optgroup label="🚑 Urgencias">
+              <option value="urgencia">Urgencia / Emergencia</option>
+              <option value="hospitalizacion">Hospitalización</option>
+            </optgroup>
+          </select>
+          <span class="field-error" id="err-servicio" role="alert"></span>
+        </div>
+        <div class="form-group">
+          <label>Fecha disponible</label>
+          <div class="fechas-grid" id="fechasGrid" role="group"></div>
+          <span class="field-error" id="err-fecha" role="alert"></span>
+        </div>
+        <div class="form-group" id="horariosWrap" style="display:none">
+          <label>Horario disponible</label>
+          <div class="horarios-grid" id="horariosGrid" role="group"></div>
+          <span class="field-error" id="err-hora" role="alert"></span>
+        </div>
+        <button type="submit" class="btn-cita" style="width:100%;justify-content:center">
+          ✅ Confirmar Cita
+        </button>
+      </form>
+      <div class="form-msg" id="formMsg" role="status" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <!-- FAB WhatsApp -->
+  <a href="https://wa.me/573114569768" target="_blank" rel="noopener"
+     class="fab-wa" aria-label="WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+
+  <!-- ══ CHATBOT ══ -->
+  <button class="chat-fab" id="chatFab" aria-label="Chat" aria-expanded="false">
+    <i class="fa-regular fa-comment-dots"></i>
+    <span class="chat-notif" id="chatNotif">1</span>
+  </button>
+  <div class="chat-window" id="chatWindow" hidden role="dialog" aria-label="Chat de soporte">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <div class="chat-avatar-wrap">
+          <div class="chat-avatar">🐾</div>
+          <span class="chat-online-dot"></span>
+        </div>
+        <div>
+          <p class="chat-header-name">Mascott Bot</p>
+          <p class="chat-header-status">En línea · responde al instante</p>
+        </div>
+      </div>
+      <button class="chat-close" id="chatClose" aria-label="Cerrar chat">✕</button>
+    </div>
+    <div class="chat-body" id="chatBody" role="log" aria-live="polite"></div>
+    <div class="chat-sugerencias" id="chatSugerencias">
+      <button class="chat-sug" data-q="¿Cuáles son los servicios?">🩺 Servicios</button>
+      <button class="chat-sug" data-q="¿Cuál es el horario?">🕐 Horario</button>
+      <button class="chat-sug" data-q="¿Cómo agendo una cita?">📅 Citas</button>
+      <button class="chat-sug" data-q="¿Cuánto cuesta una consulta?">💰 Precios</button>
+      <button class="chat-sug" data-q="¿Dónde están ubicados?">📍 Ubicación</button>
+      <button class="chat-sug" data-q="¿Atienden urgencias?">🚨 Urgencias</button>
+    </div>
+    <div class="chat-footer">
+      <input type="text" class="chat-input" id="chatInput" placeholder="Escribe tu pregunta..." autocomplete="off"/>
+      <button class="chat-send" id="chatSend" aria-label="Enviar">
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Panel accesibilidad -->
+  <button class="acc-toggle-btn" id="accToggleBtn" aria-label="Accesibilidad">♿</button>
+  <div class="acc-panel" id="accPanel" role="dialog" aria-label="Accesibilidad" hidden>
+    <div class="acc-panel-header">
+      <div class="acc-header-left">
+        <div class="acc-header-icon">♿</div>
+        <div><h2 class="acc-panel-title">Accesibilidad</h2><p class="acc-panel-sub">Personaliza tu experiencia</p></div>
+      </div>
+      <button class="acc-close" id="accClose">✕</button>
+    </div>
+    <div class="acc-section">
+      <p class="acc-label">🔠 Tamaño de texto</p>
+      <div class="acc-font-controls" role="group">
+        <button class="acc-font-btn" id="accFontDec">A−</button>
+        <div class="acc-font-bar"><div class="acc-font-fill" id="accFontFill"></div></div>
+        <span class="acc-font-val" id="accFontVal">100%</span>
+        <button class="acc-font-btn acc-font-btn-big" id="accFontInc">A+</button>
+      </div>
+    </div>
+    <div class="acc-section">
+      <p class="acc-label">🎨 Visual</p>
+      <div class="acc-opts-grid">
+        <button class="acc-opt" id="accContraste" role="switch" aria-checked="false"><span class="acc-opt-icon">◑</span><span class="acc-opt-label">Alto contraste</span><span class="acc-opt-pill">OFF</span></button>
+        <button class="acc-opt" id="accOscuro" role="switch" aria-checked="false"><span class="acc-opt-icon">🌙</span><span class="acc-opt-label">Modo oscuro</span><span class="acc-opt-pill">OFF</span></button>
+        <button class="acc-opt" id="accLinks" role="switch" aria-checked="false"><span class="acc-opt-icon">🔗</span><span class="acc-opt-label">Subrayar links</span><span class="acc-opt-pill">OFF</span></button>
+        <button class="acc-opt" id="accAnimaciones" role="switch" aria-checked="false"><span class="acc-opt-icon">⏸️</span><span class="acc-opt-label">Sin animaciones</span><span class="acc-opt-pill">OFF</span></button>
+        <button class="acc-opt" id="accGuia" role="switch" aria-checked="false"><span class="acc-opt-icon">📏</span><span class="acc-opt-label">Guía lectura</span><span class="acc-opt-pill">OFF</span></button>
+      </div>
+    </div>
+    <button class="acc-reset" id="accReset">↺ Restablecer</button>
+  </div>
+
+  <!-- Guía de lectura -->
+  <div id="guiaLine" aria-hidden="true" style="display:none;position:fixed;left:0;right:0;height:3px;background:linear-gradient(90deg,#1565c0,#1976d2);pointer-events:none;z-index:8888;box-shadow:0 0 12px rgba(26,107,60,.5);"></div>
+
+  <script src="../js/inicio.js"></script>
+</body>
+</html>

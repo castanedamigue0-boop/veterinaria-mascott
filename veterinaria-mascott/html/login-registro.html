@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Acceso · Clínica Veterinaria Mascott</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="icon" href="../img/logo.png"/>
+  <link rel="stylesheet" href="../css/paleta.css"/>
+  <link rel="stylesheet" href="../css/login-registro.css"/>
+  
+  
+</head>
+<body>
+
+  <a href="#auth-main" class="skip-link">Saltar al contenido</a>
+
+  <div class="auth-bg" aria-hidden="true">
+    <div class="auth-blob b1"></div>
+    <div class="auth-blob b2"></div>
+    <div class="paw p1">🐾</div>
+    <div class="paw p2">🐾</div>
+    <div class="paw p3">🐾</div>
+  </div>
+
+  <main class="auth-wrap" id="auth-main">
+    <a href="../html/inicio.html" class="back-link">← Volver al inicio</a>
+
+    <div class="auth-card">
+
+      <div class="auth-logo">
+        <span>🐾</span>
+        <span>Mascott</span>
+      </div>
+
+      <!-- TABS LOGIN / REGISTRO -->
+      <div class="auth-tabs" role="tablist">
+        <button class="tab active" id="tab-login" role="tab">Iniciar Sesión</button>
+        <button class="tab" id="tab-register" role="tab">Registrarse</button>
+      </div>
+
+      <!-- ══ LOGIN ══ -->
+      <div class="tab-panel active" id="panel-login" role="tabpanel">
+        <form id="loginForm" novalidate>
+
+          <div class="form-group">
+            <label for="l-email">Correo electrónico</label>
+            <input type="email" id="l-email" placeholder="correo@ejemplo.com"
+                   required autocomplete="email" autocapitalize="off"/>
+            <span class="field-error" id="le-email" role="alert"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="l-pass">Contraseña</label>
+            <div class="pass-wrap">
+              <input type="password" id="l-pass" placeholder="••••••••"
+                     required autocomplete="current-password"
+                     autocorrect="off" autocapitalize="off"/>
+              <button type="button" class="toggle-pass" data-target="l-pass"
+                      aria-label="Mostrar contraseña">👁</button>
+            </div>
+            <span class="field-error" id="le-pass" role="alert"></span>
+          </div>
+
+          <button type="submit" class="btn-auth" id="btnLogin">
+            <span>🔓</span> Entrar
+          </button>
+
+          <div class="form-msg" id="login-msg" role="status" aria-live="polite"></div>
+
+          <p class="auth-switch">¿No tienes cuenta?
+            <button type="button" class="link-btn" id="goRegister">Regístrate gratis</button>
+          </p>
+        </form>
+      </div>
+
+      <!-- ══ REGISTRO ══ -->
+      <div class="tab-panel" id="panel-register" role="tabpanel" hidden>
+        <form id="registerForm" novalidate>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="r-nombre">Nombre</label>
+              <input type="text" id="r-nombre" placeholder="María"
+                     required autocomplete="given-name"/>
+              <span class="field-error" id="re-nombre" role="alert"></span>
+            </div>
+            <div class="form-group">
+              <label for="r-apellido">Apellido</label>
+              <input type="text" id="r-apellido" placeholder="García"
+                     required autocomplete="family-name"/>
+              <span class="field-error" id="re-apellido" role="alert"></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="r-email">Correo electrónico</label>
+            <input type="email" id="r-email" placeholder="correo@ejemplo.com"
+                   required autocomplete="email" autocapitalize="off"/>
+            <span class="field-error" id="re-email" role="alert"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="r-tel">Teléfono</label>
+            <input type="tel" id="r-tel" placeholder="(55) 1234-5678" autocomplete="tel"/>
+          </div>
+
+          <div class="form-group">
+            <label for="r-pass">Contraseña</label>
+            <div class="pass-wrap">
+              <input type="password" id="r-pass" placeholder="Mínimo 6 caracteres"
+                     required autocomplete="new-password"/>
+              <button type="button" class="toggle-pass" data-target="r-pass"
+                      aria-label="Mostrar contraseña">👁</button>
+            </div>
+            <span class="field-error" id="re-pass" role="alert"></span>
+            <div class="pass-strength" id="passStrength" aria-live="polite"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="r-pass2">Confirmar contraseña</label>
+            <div class="pass-wrap">
+              <input type="password" id="r-pass2" placeholder="Repite tu contraseña"
+                     required autocomplete="new-password"/>
+              <button type="button" class="toggle-pass" data-target="r-pass2"
+                      aria-label="Mostrar contraseña">👁</button>
+            </div>
+            <span class="field-error" id="re-pass2" role="alert"></span>
+          </div>
+
+          <button type="submit" class="btn-auth">
+            <span>✅</span> Crear cuenta
+          </button>
+
+          <div class="form-msg" id="register-msg" role="status" aria-live="polite"></div>
+
+          <p class="auth-switch">¿Ya tienes cuenta?
+            <button type="button" class="link-btn" id="goLogin">Inicia sesión</button>
+          </p>
+        </form>
+      </div>
+
+    </div><!-- auth-card -->
+  </main>
+
+  <script type="module" src="../js/login-registro.js"></script>
+  <script src="../js/login-registro.js"></script>
+</body>
+</html>
