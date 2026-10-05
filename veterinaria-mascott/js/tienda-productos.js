@@ -1,5 +1,5 @@
 ﻿// ===== FIREBASE (guardar pedido si hay sesión) =====
-import { obtenerUsuario, actualizarUsuario, getSession } from '../scripts/base-de-datos.js';
+import { obtenerUsuario, actualizarUsuario, getSession } from '../js/base-de-datos.js';
 
 // ===== STOCK (sincronizado con inventario admin) =====
 const INV_KEY = 'mascott_inventario';

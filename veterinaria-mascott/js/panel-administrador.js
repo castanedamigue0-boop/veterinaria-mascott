@@ -10,7 +10,7 @@ function enviarCorreo(params) {
 }
 
 // ===== FIREBASE =====
-import { obtenerTodosUsuarios, actualizarUsuario, agregarNotificacion, obtenerDoctores, crearDoctor, actualizarDoctor, crearUsuario, obtenerUsuario } from '../scripts/base-de-datos.js';
+import { obtenerTodosUsuarios, actualizarUsuario, agregarNotificacion, obtenerDoctores, crearDoctor, actualizarDoctor, crearUsuario, obtenerUsuario } from '../js/base-de-datos.js';
 
 // ===== DOCTORES POR DEFECTO =====
 const DOCTORES_DEFAULT = [

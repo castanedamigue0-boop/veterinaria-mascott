@@ -3,7 +3,7 @@
   setSession, getSession,
   obtenerDoctores, setDoctorSession, getDoctorSession,
   crearDoctor, actualizarDoctor
-} from '../scripts/base-de-datos.js';
+} from '../js/base-de-datos.js';
 
 // ===== CREDENCIALES ADMIN =====
 const ADMIN_EMAIL    = 'admin@mascott.com';

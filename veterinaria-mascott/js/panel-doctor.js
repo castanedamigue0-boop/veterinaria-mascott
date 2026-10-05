@@ -1,7 +1,7 @@
 ﻿import {
   obtenerTodosUsuarios, actualizarUsuario,
   getDoctorSession, clearDoctorSession, actualizarDoctor
-} from '../scripts/base-de-datos.js';
+} from '../js/base-de-datos.js';
 
 // ===== SESIÓN =====
 const doctor = getDoctorSession();

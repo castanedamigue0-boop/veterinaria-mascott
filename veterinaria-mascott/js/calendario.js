@@ -2,7 +2,7 @@
   obtenerTodosUsuarios, actualizarUsuario,
   obtenerDoctores, obtenerUsuario,
   getSession
-} from '../scripts/base-de-datos.js';
+} from '../js/base-de-datos.js';
 
 // ===== SESIÓN =====
 const session = getSession();

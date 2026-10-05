@@ -1,4 +1,4 @@
-﻿import { obtenerUsuario, actualizarUsuario, getSession, clearSession, obtenerTodosUsuarios } from '../scripts/base-de-datos.js';
+﻿import { obtenerUsuario, actualizarUsuario, getSession, clearSession, obtenerTodosUsuarios } from '../js/base-de-datos.js';
 
 // ===== SESION =====
 const session = getSession();
@@ -783,7 +783,7 @@ async function simularPagoQR() {
 
   // Notificar admin
   try {
-    var { agregarNotificacion: notifAdmin } = await import('../scripts/base-de-datos.js');
+    var { agregarNotificacion: notifAdmin } = await import('../js/base-de-datos.js');
     await notifAdmin('admin@mascott.com',
       '💰 PAGO RECIBIDO — ' + (userData.nombre||'') + ' ' + (userData.apellido||'') +
       ' pagó $' + total.toLocaleString('es-CO') + ' COP. Pedido #' + pedido.id.slice(-4) +
@@ -1025,7 +1025,7 @@ function mostrarToastDash(msg, duracion) {
   if (!t) {
     t = document.createElement('div');
     t.id = 'dashToast';
-    t.inicio.cssText = 'position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:#0d47a1;color:#fff;padding:.85rem 1.75rem;border-radius:50px;font-size:.9rem;font-weight:600;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .3s,opacity .3s;opacity:0;white-space:nowrap;max-width:90vw;text-align:center;';
+    t.style.cssText = 'position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:#0d47a1;color:#fff;padding:.85rem 1.75rem;border-radius:50px;font-size:.9rem;font-weight:600;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .3s,opacity .3s;opacity:0;white-space:nowrap;max-width:90vw;text-align:center;';
     document.body.appendChild(t);
   }
   t.textContent = msg;
