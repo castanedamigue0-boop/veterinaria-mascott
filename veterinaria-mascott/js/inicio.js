@@ -139,15 +139,230 @@ function estaLogueado() {
   return !!localStorage.getItem('macott_session');
 }
 
-function abrirCitaOLogin() {
-  // Si hay sesión de cliente → ir al calendario
-  if (estaLogueado()) {
-    window.location.href = '../html/calendario.html';
-  } else {
-    // Guardar redirect para después del login
-    sessionStorage.setItem('macott_redirect', 'cita');
-    window.location.href = '../html/login-registro.html';
+// ===== SIDE PANEL (derecho) =====
+(function() {
+  const panel   = document.getElementById('sidePanel');
+  const overlay = document.getElementById('sidePanelOverlay');
+  const btnClose= document.getElementById('sidePanelClose');
+  if (!panel) return;
+
+  const DIAS  = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const HORARIOS = ['8:00','8:30','9:00','9:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00'];
+  const OCUPADOS = {0:[1,4,7],1:[0,3,9],2:[2,5,11],3:[1,6,10],4:[0,4,8]};
+  let selFecha = null, selHora = null;
+
+  function openPanel(tab) {
+    panel.classList.add('open');
+    overlay.classList.add('open');
+    panel.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+    if (tab) switchTab(tab);
   }
+
+  function closePanel() {
+    panel.classList.remove('open');
+    overlay.classList.remove('open');
+    panel.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  }
+
+  function switchTab(name) {
+    document.querySelectorAll('.sp-tab').forEach(t => t.classList.toggle('active', t.dataset.panel === name));
+    document.getElementById('spLogin').style.display = name === 'spLogin' ? 'flex' : 'none';
+    document.getElementById('spCita').style.display  = name === 'spCita'  ? 'flex' : 'none';
+    if (name === 'spCita' && !document.getElementById('spFechasGrid').children.length) buildSPFechas();
+    if (name === 'spLogin') renderLoginPanel();
+  }
+
+  function renderLoginPanel() {
+    const sess = localStorage.getItem('macott_session');
+    const loginForm = document.getElementById('spLoginForm');
+    const userInfo  = document.getElementById('spUserInfo');
+    if (sess) {
+      try {
+        const u = JSON.parse(sess);
+        loginForm.style.display = 'none';
+        userInfo.style.display  = 'block';
+        document.getElementById('spUserAv').textContent    = (u.nombre||'U')[0].toUpperCase();
+        document.getElementById('spUserName').textContent  = u.nombre  || 'Usuario';
+        document.getElementById('spUserEmail').textContent = u.email   || '';
+      } catch(e) {}
+    } else {
+      loginForm.style.display = 'block';
+      userInfo.style.display  = 'none';
+    }
+  }
+
+  // Tabs del panel
+  document.querySelectorAll('.sp-tab').forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.panel));
+  });
+
+  // Auth sub-tabs (login / registro)
+  document.querySelectorAll('.sp-auth-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.sp-auth-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const isLogin = btn.dataset.auth === 'login';
+      document.getElementById('spFormLogin').style.display    = isLogin ? 'flex' : 'none';
+      document.getElementById('spFormRegistro').style.display = isLogin ? 'none' : 'flex';
+    });
+  });
+
+  // Ver contraseña
+  panel.querySelectorAll('.sp-eye').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const inp = document.getElementById(btn.dataset.target);
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+      btn.querySelector('i').className = inp.type === 'password' ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash';
+    });
+  });
+
+  // Cerrar
+  btnClose.addEventListener('click', closePanel);
+  overlay.addEventListener('click', closePanel);
+  panel.addEventListener('keydown', e => { if(e.key==='Escape') closePanel(); });
+
+  // Logout
+  document.getElementById('spLogoutBtn')?.addEventListener('click', () => {
+    localStorage.removeItem('macott_session');
+    renderLoginPanel();
+    const btnL = document.getElementById('btnLogin');
+    if (btnL) btnL.querySelector('span').textContent = 'Mi cuenta';
+  });
+
+  // ── FORM LOGIN ──
+  document.getElementById('spFormLogin')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('sp-email').value.trim().toLowerCase();
+    const pass  = document.getElementById('sp-pass').value;
+    const msg   = document.getElementById('sp-login-msg');
+    msg.className = 'sp-msg'; msg.textContent = '';
+    const usuarios = JSON.parse(localStorage.getItem('macott_usuarios') || '[]');
+    const user = usuarios.find(u => u.email === email && u.password === pass);
+    if (user) {
+      localStorage.setItem('macott_session', JSON.stringify(user));
+      msg.textContent = `✅ ¡Bienvenido/a ${user.nombre}!`; msg.className = 'sp-msg success';
+      const btnL = document.getElementById('btnLogin');
+      if (btnL) btnL.querySelector('span').textContent = user.nombre;
+      setTimeout(() => { renderLoginPanel(); }, 900);
+    } else {
+      msg.textContent = '❌ Correo o contraseña incorrectos.'; msg.className = 'sp-msg error';
+    }
+  });
+
+  // ── FORM REGISTRO ──
+  document.getElementById('spFormRegistro')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const nombre = document.getElementById('sp-nombre').value.trim();
+    const email  = document.getElementById('sp-reg-email').value.trim().toLowerCase();
+    const pass   = document.getElementById('sp-reg-pass').value;
+    const msg    = document.getElementById('sp-reg-msg');
+    msg.className = 'sp-msg'; msg.textContent = '';
+    if (!nombre || !email || pass.length < 6) {
+      msg.textContent = '❌ Completa todos los campos.'; msg.className = 'sp-msg error'; return;
+    }
+    const usuarios = JSON.parse(localStorage.getItem('macott_usuarios') || '[]');
+    if (usuarios.find(u => u.email === email)) {
+      msg.textContent = '❌ Ya existe una cuenta con ese correo.'; msg.className = 'sp-msg error'; return;
+    }
+    const newUser = { nombre, apellido: document.getElementById('sp-apellido').value.trim(), email, password: pass };
+    usuarios.push(newUser);
+    localStorage.setItem('macott_usuarios', JSON.stringify(usuarios));
+    localStorage.setItem('macott_session', JSON.stringify(newUser));
+    msg.textContent = `✅ ¡Cuenta creada! Bienvenido/a ${nombre}.`; msg.className = 'sp-msg success';
+    const btnL = document.getElementById('btnLogin');
+    if (btnL) btnL.querySelector('span').textContent = nombre;
+    setTimeout(() => renderLoginPanel(), 1000);
+  });
+
+  // ── FECHAS CITA ──
+  function buildSPFechas() {
+    const grid = document.getElementById('spFechasGrid');
+    grid.innerHTML = '';
+    const hoy = new Date();
+    for (let i = 1; i <= 7; i++) {
+      const d = new Date(hoy); d.setDate(hoy.getDate() + i);
+      if (d.getDay() === 0) continue;
+      const btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'sp-fecha-btn';
+      btn.dataset.idx = i - 1;
+      btn.innerHTML = `<span class="dn">${d.getDate()}</span><span class="dm">${DIAS[d.getDay()]}</span><span class="dm">${MESES[d.getMonth()]}</span>`;
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.sp-fecha-btn').forEach(b => b.classList.remove('sel'));
+        btn.classList.add('sel');
+        selFecha = parseInt(btn.dataset.idx);
+        selHora  = null;
+        document.getElementById('sc-fecha-err').textContent = '';
+        buildSPHoras(selFecha);
+        document.getElementById('spHorasWrap').style.display = 'block';
+      });
+      grid.appendChild(btn);
+    }
+  }
+
+  function buildSPHoras(idx) {
+    const grid = document.getElementById('spHorasGrid'); grid.innerHTML = '';
+    const ocu  = OCUPADOS[idx % 5] || [];
+    HORARIOS.forEach((h, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'sp-hora-btn' + (ocu.includes(i) ? ' ocu' : '');
+      btn.textContent = h;
+      if (!ocu.includes(i)) {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.sp-hora-btn').forEach(b => b.classList.remove('sel'));
+          btn.classList.add('sel'); selHora = h;
+          document.getElementById('sc-hora-err').textContent = '';
+        });
+      }
+      grid.appendChild(btn);
+    });
+  }
+
+  // ── FORM CITA ──
+  document.getElementById('spFormCita')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const nombre   = document.getElementById('sc-nombre').value.trim();
+    const mascota  = document.getElementById('sc-mascota').value.trim();
+    const servicio = document.getElementById('sc-servicio').value;
+    const msg      = document.getElementById('sc-msg');
+    msg.className = 'sp-msg'; msg.textContent = '';
+    let ok = true;
+    if (!nombre || !mascota || !servicio) { msg.textContent = '❌ Completa nombre, mascota y servicio.'; msg.className = 'sp-msg error'; ok = false; }
+    if (selFecha === null) { document.getElementById('sc-fecha-err').textContent = 'Selecciona una fecha.'; ok = false; }
+    if (!selHora)          { document.getElementById('sc-hora-err').textContent  = 'Selecciona un horario.'; ok = false; }
+    if (!ok) return;
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true; btn.textContent = '⏳ Enviando...';
+    setTimeout(() => {
+      msg.textContent = `✅ ¡Cita confirmada! ${nombre} · ${servicio} · ${selHora}`; msg.className = 'sp-msg success';
+      e.target.reset();
+      document.querySelectorAll('.sp-fecha-btn,.sp-hora-btn').forEach(b => b.classList.remove('sel'));
+      document.getElementById('spHorasWrap').style.display = 'none';
+      selFecha = null; selHora = null;
+      btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-calendar-check"></i> Confirmar Cita';
+    }, 900);
+  });
+
+  // Exponer openPanel globalmente
+  window.openSidePanel = openPanel;
+  window.closeSidePanel = closePanel;
+
+  // Al cargar: actualizar botón si hay sesión
+  const sess = localStorage.getItem('macott_session');
+  if (sess) {
+    try {
+      const u = JSON.parse(sess);
+      const btnL = document.getElementById('btnLogin');
+      if (btnL) btnL.querySelector('span').textContent = u.nombre || 'Mi cuenta';
+    } catch(e) {}
+  }
+})();
+
+function abrirCitaOLogin() {
+  window.openSidePanel?.('spCita');
 }
 
 // Registrar modal cita con verificación de sesión
@@ -158,8 +373,18 @@ function abrirCitaOLogin() {
 // Cerrar modal cita
 const citaOverlay = document.getElementById('modalCita');
 if (citaOverlay) {
-  citaOverlay.querySelector('.modal-close')?.addEventListener('click', () => closeModal('modalCita'));
-  citaOverlay.addEventListener('click', (e) => { if (e.target === citaOverlay) closeModal('modalCita'); });
+  citaOverlay.querySelector('.modal-close')?.addEventListener('click', () => {
+    citaOverlay.classList.remove('open');
+    citaOverlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  });
+  citaOverlay.addEventListener('click', (e) => {
+    if (e.target === citaOverlay) {
+      citaOverlay.classList.remove('open');
+      citaOverlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+  });
   modals['modalCita'] = citaOverlay;
 }
 
@@ -234,7 +459,7 @@ if (citaOverlay) {
   }
 
   // Eventos
-  btnLogin.addEventListener('click', () => openDrawer('login'));
+  btnLogin.addEventListener('click', () => window.openSidePanel?.('spLogin'));
   btnClose.addEventListener('click', closeDrawer);
   overlay.addEventListener('click', closeDrawer);
   drawer.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
@@ -298,10 +523,13 @@ if (citaOverlay) {
         msg.className = 'auth-form-msg success';
         setTimeout(() => {
           closeDrawer();
-          // Actualizar botón login con nombre
           const btnL = document.getElementById('btnLogin');
-          if (btnL) {
-            btnL.querySelector('span').textContent = user.nombre;
+          if (btnL) btnL.querySelector('span').textContent = user.nombre;
+          // Si venía de agendar cita, redirigir al calendario
+          const redirect = sessionStorage.getItem('macott_redirect');
+          if (redirect === 'cita') {
+            sessionStorage.removeItem('macott_redirect');
+            window.location.href = '../html/calendario.html';
           }
         }, 1000);
       } else {
