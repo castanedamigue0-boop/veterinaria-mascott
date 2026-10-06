@@ -163,23 +163,212 @@ if (citaOverlay) {
   modals['modalCita'] = citaOverlay;
 }
 
-// Login → redirigir
-document.getElementById('btnLogin')?.addEventListener('click', () => {
-  window.location.href = 'login-registro.html';
-});
-
-// Sesión activa → cambiar botón
+// ===== AUTH DRAWER =====
 (function() {
-  const session = localStorage.getItem('macott_session');
-  if (!session) return;
-  try {
-    const user = JSON.parse(session);
-    const btn  = document.getElementById('btnLogin');
-    if (btn) {
-      btn.innerHTML = `<i class="fa-solid fa-user"></i><span>${user.nombre || 'Mi cuenta'}</span>`;
-      btn.onclick = () => { window.location.href = 'panel-usuario.html'; };
+  const drawer     = document.getElementById('authDrawer');
+  const overlay    = document.getElementById('authDrawerOverlay');
+  const btnLogin   = document.getElementById('btnLogin');
+  const btnClose   = document.getElementById('authDrawerClose');
+  const tabLogin   = document.getElementById('tabLogin');
+  const tabReg     = document.getElementById('tabRegister');
+  const panLogin   = document.getElementById('panelLogin');
+  const panReg     = document.getElementById('panelRegister');
+  const panSesion  = document.getElementById('panelSesion');
+  if (!drawer) return;
+
+  // Abrir / cerrar
+  function openDrawer(tab) {
+    // Ver si hay sesión activa
+    const session = localStorage.getItem('macott_session');
+    if (session) {
+      try {
+        const user = JSON.parse(session);
+        document.getElementById('authUserName').textContent  = user.nombre || 'Usuario';
+        document.getElementById('authUserEmail').textContent = user.email  || '';
+        document.getElementById('authAvatar').textContent    = (user.nombre || 'U')[0].toUpperCase();
+        panLogin.hidden  = true;  panLogin.classList.remove('active');
+        panReg.hidden    = true;
+        panSesion.hidden = false; panSesion.classList.add('active');
+        tabLogin.style.display = 'none';
+        tabReg.style.display   = 'none';
+      } catch(e) {}
+    } else {
+      panSesion.hidden = true;
+      tabLogin.style.display  = '';
+      tabReg.style.display    = '';
+      if (tab === 'register') switchTab('register');
+      else switchTab('login');
     }
-  } catch(e) {}
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    drawer.setAttribute('aria-hidden', 'false');
+    btnLogin.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => {
+      const first = drawer.querySelector('input');
+      if (first) first.focus();
+    }, 350);
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+    drawer.setAttribute('aria-hidden', 'true');
+    btnLogin.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+    btnLogin.focus();
+  }
+
+  function switchTab(tab) {
+    if (tab === 'login') {
+      tabLogin.classList.add('active');   tabLogin.setAttribute('aria-selected','true');
+      tabReg.classList.remove('active');  tabReg.setAttribute('aria-selected','false');
+      panLogin.hidden = false; panLogin.classList.add('active');
+      panReg.hidden   = true;  panReg.classList.remove('active');
+    } else {
+      tabReg.classList.add('active');     tabReg.setAttribute('aria-selected','true');
+      tabLogin.classList.remove('active'); tabLogin.setAttribute('aria-selected','false');
+      panReg.hidden   = false; panReg.classList.add('active');
+      panLogin.hidden = true;  panLogin.classList.remove('active');
+    }
+  }
+
+  // Eventos
+  btnLogin.addEventListener('click', () => openDrawer('login'));
+  btnClose.addEventListener('click', closeDrawer);
+  overlay.addEventListener('click', closeDrawer);
+  drawer.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+
+  tabLogin.addEventListener('click', () => switchTab('login'));
+  tabReg.addEventListener('click',   () => switchTab('register'));
+  document.getElementById('goToRegister')?.addEventListener('click', () => switchTab('register'));
+  document.getElementById('goToLogin')?.addEventListener('click',    () => switchTab('login'));
+
+  // Cerrar sesión desde drawer
+  document.getElementById('drawerLogoutBtn')?.addEventListener('click', () => {
+    localStorage.removeItem('macott_session');
+    closeDrawer();
+    location.reload();
+  });
+
+  // Toggle contraseña
+  drawer.querySelectorAll('.auth-toggle-pass').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const inp = document.getElementById(this.dataset.target);
+      const show = inp.type === 'password';
+      inp.type = show ? 'text' : 'password';
+      this.querySelector('i').className = show ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+    });
+  });
+
+  // Medidor de contraseña
+  document.getElementById('dr-pass')?.addEventListener('input', function() {
+    const v = this.value, bar = document.getElementById('dr-pass-strength');
+    if (!bar) return;
+    let s = 0;
+    if (v.length >= 6) s++;
+    if (/[A-Z]/.test(v) || /[0-9]/.test(v)) s++;
+    if (v.length >= 10 && /[^A-Za-z0-9]/.test(v)) s++;
+    bar.setAttribute('data-strength', v.length ? s : '');
+  });
+
+  // ── FORM LOGIN ──
+  document.getElementById('drawerLoginForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('dl-email').value.trim().toLowerCase();
+    const pass  = document.getElementById('dl-pass').value;
+    const msg   = document.getElementById('dl-msg');
+    msg.className = 'auth-form-msg'; msg.textContent = '';
+
+    if (!email) { document.getElementById('dl-email-err').textContent = 'Ingresa tu correo.'; return; }
+    if (!pass)  { document.getElementById('dl-pass-err').textContent  = 'Ingresa tu contraseña.'; return; }
+    document.getElementById('dl-email-err').textContent = '';
+    document.getElementById('dl-pass-err').textContent  = '';
+
+    const btn = this.querySelector('button[type="submit"]');
+    btn.disabled = true; btn.textContent = 'Entrando...';
+
+    try {
+      // Verificar en localStorage (base de datos local)
+      const usuarios = JSON.parse(localStorage.getItem('macott_usuarios') || '[]');
+      const user = usuarios.find(u => u.email === email && u.password === pass);
+      if (user) {
+        localStorage.setItem('macott_session', JSON.stringify(user));
+        msg.textContent = `✅ ¡Bienvenido/a ${user.nombre}!`;
+        msg.className = 'auth-form-msg success';
+        setTimeout(() => {
+          closeDrawer();
+          // Actualizar botón login con nombre
+          const btnL = document.getElementById('btnLogin');
+          if (btnL) {
+            btnL.querySelector('span').textContent = user.nombre;
+          }
+        }, 1000);
+      } else {
+        msg.textContent = '❌ Correo o contraseña incorrectos.';
+        msg.className = 'auth-form-msg error';
+      }
+    } catch(err) {
+      msg.textContent = '❌ Error al iniciar sesión.';
+      msg.className = 'auth-form-msg error';
+    }
+    btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Entrar';
+  });
+
+  // ── FORM REGISTRO ──
+  document.getElementById('drawerRegisterForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const nombre   = document.getElementById('dr-nombre').value.trim();
+    const apellido = document.getElementById('dr-apellido').value.trim();
+    const email    = document.getElementById('dr-email').value.trim().toLowerCase();
+    const tel      = document.getElementById('dr-tel').value.trim();
+    const pass     = document.getElementById('dr-pass').value;
+    const msg      = document.getElementById('dr-msg');
+    msg.className = 'auth-form-msg'; msg.textContent = '';
+
+    if (!nombre) { document.getElementById('dr-nombre-err').textContent = 'Ingresa tu nombre.'; return; }
+    if (!email)  { document.getElementById('dr-email-err').textContent  = 'Ingresa tu correo.'; return; }
+    if (pass.length < 6) { document.getElementById('dr-pass-err').textContent = 'Mínimo 6 caracteres.'; return; }
+    document.getElementById('dr-nombre-err').textContent = '';
+    document.getElementById('dr-email-err').textContent  = '';
+    document.getElementById('dr-pass-err').textContent   = '';
+
+    const btn = this.querySelector('button[type="submit"]');
+    btn.disabled = true; btn.textContent = 'Creando cuenta...';
+
+    const usuarios = JSON.parse(localStorage.getItem('macott_usuarios') || '[]');
+    if (usuarios.find(u => u.email === email)) {
+      msg.textContent = '❌ Ya existe una cuenta con ese correo.';
+      msg.className = 'auth-form-msg error';
+      btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Crear cuenta';
+      return;
+    }
+
+    const newUser = { nombre, apellido, email, tel, password: pass, creado: new Date().toISOString() };
+    usuarios.push(newUser);
+    localStorage.setItem('macott_usuarios', JSON.stringify(usuarios));
+    localStorage.setItem('macott_session', JSON.stringify(newUser));
+
+    msg.textContent = `✅ ¡Cuenta creada! Bienvenido/a ${nombre}.`;
+    msg.className = 'auth-form-msg success';
+    setTimeout(() => {
+      closeDrawer();
+      const btnL = document.getElementById('btnLogin');
+      if (btnL) btnL.querySelector('span').textContent = nombre;
+    }, 1200);
+
+    btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Crear cuenta';
+  });
+
+  // Al cargar: si hay sesión activa, actualizar botón
+  const sess = localStorage.getItem('macott_session');
+  if (sess) {
+    try {
+      const u = JSON.parse(sess);
+      const btnL = document.getElementById('btnLogin');
+      if (btnL) btnL.querySelector('span').textContent = u.nombre || 'Mi cuenta';
+    } catch(e) {}
+  }
 })();
 
 // ===== TOGGLE CONTRASEÑA =====

@@ -68,7 +68,7 @@
           <i class="fa-solid fa-calendar-days"></i>
           <span>Agendar Cita</span>
         </button>
-        <button class="nav-icon-btn" id="btnLogin" aria-label="Mi cuenta">
+        <button class="nav-icon-btn" id="btnLogin" aria-label="Mi cuenta" aria-haspopup="true" aria-expanded="false">
           <i class="fa-regular fa-user"></i>
           <span>Mi cuenta</span>
         </button>
@@ -665,6 +665,128 @@
 
   <!-- Guía de lectura -->
   <div id="guiaLine" aria-hidden="true" style="display:none;position:fixed;left:0;right:0;height:3px;background:linear-gradient(90deg,#1565c0,#1976d2);pointer-events:none;z-index:8888;box-shadow:0 0 12px rgba(26,107,60,.5);"></div>
+
+  <!-- ══ DRAWER LOGIN/REGISTRO ══ -->
+  <div class="auth-drawer-overlay" id="authDrawerOverlay" aria-hidden="true"></div>
+  <aside class="auth-drawer" id="authDrawer" role="dialog" aria-modal="true" aria-label="Iniciar sesión o registrarse" aria-hidden="true">
+
+    <div class="auth-drawer-header">
+      <div class="auth-drawer-logo">
+        <img src="../img/logo.png" alt="Mascott" width="32" height="32"/>
+        <span>Mascott</span>
+      </div>
+      <button class="auth-drawer-close" id="authDrawerClose" aria-label="Cerrar">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <!-- TABS -->
+    <div class="auth-drawer-tabs" role="tablist">
+      <button class="auth-tab active" id="tabLogin" role="tab" aria-selected="true" aria-controls="panelLogin">
+        <i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión
+      </button>
+      <button class="auth-tab" id="tabRegister" role="tab" aria-selected="false" aria-controls="panelRegister">
+        <i class="fa-solid fa-user-plus"></i> Registrarse
+      </button>
+    </div>
+
+    <!-- PANEL LOGIN -->
+    <div class="auth-drawer-panel active" id="panelLogin" role="tabpanel">
+      <p class="auth-drawer-sub">Accede a tu cuenta para agendar citas y más.</p>
+      <form id="drawerLoginForm" novalidate>
+        <div class="auth-field">
+          <label for="dl-email"><i class="fa-regular fa-envelope"></i> Correo electrónico</label>
+          <input type="email" id="dl-email" placeholder="correo@ejemplo.com" required autocomplete="email"/>
+          <span class="auth-field-err" id="dl-email-err" role="alert"></span>
+        </div>
+        <div class="auth-field">
+          <label for="dl-pass"><i class="fa-solid fa-lock"></i> Contraseña</label>
+          <div class="auth-pass-wrap">
+            <input type="password" id="dl-pass" placeholder="••••••••" required autocomplete="current-password"/>
+            <button type="button" class="auth-toggle-pass" data-target="dl-pass" aria-label="Mostrar contraseña">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+          <span class="auth-field-err" id="dl-pass-err" role="alert"></span>
+        </div>
+        <button type="submit" class="auth-submit-btn">
+          <i class="fa-solid fa-right-to-bracket"></i> Entrar
+        </button>
+        <div class="auth-form-msg" id="dl-msg" role="status" aria-live="polite"></div>
+      </form>
+      <p class="auth-switch-text">¿No tienes cuenta?
+        <button type="button" class="auth-link-btn" id="goToRegister">Regístrate gratis →</button>
+      </p>
+    </div>
+
+    <!-- PANEL REGISTRO -->
+    <div class="auth-drawer-panel" id="panelRegister" role="tabpanel" hidden>
+      <p class="auth-drawer-sub">Crea tu cuenta en segundos y empieza a agendar.</p>
+      <form id="drawerRegisterForm" novalidate>
+        <div class="auth-field-row">
+          <div class="auth-field">
+            <label for="dr-nombre"><i class="fa-solid fa-user"></i> Nombre</label>
+            <input type="text" id="dr-nombre" placeholder="María" required autocomplete="given-name"/>
+            <span class="auth-field-err" id="dr-nombre-err" role="alert"></span>
+          </div>
+          <div class="auth-field">
+            <label for="dr-apellido">Apellido</label>
+            <input type="text" id="dr-apellido" placeholder="García" required autocomplete="family-name"/>
+          </div>
+        </div>
+        <div class="auth-field">
+          <label for="dr-email"><i class="fa-regular fa-envelope"></i> Correo electrónico</label>
+          <input type="email" id="dr-email" placeholder="correo@ejemplo.com" required autocomplete="email"/>
+          <span class="auth-field-err" id="dr-email-err" role="alert"></span>
+        </div>
+        <div class="auth-field">
+          <label for="dr-tel"><i class="fa-solid fa-phone"></i> Teléfono <small>(opcional)</small></label>
+          <input type="tel" id="dr-tel" placeholder="311 456 9768" autocomplete="tel"/>
+        </div>
+        <div class="auth-field">
+          <label for="dr-pass"><i class="fa-solid fa-lock"></i> Contraseña</label>
+          <div class="auth-pass-wrap">
+            <input type="password" id="dr-pass" placeholder="Mínimo 6 caracteres" required autocomplete="new-password"/>
+            <button type="button" class="auth-toggle-pass" data-target="dr-pass" aria-label="Mostrar">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+          <div class="auth-pass-strength" id="dr-pass-strength"></div>
+          <span class="auth-field-err" id="dr-pass-err" role="alert"></span>
+        </div>
+        <button type="submit" class="auth-submit-btn auth-submit-green">
+          <i class="fa-solid fa-user-plus"></i> Crear cuenta
+        </button>
+        <div class="auth-form-msg" id="dr-msg" role="status" aria-live="polite"></div>
+      </form>
+      <p class="auth-switch-text">¿Ya tienes cuenta?
+        <button type="button" class="auth-link-btn" id="goToLogin">Inicia sesión →</button>
+      </p>
+    </div>
+
+    <!-- PANEL SESIÓN ACTIVA -->
+    <div class="auth-drawer-panel" id="panelSesion" hidden>
+      <div class="auth-user-info">
+        <div class="auth-user-avatar" id="authAvatar">M</div>
+        <div>
+          <p class="auth-user-name" id="authUserName">Usuario</p>
+          <p class="auth-user-email" id="authUserEmail">correo@ejemplo.com</p>
+        </div>
+      </div>
+      <div class="auth-user-actions">
+        <a href="panel-usuario.html" class="auth-user-btn">
+          <i class="fa-solid fa-gauge"></i> Mi Panel
+        </a>
+        <a href="calendario.html" class="auth-user-btn">
+          <i class="fa-solid fa-calendar-days"></i> Mis Citas
+        </a>
+        <button class="auth-user-btn auth-logout-btn" id="drawerLogoutBtn">
+          <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
+        </button>
+      </div>
+    </div>
+
+  </aside>
 
   <script src="../js/inicio.js"></script>
 </body>
