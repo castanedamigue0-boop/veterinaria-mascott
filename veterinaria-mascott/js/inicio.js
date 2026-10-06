@@ -139,8 +139,266 @@ function estaLogueado() {
   return !!localStorage.getItem('macott_session');
 }
 
-// ===== SIDE PANEL (derecho) =====
+// ===== SIDE PANEL =====
 (function() {
+  const panel   = document.getElementById('spPanel');
+  const overlay = document.getElementById('spOverlay');
+  const closeBtn= document.getElementById('spCloseBtn');
+  if (!panel) return;
+
+  const DIAS     = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  const MESES    = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const HORARIOS = ['8:00','8:30','9:00','9:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00'];
+  const OCUPADOS = {0:[1,4,7],1:[0,3,9],2:[2,5,11],3:[1,6,10],4:[0,4,8]};
+  let selFecha = null, selHora = null, modo = 'login';
+
+  /* ── abrir / cerrar ── */
+  function open(m) {
+    modo = m || 'login';
+    render();
+    panel.classList.add('open');
+    overlay.classList.add('open');
+    panel.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+  }
+  function close() {
+    panel.classList.remove('open');
+    overlay.classList.remove('open');
+    panel.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  }
+
+  /* ── render según estado ── */
+  function render() {
+    const sess = localStorage.getItem('macott_session');
+    const viewAuth = document.getElementById('spViewAuth');
+    const viewUser = document.getElementById('spViewUser');
+    const viewCita = document.getElementById('spViewCita');
+    const hName    = document.getElementById('spHeaderName');
+    const hSub     = document.getElementById('spHeaderSub');
+
+    viewAuth.style.display = 'none';
+    viewUser.style.display = 'none';
+    viewCita.style.display = 'none';
+
+    if (modo === 'cita') {
+      if (sess) {
+        // Logueado → mostrar formulario cita
+        hName.textContent = 'Agendar Cita';
+        hSub.textContent  = 'Completa los datos para reservar';
+        viewCita.style.display = 'flex';
+        if (!document.getElementById('spFechasGrid').children.length) buildFechas();
+      } else {
+        // No logueado → mostrar login con mensaje
+        hName.textContent = 'Inicia sesión';
+        hSub.textContent  = 'Necesitas cuenta para agendar';
+        viewAuth.style.display = 'flex';
+        // Mostrar aviso
+        showLoginRequired();
+      }
+    } else {
+      // modo login
+      if (sess) {
+        try {
+          const u = JSON.parse(sess);
+          hName.textContent = u.nombre || 'Mi cuenta';
+          hSub.textContent  = 'En línea';
+          viewUser.style.display = 'flex';
+          document.getElementById('spUserAv').textContent    = (u.nombre||'U')[0].toUpperCase();
+          document.getElementById('spUserName').textContent  = u.nombre  || 'Usuario';
+          document.getElementById('spUserEmail').textContent = u.email   || '';
+        } catch(e) {}
+      } else {
+        hName.textContent = 'Mascott';
+        hSub.textContent  = 'Inicia sesión para continuar';
+        viewAuth.style.display = 'flex';
+      }
+    }
+  }
+
+  function showLoginRequired() {
+    // Insertar mensaje encima del form de login
+    let msg = document.getElementById('spLoginRequired');
+    if (!msg) {
+      msg = document.createElement('div');
+      msg.id = 'spLoginRequired';
+      msg.className = 'sp-login-required';
+      msg.innerHTML = '<p>Para agendar una cita necesitas <strong>iniciar sesión</strong> o <strong>crear una cuenta</strong>. Es rápido y gratis.</p>';
+      document.getElementById('spViewAuth').insertBefore(msg, document.getElementById('spViewAuth').firstChild);
+    }
+    msg.style.display = 'block';
+  }
+
+  /* ── Tabs auth ── */
+  document.querySelectorAll('.sp-auth-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.sp-auth-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const isLogin = btn.dataset.auth === 'login';
+      document.getElementById('spFormLogin').style.display    = isLogin ? 'flex' : 'none';
+      document.getElementById('spFormRegistro').style.display = isLogin ? 'none' : 'flex';
+    });
+  });
+
+  /* ── Ver contraseña ── */
+  panel.querySelectorAll('.sp-eye').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const inp = document.getElementById(btn.dataset.target);
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+      btn.querySelector('i').className = inp.type === 'password' ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash';
+    });
+  });
+
+  /* ── Medidor contraseña ── */
+  document.getElementById('sp-reg-pass')?.addEventListener('input', function() {
+    const v = this.value, bar = document.getElementById('sp-strength');
+    if (!bar) return;
+    let s = 0;
+    if (v.length >= 6) s++;
+    if (/[A-Z0-9]/.test(v)) s++;
+    if (v.length >= 10 && /[^A-Za-z0-9]/.test(v)) s++;
+    bar.setAttribute('data-s', v.length ? s : '');
+  });
+
+  /* ── Cerrar ── */
+  closeBtn.addEventListener('click', close);
+  overlay.addEventListener('click', close);
+  panel.addEventListener('keydown', e => { if(e.key==='Escape') close(); });
+
+  /* ── Logout ── */
+  document.getElementById('spLogoutBtn')?.addEventListener('click', () => {
+    localStorage.removeItem('macott_session');
+    const btnL = document.getElementById('btnLogin');
+    if (btnL) btnL.querySelector('span').textContent = 'Mi cuenta';
+    render();
+  });
+
+  /* ── FORM LOGIN ── */
+  document.getElementById('spFormLogin')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('sp-email').value.trim().toLowerCase();
+    const pass  = document.getElementById('sp-pass').value;
+    const msg   = document.getElementById('sp-login-msg');
+    msg.className = 'sp-msg'; msg.textContent = '';
+    const usuarios = JSON.parse(localStorage.getItem('macott_usuarios') || '[]');
+    const user = usuarios.find(u => u.email === email && u.password === pass);
+    if (user) {
+      localStorage.setItem('macott_session', JSON.stringify(user));
+      msg.textContent = `✅ ¡Bienvenido/a ${user.nombre}!`; msg.className = 'sp-msg success';
+      const btnL = document.getElementById('btnLogin');
+      if (btnL) btnL.querySelector('span').textContent = user.nombre;
+      setTimeout(() => render(), 900);
+    } else {
+      msg.textContent = '❌ Correo o contraseña incorrectos.'; msg.className = 'sp-msg error';
+    }
+  });
+
+  /* ── FORM REGISTRO ── */
+  document.getElementById('spFormRegistro')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const nombre = document.getElementById('sp-nombre').value.trim();
+    const email  = document.getElementById('sp-reg-email').value.trim().toLowerCase();
+    const pass   = document.getElementById('sp-reg-pass').value;
+    const msg    = document.getElementById('sp-reg-msg');
+    msg.className = 'sp-msg'; msg.textContent = '';
+    if (!nombre || !email || pass.length < 6) {
+      msg.textContent = '❌ Completa todos los campos.'; msg.className = 'sp-msg error'; return;
+    }
+    const usuarios = JSON.parse(localStorage.getItem('macott_usuarios') || '[]');
+    if (usuarios.find(u => u.email === email)) {
+      msg.textContent = '❌ Ya existe una cuenta con ese correo.'; msg.className = 'sp-msg error'; return;
+    }
+    const u = { nombre, apellido: document.getElementById('sp-apellido').value.trim(), email, password: pass };
+    usuarios.push(u);
+    localStorage.setItem('macott_usuarios', JSON.stringify(usuarios));
+    localStorage.setItem('macott_session', JSON.stringify(u));
+    msg.textContent = `✅ ¡Cuenta creada! Bienvenido/a ${nombre}.`; msg.className = 'sp-msg success';
+    const btnL = document.getElementById('btnLogin');
+    if (btnL) btnL.querySelector('span').textContent = nombre;
+    setTimeout(() => render(), 1000);
+  });
+
+  /* ── FECHAS CITA ── */
+  function buildFechas() {
+    const grid = document.getElementById('spFechasGrid'); grid.innerHTML = '';
+    const hoy  = new Date();
+    for (let i = 1; i <= 7; i++) {
+      const d = new Date(hoy); d.setDate(hoy.getDate() + i);
+      if (d.getDay() === 0) continue;
+      const btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'sp-fecha-btn'; btn.dataset.idx = i-1;
+      btn.innerHTML = `<span class="dn">${d.getDate()}</span><span class="dm">${DIAS[d.getDay()]}</span><span class="dm">${MESES[d.getMonth()]}</span>`;
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.sp-fecha-btn').forEach(b => b.classList.remove('sel'));
+        btn.classList.add('sel'); selFecha = parseInt(btn.dataset.idx); selHora = null;
+        document.getElementById('sc-fecha-err').textContent = '';
+        buildHoras(selFecha);
+        document.getElementById('spHorasWrap').style.display = 'block';
+      });
+      grid.appendChild(btn);
+    }
+  }
+
+  function buildHoras(idx) {
+    const grid = document.getElementById('spHorasGrid'); grid.innerHTML = '';
+    const ocu  = OCUPADOS[idx % 5] || [];
+    HORARIOS.forEach((h, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'sp-hora-btn' + (ocu.includes(i) ? ' ocu' : '');
+      btn.textContent = h;
+      if (!ocu.includes(i)) {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.sp-hora-btn').forEach(b => b.classList.remove('sel'));
+          btn.classList.add('sel'); selHora = h;
+          document.getElementById('sc-hora-err').textContent = '';
+        });
+      }
+      grid.appendChild(btn);
+    });
+  }
+
+  /* ── FORM CITA ── */
+  document.getElementById('spFormCita')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const nombre   = document.getElementById('sc-nombre').value.trim();
+    const mascota  = document.getElementById('sc-mascota').value.trim();
+    const servicio = document.getElementById('sc-servicio').value;
+    const msg      = document.getElementById('sc-msg');
+    msg.className = 'sp-msg'; msg.textContent = '';
+    let ok = true;
+    if (!nombre || !mascota || !servicio) { msg.textContent = '❌ Completa todos los campos.'; msg.className = 'sp-msg error'; ok = false; }
+    if (selFecha === null) { document.getElementById('sc-fecha-err').textContent = 'Selecciona una fecha.'; ok = false; }
+    if (!selHora)          { document.getElementById('sc-hora-err').textContent  = 'Selecciona un horario.'; ok = false; }
+    if (!ok) return;
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true; btn.textContent = '⏳ Enviando...';
+    setTimeout(() => {
+      msg.textContent = `✅ ¡Cita confirmada! ${nombre} · ${servicio} · ${selHora}`; msg.className = 'sp-msg success';
+      e.target.reset();
+      document.querySelectorAll('.sp-fecha-btn,.sp-hora-btn').forEach(b => b.classList.remove('sel'));
+      document.getElementById('spHorasWrap').style.display = 'none';
+      selFecha = null; selHora = null;
+      btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-calendar-check"></i> Confirmar Cita';
+    }, 900);
+  });
+
+  // Exponer globalmente
+  window._sp = { open, close };
+
+  // Al cargar: si hay sesión activa, actualizar botón
+  const sess = localStorage.getItem('macott_session');
+  if (sess) {
+    try {
+      const u = JSON.parse(sess);
+      const btnL = document.getElementById('btnLogin');
+      if (btnL) btnL.querySelector('span').textContent = u.nombre || 'Mi cuenta';
+    } catch(e) {}
+  }
+})();
+
+function abrirCitaOLogin() {
+  window._sp?.open('cita');
+}
   const panel   = document.getElementById('sidePanel');
   const overlay = document.getElementById('sidePanelOverlay');
   const btnClose= document.getElementById('sidePanelClose');
@@ -388,351 +646,7 @@ if (citaOverlay) {
   modals['modalCita'] = citaOverlay;
 }
 
-// ===== AUTH DRAWER =====
-(function() {
-  const drawer     = document.getElementById('authDrawer');
-  const overlay    = document.getElementById('authDrawerOverlay');
-  const btnLogin   = document.getElementById('btnLogin');
-  const btnClose   = document.getElementById('authDrawerClose');
-  const tabLogin   = document.getElementById('tabLogin');
-  const tabReg     = document.getElementById('tabRegister');
-  const panLogin   = document.getElementById('panelLogin');
-  const panReg     = document.getElementById('panelRegister');
-  const panSesion  = document.getElementById('panelSesion');
-  if (!drawer) return;
-
-  // Abrir / cerrar
-  function openDrawer(tab) {
-    // Ver si hay sesión activa
-    const session = localStorage.getItem('macott_session');
-    if (session) {
-      try {
-        const user = JSON.parse(session);
-        document.getElementById('authUserName').textContent  = user.nombre || 'Usuario';
-        document.getElementById('authUserEmail').textContent = user.email  || '';
-        document.getElementById('authAvatar').textContent    = (user.nombre || 'U')[0].toUpperCase();
-        panLogin.hidden  = true;  panLogin.classList.remove('active');
-        panReg.hidden    = true;
-        panSesion.hidden = false; panSesion.classList.add('active');
-        tabLogin.style.display = 'none';
-        tabReg.style.display   = 'none';
-      } catch(e) {}
-    } else {
-      panSesion.hidden = true;
-      tabLogin.style.display  = '';
-      tabReg.style.display    = '';
-      if (tab === 'register') switchTab('register');
-      else switchTab('login');
-    }
-    drawer.classList.add('open');
-    overlay.classList.add('open');
-    drawer.setAttribute('aria-hidden', 'false');
-    btnLogin.setAttribute('aria-expanded', 'true');
-    document.body.style.overflow = 'hidden';
-    setTimeout(() => {
-      const first = drawer.querySelector('input');
-      if (first) first.focus();
-    }, 350);
-  }
-
-  function closeDrawer() {
-    drawer.classList.remove('open');
-    overlay.classList.remove('open');
-    drawer.setAttribute('aria-hidden', 'true');
-    btnLogin.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
-    btnLogin.focus();
-  }
-
-  function switchTab(tab) {
-    if (tab === 'login') {
-      tabLogin.classList.add('active');   tabLogin.setAttribute('aria-selected','true');
-      tabReg.classList.remove('active');  tabReg.setAttribute('aria-selected','false');
-      panLogin.hidden = false; panLogin.classList.add('active');
-      panReg.hidden   = true;  panReg.classList.remove('active');
-    } else {
-      tabReg.classList.add('active');     tabReg.setAttribute('aria-selected','true');
-      tabLogin.classList.remove('active'); tabLogin.setAttribute('aria-selected','false');
-      panReg.hidden   = false; panReg.classList.add('active');
-      panLogin.hidden = true;  panLogin.classList.remove('active');
-    }
-  }
-
-  // Eventos
-  btnLogin.addEventListener('click', () => window.openSidePanel?.('spLogin'));
-  btnClose.addEventListener('click', closeDrawer);
-  overlay.addEventListener('click', closeDrawer);
-  drawer.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
-
-  tabLogin.addEventListener('click', () => switchTab('login'));
-  tabReg.addEventListener('click',   () => switchTab('register'));
-  document.getElementById('goToRegister')?.addEventListener('click', () => switchTab('register'));
-  document.getElementById('goToLogin')?.addEventListener('click',    () => switchTab('login'));
-
-  // Cerrar sesión desde drawer
-  document.getElementById('drawerLogoutBtn')?.addEventListener('click', () => {
-    localStorage.removeItem('macott_session');
-    closeDrawer();
-    location.reload();
-  });
-
-  // Toggle contraseña
-  drawer.querySelectorAll('.auth-toggle-pass').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const inp = document.getElementById(this.dataset.target);
-      const show = inp.type === 'password';
-      inp.type = show ? 'text' : 'password';
-      this.querySelector('i').className = show ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
-    });
-  });
-
-  // Medidor de contraseña
-  document.getElementById('dr-pass')?.addEventListener('input', function() {
-    const v = this.value, bar = document.getElementById('dr-pass-strength');
-    if (!bar) return;
-    let s = 0;
-    if (v.length >= 6) s++;
-    if (/[A-Z]/.test(v) || /[0-9]/.test(v)) s++;
-    if (v.length >= 10 && /[^A-Za-z0-9]/.test(v)) s++;
-    bar.setAttribute('data-strength', v.length ? s : '');
-  });
-
-  // ── FORM LOGIN ──
-  document.getElementById('drawerLoginForm')?.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const email = document.getElementById('dl-email').value.trim().toLowerCase();
-    const pass  = document.getElementById('dl-pass').value;
-    const msg   = document.getElementById('dl-msg');
-    msg.className = 'auth-form-msg'; msg.textContent = '';
-
-    if (!email) { document.getElementById('dl-email-err').textContent = 'Ingresa tu correo.'; return; }
-    if (!pass)  { document.getElementById('dl-pass-err').textContent  = 'Ingresa tu contraseña.'; return; }
-    document.getElementById('dl-email-err').textContent = '';
-    document.getElementById('dl-pass-err').textContent  = '';
-
-    const btn = this.querySelector('button[type="submit"]');
-    btn.disabled = true; btn.textContent = 'Entrando...';
-
-    try {
-      // Verificar en localStorage (base de datos local)
-      const usuarios = JSON.parse(localStorage.getItem('macott_usuarios') || '[]');
-      const user = usuarios.find(u => u.email === email && u.password === pass);
-      if (user) {
-        localStorage.setItem('macott_session', JSON.stringify(user));
-        msg.textContent = `✅ ¡Bienvenido/a ${user.nombre}!`;
-        msg.className = 'auth-form-msg success';
-        setTimeout(() => {
-          closeDrawer();
-          const btnL = document.getElementById('btnLogin');
-          if (btnL) btnL.querySelector('span').textContent = user.nombre;
-          // Si venía de agendar cita, redirigir al calendario
-          const redirect = sessionStorage.getItem('macott_redirect');
-          if (redirect === 'cita') {
-            sessionStorage.removeItem('macott_redirect');
-            window.location.href = '../html/calendario.html';
-          }
-        }, 1000);
-      } else {
-        msg.textContent = '❌ Correo o contraseña incorrectos.';
-        msg.className = 'auth-form-msg error';
-      }
-    } catch(err) {
-      msg.textContent = '❌ Error al iniciar sesión.';
-      msg.className = 'auth-form-msg error';
-    }
-    btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Entrar';
-  });
-
-  // ── FORM REGISTRO ──
-  document.getElementById('drawerRegisterForm')?.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const nombre   = document.getElementById('dr-nombre').value.trim();
-    const apellido = document.getElementById('dr-apellido').value.trim();
-    const email    = document.getElementById('dr-email').value.trim().toLowerCase();
-    const tel      = document.getElementById('dr-tel').value.trim();
-    const pass     = document.getElementById('dr-pass').value;
-    const msg      = document.getElementById('dr-msg');
-    msg.className = 'auth-form-msg'; msg.textContent = '';
-
-    if (!nombre) { document.getElementById('dr-nombre-err').textContent = 'Ingresa tu nombre.'; return; }
-    if (!email)  { document.getElementById('dr-email-err').textContent  = 'Ingresa tu correo.'; return; }
-    if (pass.length < 6) { document.getElementById('dr-pass-err').textContent = 'Mínimo 6 caracteres.'; return; }
-    document.getElementById('dr-nombre-err').textContent = '';
-    document.getElementById('dr-email-err').textContent  = '';
-    document.getElementById('dr-pass-err').textContent   = '';
-
-    const btn = this.querySelector('button[type="submit"]');
-    btn.disabled = true; btn.textContent = 'Creando cuenta...';
-
-    const usuarios = JSON.parse(localStorage.getItem('macott_usuarios') || '[]');
-    if (usuarios.find(u => u.email === email)) {
-      msg.textContent = '❌ Ya existe una cuenta con ese correo.';
-      msg.className = 'auth-form-msg error';
-      btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Crear cuenta';
-      return;
-    }
-
-    const newUser = { nombre, apellido, email, tel, password: pass, creado: new Date().toISOString() };
-    usuarios.push(newUser);
-    localStorage.setItem('macott_usuarios', JSON.stringify(usuarios));
-    localStorage.setItem('macott_session', JSON.stringify(newUser));
-
-    msg.textContent = `✅ ¡Cuenta creada! Bienvenido/a ${nombre}.`;
-    msg.className = 'auth-form-msg success';
-    setTimeout(() => {
-      closeDrawer();
-      const btnL = document.getElementById('btnLogin');
-      if (btnL) btnL.querySelector('span').textContent = nombre;
-    }, 1200);
-
-    btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Crear cuenta';
-  });
-
-  // Al cargar: si hay sesión activa, actualizar botón
-  const sess = localStorage.getItem('macott_session');
-  if (sess) {
-    try {
-      const u = JSON.parse(sess);
-      const btnL = document.getElementById('btnLogin');
-      if (btnL) btnL.querySelector('span').textContent = u.nombre || 'Mi cuenta';
-    } catch(e) {}
-  }
-})();
-
-// ===== TOGGLE CONTRASEÑA =====
-function setupTogglePass(btnId, inputId) {
-  document.getElementById(btnId)?.addEventListener('click', function () {
-    const input = document.getElementById(inputId);
-    const show = input.type === 'password';
-    input.type = show ? 'text' : 'password';
-    this.textContent = show ? '🙈' : '👁';
-    this.setAttribute('aria-label', show ? 'Ocultar contraseña' : 'Mostrar contraseña');
-  });
-}
-setupTogglePass('togglePass',      'login-pass');
-setupTogglePass('toggleAdminPass', 'admin-pass');
-
-// Submit login demo — ya no aplica en index, redirige a login-registro.html
-document.getElementById('loginForm')?.addEventListener('submit', (e) => {
-  e.preventDefault(); closeModal('modalOverlay');
-});
-document.getElementById('adminForm')?.addEventListener('submit', (e) => {
-  e.preventDefault(); closeModal('modalAdmin');
-});
-
-// ===== TARJETA HERO =====
-(function () {
-  const dias  = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
-  const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  const hoy   = new Date();
-  const horas = ['8:00','8:30','9:00','9:30','10:00'];
-  const hora  = horas[Math.floor(Math.random() * horas.length)];
-  const el    = document.getElementById('heroFecha');
-  if (el) el.textContent = `${dias[hoy.getDay()]} ${hoy.getDate()} ${meses[hoy.getMonth()]} · ${hora} am`;
-
-  // Estado abierto/cerrado
-  const estadoEl    = document.getElementById('estadoClinica');
-  const estadoBadge = document.getElementById('estadoBadge');
-  const horaActual  = hoy.getHours() + hoy.getMinutes() / 60;
-  const diaSemana   = hoy.getDay();
-  let abierto = false;
-
-  if (diaSemana === 0) {
-    // Domingo: 10–12
-    abierto = horaActual >= 10 && horaActual < 12;
-    if (estadoEl) estadoEl.textContent = abierto ? '🟢 Abierto' : '🔴 Cerrado · Dom 10:00–12:00';
-  } else if (diaSemana >= 1 && diaSemana <= 6) {
-    // Lun–Sáb: 8:00–20:30
-    abierto = horaActual >= 8 && horaActual < 20.5;
-    if (estadoEl) estadoEl.textContent = abierto ? '🟢 Abierto ahora' : '🔴 Cerrado · Abre Lun 8:00 am';
-  }
-
-  if (estadoBadge) {
-    estadoBadge.style.color = abierto ? '#1976d2' : '#e53935';
-    estadoBadge.title = abierto ? 'Abierto ahora' : 'Cerrado';
-  }
-})();
-const HORARIOS_BASE = ['9:00', '9:30', '10:00', '10:30', '11:00', '11:30',
-                       '12:00', '12:30', '16:00', '16:30', '17:00', '17:30', '18:00'];
-// Horarios "ocupados" simulados por fecha (índices)
-const OCUPADOS = { 0: [1,4,7], 1: [0,3,6,9], 2: [2,5,8], 3: [1,3,10], 4: [0,4,7,11] };
-
-const DIAS = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
-const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-
-let selectedFechaIdx = null;
-let selectedHora     = null;
-
-function buildFechas() {
-  const grid = document.getElementById('fechasGrid');
-  grid.innerHTML = '';
-  const hoy = new Date();
-
-  for (let i = 1; i <= 7; i++) {
-    const d = new Date(hoy);
-    d.setDate(hoy.getDate() + i);
-    if (d.getDay() === 0) continue; // sin domingos
-
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'fecha-btn';
-    btn.dataset.idx = i - 1;
-    btn.setAttribute('aria-label', `${DIAS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]}`);
-    btn.innerHTML = `<span class="dia-num">${d.getDate()}</span><span class="dia-nom">${DIAS[d.getDay()]}</span><span style="font-size:.7rem;color:var(--muted)">${MESES[d.getMonth()]}</span>`;
-
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.fecha-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      selectedFechaIdx = parseInt(btn.dataset.idx);
-      selectedHora = null;
-      document.getElementById('err-fecha').textContent = '';
-      buildHorarios(selectedFechaIdx);
-      document.getElementById('horariosWrap').style.display = 'block';
-    });
-
-    grid.appendChild(btn);
-  }
-}
-
-function buildHorarios(idx) {
-  const grid = document.getElementById('horariosGrid');
-  grid.innerHTML = '';
-  const ocupados = OCUPADOS[idx % 5] || [];
-
-  HORARIOS_BASE.forEach((hora, i) => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'hora-btn' + (ocupados.includes(i) ? ' ocupado' : '');
-    btn.textContent = hora;
-    btn.setAttribute('aria-label', ocupados.includes(i) ? `${hora} no disponible` : hora);
-    if (!ocupados.includes(i)) {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.hora-btn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        selectedHora = hora;
-        document.getElementById('err-hora').textContent = '';
-      });
-    }
-    grid.appendChild(btn);
-  });
-}
-
-// ===== SESIÓN - ACTUALIZAR UI =====
-(function() {
-  const session = localStorage.getItem('macott_session');
-  if (!session) return;
-  const user = JSON.parse(session);
-
-  // Cambiar botón login por "Mi cuenta"
-  ['btnLogin', 'btnLoginTop'].forEach(id => {
-    const btn = document.getElementById(id);
-    if (!btn) return;
-    btn.innerHTML = `<span aria-hidden="true">👤</span> ${user.nombre}`;
-    btn.onclick = () => { window.location.href = '../html/panel-usuario.html'; };
-  });
-})();
-
-// buildFechas se llama desde abrirCitaOLogin()
+// buildFechas se llama internamente en el side panel
 
 // ===== FORMULARIO CITAS =====
 document.getElementById('formCita').addEventListener('submit', (e) => {

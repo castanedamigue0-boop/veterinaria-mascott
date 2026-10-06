@@ -1131,3 +1131,219 @@ button { font-family:inherit; }
 }
 .sp-hora-btn:hover, .sp-hora-btn.sel { border-color: var(--azul); background: var(--azul); color: #fff; }
 .sp-hora-btn.ocu { opacity:.3; cursor:not-allowed; pointer-events:none; text-decoration:line-through; }
+
+
+/* ══════════════════════════════════════
+   SIDE PANEL — estilo chatbot
+══════════════════════════════════════ */
+.sp-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.35);
+  backdrop-filter: blur(2px);
+  z-index: 1100;
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s;
+}
+.sp-overlay.open { opacity:1; pointer-events:all; }
+
+.sp-panel {
+  position: fixed;
+  bottom: 5.5rem; right: 1.5rem;
+  width: 370px; max-width: calc(100vw - 2rem);
+  max-height: 80vh;
+  background: #f0f2f5;
+  border-radius: 18px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.22);
+  display: flex; flex-direction: column;
+  z-index: 1200;
+  transform: scale(.85) translateY(20px);
+  transform-origin: bottom right;
+  opacity: 0; pointer-events: none;
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1), opacity .25s;
+  overflow: hidden;
+}
+.sp-panel.open {
+  transform: scale(1) translateY(0);
+  opacity: 1; pointer-events: all;
+}
+
+/* Header azul igual al chatbot */
+.sp-header {
+  background: linear-gradient(135deg, #1565c0, #1976d2);
+  padding: .85rem 1rem;
+  display: flex; align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.sp-header-info { display: flex; align-items: center; gap: .75rem; }
+.sp-header-avatar {
+  position: relative; flex-shrink: 0;
+}
+.sp-header-avatar img {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.4);
+  background: rgba(255,255,255,.2);
+  padding: 4px; object-fit: contain;
+}
+.sp-online-dot {
+  position: absolute; bottom:1px; right:1px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #4caf50; border: 2px solid #1565c0;
+}
+.sp-header-name { color:#fff; font-weight:700; font-size:.95rem; }
+.sp-header-sub  { color:rgba(255,255,255,.75); font-size:.75rem; }
+.sp-close-btn {
+  width:30px; height:30px; border-radius:50%;
+  background:rgba(255,255,255,.18); border:none;
+  color:#fff; font-size:.95rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:background var(--t);
+}
+.sp-close-btn:hover { background:rgba(255,255,255,.3); }
+
+/* Cuerpo */
+.sp-body {
+  flex:1; overflow-y:auto;
+  padding: .9rem 1rem;
+  display:flex; flex-direction:column; gap:.75rem;
+}
+
+/* Auth tabs */
+.sp-auth-tabs {
+  display:flex; background:#fff;
+  border-radius:10px; padding:.25rem;
+  box-shadow: var(--shadow-sm);
+}
+.sp-auth-tab {
+  flex:1; padding:.45rem;
+  border:none; border-radius:8px;
+  background:none; cursor:pointer;
+  font-size:.82rem; font-weight:600;
+  color:var(--muted); font-family:inherit;
+  transition:background var(--t), color var(--t);
+}
+.sp-auth-tab.active { background:#1565c0; color:#fff; box-shadow:0 2px 8px rgba(21,101,192,.3); }
+
+/* Formularios */
+.sp-form { display:flex; flex-direction:column; gap:.65rem; }
+.sp-field { display:flex; flex-direction:column; gap:.25rem; }
+.sp-field-row { display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
+.sp-field label { font-size:.78rem; font-weight:600; color:var(--text); }
+.sp-field input, .sp-field select {
+  padding:.6rem .85rem;
+  border:1.5px solid #dde1e7;
+  border-radius:9px; font-size:.85rem;
+  color:var(--text); background:#fff;
+  font-family:inherit;
+  transition:border-color var(--t), box-shadow var(--t);
+}
+.sp-field input:focus, .sp-field select:focus {
+  border-color:#1565c0;
+  box-shadow:0 0 0 3px rgba(21,101,192,.12);
+  outline:none;
+}
+.sp-pass-wrap { position:relative; }
+.sp-pass-wrap input { width:100%; padding-right:2.6rem; }
+.sp-eye {
+  position:absolute; right:.65rem; top:50%;
+  transform:translateY(-50%);
+  background:none; border:none; cursor:pointer;
+  color:var(--muted); font-size:.88rem;
+  transition:color var(--t);
+}
+.sp-eye:hover { color:#1565c0; }
+
+/* Medidor contraseña */
+.sp-strength {
+  height:3px; border-radius:2px;
+  background:#e0e0e0; overflow:hidden;
+}
+.sp-strength::after {
+  content:''; display:block; height:100%;
+  border-radius:2px; transition:width .3s, background .3s;
+}
+.sp-strength[data-s="1"]::after { width:33%; background:#e53935; }
+.sp-strength[data-s="2"]::after { width:66%; background:#ff9800; }
+.sp-strength[data-s="3"]::after { width:100%; background:#2e7d32; }
+
+.sp-submit-btn {
+  display:flex; align-items:center; justify-content:center; gap:.4rem;
+  padding:.72rem; border-radius:10px;
+  background:#1565c0; color:#fff; border:none;
+  font-size:.9rem; font-weight:700; cursor:pointer;
+  font-family:inherit;
+  box-shadow:0 3px 12px rgba(21,101,192,.3);
+  transition:filter var(--t), transform var(--t);
+}
+.sp-submit-btn:hover { filter:brightness(1.1); transform:translateY(-1px); }
+.sp-btn-green { background:#2e7d32; box-shadow:0 3px 12px rgba(46,125,50,.3); }
+
+.sp-msg {
+  text-align:center; font-size:.8rem; font-weight:600;
+  padding:.5rem; border-radius:8px; min-height:.8rem;
+}
+.sp-msg.success { background:#e8f5e9; color:#2e7d32; }
+.sp-msg.error   { background:#ffebee; color:#c62828; }
+.sp-err { font-size:.73rem; color:#e53935; }
+
+/* Usuario logueado */
+.sp-user-card {
+  display:flex; align-items:center; gap:.75rem;
+  background:#fff; border-radius:12px; padding:.9rem;
+  box-shadow:var(--shadow-sm);
+}
+.sp-user-av {
+  width:44px; height:44px; border-radius:50%;
+  background:#1565c0; color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.2rem; font-weight:800; flex-shrink:0;
+}
+.sp-user-name  { font-weight:700; font-size:.95rem; }
+.sp-user-email { font-size:.75rem; color:var(--muted); }
+.sp-user-links { display:flex; flex-direction:column; gap:.4rem; }
+.sp-user-link {
+  display:flex; align-items:center; gap:.5rem;
+  padding:.6rem .85rem; border-radius:9px;
+  background:#fff; border:1px solid #dde1e7;
+  color:var(--text); font-size:.85rem; font-weight:600;
+  text-decoration:none; cursor:pointer; font-family:inherit;
+  transition:background var(--t), border-color var(--t);
+}
+.sp-user-link:hover { background:#e3f2fd; border-color:#1565c0; color:#1565c0; }
+.sp-user-link i { color:#1565c0; width:16px; }
+.sp-logout:hover { background:#ffebee; border-color:#e53935; color:#c62828; }
+.sp-logout i { color:#e53935; }
+
+/* Fechas y horas */
+.sp-fechas { display:flex; flex-wrap:wrap; gap:.35rem; }
+.sp-fecha-btn {
+  display:flex; flex-direction:column; align-items:center;
+  padding:.4rem .5rem; border:1.5px solid #dde1e7;
+  border-radius:8px; background:#fff; cursor:pointer;
+  min-width:42px; transition:border-color var(--t), background var(--t);
+}
+.sp-fecha-btn .dn { font-size:.95rem; font-weight:800; line-height:1; }
+.sp-fecha-btn .dm { font-size:.62rem; color:var(--muted); }
+.sp-fecha-btn:hover,.sp-fecha-btn.sel { border-color:#1565c0; background:#e3f2fd; }
+.sp-fecha-btn.dis { opacity:.35; cursor:not-allowed; pointer-events:none; }
+.sp-horas { display:flex; flex-wrap:wrap; gap:.3rem; }
+.sp-hora-btn {
+  padding:.32rem .6rem; border:1.5px solid #dde1e7;
+  border-radius:7px; background:#fff; cursor:pointer;
+  font-size:.75rem; font-weight:600;
+  transition:border-color var(--t), background var(--t), color var(--t);
+}
+.sp-hora-btn:hover,.sp-hora-btn.sel { border-color:#1565c0; background:#1565c0; color:#fff; }
+.sp-hora-btn.ocu { opacity:.3; cursor:not-allowed; pointer-events:none; text-decoration:line-through; }
+
+/* Mensaje "necesita login" para citas */
+.sp-login-required {
+  background:#fff; border-radius:12px; padding:1.2rem;
+  text-align:center; box-shadow:var(--shadow-sm);
+}
+.sp-login-required p { font-size:.88rem; color:var(--muted); margin-bottom:.9rem; line-height:1.5; }
+.sp-login-required strong { color:var(--text); }
+
+@media (max-width:480px) {
+  .sp-panel { bottom:0; right:0; left:0; width:100%; max-width:100%; border-radius:18px 18px 0 0; max-height:90vh; }
+}
