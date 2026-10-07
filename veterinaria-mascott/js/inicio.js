@@ -140,13 +140,10 @@ function estaLogueado() {
 }
 
 function abrirCitaOLogin() {
-  // Si hay sesión de cliente → ir al calendario
-  if (estaLogueado()) {
-    window.location.href = '../html/calendario.html';
+  if (typeof abrirMP === 'function') {
+    abrirMP('cita');
   } else {
-    // Guardar redirect para después del login
-    sessionStorage.setItem('macott_redirect', 'cita');
-    window.location.href = '../html/login-registro.html';
+    window.location.href = 'login-registro.html';
   }
 }
 
@@ -163,10 +160,7 @@ if (citaOverlay) {
   modals['modalCita'] = citaOverlay;
 }
 
-// Login → redirigir
-document.getElementById('btnLogin')?.addEventListener('click', () => {
-  window.location.href = 'login-registro.html';
-});
+// btnLogin → manejado por el mini panel en el HTML
 
 // Sesión activa → cambiar botón
 (function() {

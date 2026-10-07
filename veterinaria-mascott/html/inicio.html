@@ -70,7 +70,7 @@
         </button>
         <button class="nav-icon-btn" id="btnLogin" aria-label="Mi cuenta">
           <i class="fa-regular fa-user"></i>
-          <span>Mi cuenta</span>
+          <span>Iniciar seccion</span>
         </button>
         <a href="tienda-productos.html" class="nav-icon-btn" aria-label="Tienda">
           <i class="fa-solid fa-cart-shopping"></i>
@@ -665,6 +665,316 @@
 
   <!-- Guía de lectura -->
   <div id="guiaLine" aria-hidden="true" style="display:none;position:fixed;left:0;right:0;height:3px;background:linear-gradient(90deg,#1565c0,#1976d2);pointer-events:none;z-index:8888;box-shadow:0 0 12px rgba(26,107,60,.5);"></div>
+
+  <!-- ══ MINI PANEL (login / citas) ══ -->
+  <div id="mpOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:1100;"></div>
+  <div id="mpPanel" style="display:none;position:fixed;bottom:5.5rem;right:1.5rem;width:360px;max-width:calc(100vw - 2rem);background:#f0f2f5;border-radius:18px;box-shadow:0 8px 40px rgba(0,0,0,.25);z-index:1200;overflow:hidden;flex-direction:column;">
+
+    <!-- Header azul -->
+    <div style="background:linear-gradient(135deg,#1565c0,#1976d2);padding:.85rem 1rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:.75rem;">
+        <div style="position:relative;">
+          <img src="../img/logo.png" style="width:40px;height:40px;border-radius:50%;border:2px solid rgba(255,255,255,.4);padding:4px;object-fit:contain;background:rgba(255,255,255,.15);" alt="Mascott"/>
+          <span style="position:absolute;bottom:1px;right:1px;width:10px;height:10px;border-radius:50%;background:#4caf50;border:2px solid #1565c0;"></span>
+        </div>
+        <div>
+          <p id="mpTitle" style="color:#fff;font-weight:700;font-size:.95rem;margin:0;">Mascott</p>
+          <p id="mpSub" style="color:rgba(255,255,255,.75);font-size:.75rem;margin:0;">Inicia sesión para continuar</p>
+        </div>
+      </div>
+      <button onclick="cerrarMP()" style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.18);border:none;color:#fff;font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+    </div>
+
+    <!-- Cuerpo scrollable -->
+    <div id="mpBody" style="padding:.9rem 1rem;overflow-y:auto;max-height:65vh;display:flex;flex-direction:column;gap:.75rem;"></div>
+  </div>
+
+  <script>
+  // ── MINI PANEL ──
+  var MP_MODO = 'login'; // 'login' | 'citas'
+
+  var MP_TEMPLATES = {
+    login: function() {
+      return '<div style="display:flex;background:#fff;border-radius:10px;padding:.25rem;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:.25rem;">' +
+        '<button class="mp-tab active" onclick="mpTab(this,\'mpFormLogin\')" style="flex:1;padding:.45rem;border:none;border-radius:8px;background:#1565c0;color:#fff;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;">Iniciar Sesión</button>' +
+        '<button class="mp-tab" onclick="mpTab(this,\'mpFormReg\')" style="flex:1;padding:.45rem;border:none;border-radius:8px;background:none;color:#666;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;">Registrarse</button>' +
+      '</div>' +
+      // FORM LOGIN
+      '<form id="mpFormLogin" onsubmit="mpLogin(event)" style="display:flex;flex-direction:column;gap:.65rem;" novalidate>' +
+        '<div style="display:flex;flex-direction:column;gap:.25rem;"><label style="font-size:.78rem;font-weight:600;">Correo electrónico</label>' +
+        '<input id="mp-email" type="email" placeholder="correo@ejemplo.com" autocomplete="email" required style="padding:.6rem .85rem;border:1.5px solid #dde1e7;border-radius:9px;font-size:.85rem;font-family:inherit;outline:none;"/></div>' +
+        '<div style="display:flex;flex-direction:column;gap:.25rem;"><label style="font-size:.78rem;font-weight:600;">Contraseña</label>' +
+        '<div style="position:relative;"><input id="mp-pass" type="password" placeholder="••••••••" autocomplete="current-password" required style="padding:.6rem .85rem;border:1.5px solid #dde1e7;border-radius:9px;font-size:.85rem;width:100%;font-family:inherit;outline:none;padding-right:2.6rem;box-sizing:border-box;"/>' +
+        '<button type="button" onclick="mpToggle(\'mp-pass\',this)" style="position:absolute;right:.65rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#888;font-size:.85rem;">👁</button></div></div>' +
+        '<button type="submit" style="display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.72rem;border-radius:10px;background:#1565c0;color:#fff;border:none;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;">🔓 Entrar</button>' +
+        '<div id="mp-login-msg" style="text-align:center;font-size:.8rem;min-height:.8rem;"></div>' +
+      '</form>' +
+      // FORM REGISTRO
+      '<form id="mpFormReg" onsubmit="mpRegistro(event)" style="display:none;flex-direction:column;gap:.65rem;" novalidate>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;">' +
+        '<div style="display:flex;flex-direction:column;gap:.25rem;"><label style="font-size:.78rem;font-weight:600;">Nombre</label><input id="mp-nombre" type="text" placeholder="María" required autocomplete="given-name" style="padding:.6rem .85rem;border:1.5px solid #dde1e7;border-radius:9px;font-size:.85rem;font-family:inherit;outline:none;"/></div>' +
+        '<div style="display:flex;flex-direction:column;gap:.25rem;"><label style="font-size:.78rem;font-weight:600;">Apellido</label><input id="mp-apellido" type="text" placeholder="García" autocomplete="family-name" style="padding:.6rem .85rem;border:1.5px solid #dde1e7;border-radius:9px;font-size:.85rem;font-family:inherit;outline:none;"/></div></div>' +
+        '<div style="display:flex;flex-direction:column;gap:.25rem;"><label style="font-size:.78rem;font-weight:600;">Correo electrónico</label><input id="mp-reg-email" type="email" placeholder="correo@ejemplo.com" required autocomplete="email" style="padding:.6rem .85rem;border:1.5px solid #dde1e7;border-radius:9px;font-size:.85rem;font-family:inherit;outline:none;"/></div>' +
+        '<div style="display:flex;flex-direction:column;gap:.25rem;"><label style="font-size:.78rem;font-weight:600;">Contraseña</label>' +
+        '<div style="position:relative;"><input id="mp-reg-pass" type="password" placeholder="Mínimo 6 caracteres" required autocomplete="new-password" style="padding:.6rem .85rem;border:1.5px solid #dde1e7;border-radius:9px;font-size:.85rem;width:100%;font-family:inherit;outline:none;padding-right:2.6rem;box-sizing:border-box;"/>' +
+        '<button type="button" onclick="mpToggle(\'mp-reg-pass\',this)" style="position:absolute;right:.65rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#888;font-size:.85rem;">👁</button></div></div>' +
+        '<button type="submit" style="display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.72rem;border-radius:10px;background:#2e7d32;color:#fff;border:none;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;">✅ Crear cuenta</button>' +
+        '<div id="mp-reg-msg" style="text-align:center;font-size:.8rem;min-height:.8rem;"></div>' +
+      '</form>';
+    },
+
+    usuario: function(u) {
+      return '<div style="display:flex;align-items:center;gap:.75rem;background:#fff;border-radius:12px;padding:.9rem;box-shadow:0 1px 4px rgba(0,0,0,.08);">' +
+        '<div style="width:44px;height:44px;border-radius:50%;background:#1565c0;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:800;flex-shrink:0;">'+(u.nombre||'U')[0].toUpperCase()+'</div>' +
+        '<div><p style="font-weight:700;font-size:.95rem;margin:0;">'+(u.nombre||'Usuario')+'</p><p style="font-size:.75rem;color:#666;margin:0;">'+(u.email||'')+'</p></div></div>' +
+        '<div style="display:flex;flex-direction:column;gap:.4rem;">' +
+        '<a href="panel-usuario.html" style="display:flex;align-items:center;gap:.5rem;padding:.6rem .85rem;border-radius:9px;background:#fff;border:1px solid #dde1e7;color:#1a1a1a;font-size:.85rem;font-weight:600;text-decoration:none;">🎛️ Mi Panel</a>' +
+        '<a href="calendario.html" style="display:flex;align-items:center;gap:.5rem;padding:.6rem .85rem;border-radius:9px;background:#fff;border:1px solid #dde1e7;color:#1a1a1a;font-size:.85rem;font-weight:600;text-decoration:none;">📅 Mis Citas</a>' +
+        '<button onclick="mpLogout()" style="display:flex;align-items:center;gap:.5rem;padding:.6rem .85rem;border-radius:9px;background:#fff;border:1px solid #ffcdd2;color:#c62828;font-size:.85rem;font-weight:600;cursor:pointer;font-family:inherit;">🚪 Cerrar sesión</button></div>';
+    },
+
+    loginParaCita: function() {
+      return '<div style="background:#fff;border-radius:12px;padding:1rem;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:.5rem;">' +
+        '<p style="font-size:.9rem;color:#444;margin:0 0 .5rem;">Para agendar una cita necesitas <strong>iniciar sesión</strong> o crear una cuenta.</p>' +
+        '</div>' + MP_TEMPLATES.login();
+    },
+
+    cita: function() {
+      var DIAS=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'], MESES=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+      var hoy = new Date(), fechas = '';
+      for (var i=1; i<=7; i++) {
+        var d = new Date(hoy); d.setDate(hoy.getDate()+i);
+        if (d.getDay()===0) continue;
+        fechas += '<button type="button" onclick="mpSelFecha(this,'+(i-1)+')" class="mp-fecha" style="display:flex;flex-direction:column;align-items:center;padding:.4rem .5rem;border:1.5px solid #dde1e7;border-radius:8px;background:#fff;cursor:pointer;min-width:42px;font-family:inherit;">' +
+          '<span style="font-size:.95rem;font-weight:800;line-height:1;">'+d.getDate()+'</span>' +
+          '<span style="font-size:.62rem;color:#666;">'+DIAS[d.getDay()]+'</span>' +
+          '<span style="font-size:.62rem;color:#666;">'+MESES[d.getMonth()]+'</span></button>';
+      }
+      return '<form id="mpFormCita" onsubmit="mpConfirmarCita(event)" style="display:flex;flex-direction:column;gap:.65rem;" novalidate>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;">' +
+        '<div style="display:flex;flex-direction:column;gap:.25rem;"><label style="font-size:.78rem;font-weight:600;">Tu nombre</label><input id="sc-nombre" placeholder="María García" required style="padding:.6rem .85rem;border:1.5px solid #dde1e7;border-radius:9px;font-size:.85rem;font-family:inherit;outline:none;"/></div>' +
+        '<div style="display:flex;flex-direction:column;gap:.25rem;"><label style="font-size:.78rem;font-weight:600;">Mascota</label><input id="sc-mascota" placeholder="Firulais" required style="padding:.6rem .85rem;border:1.5px solid #dde1e7;border-radius:9px;font-size:.85rem;font-family:inherit;outline:none;"/></div></div>' +
+        '<div style="display:flex;flex-direction:column;gap:.25rem;"><label style="font-size:.78rem;font-weight:600;">Servicio</label>' +
+        '<select id="sc-servicio" required style="padding:.6rem .85rem;border:1.5px solid #dde1e7;border-radius:9px;font-size:.85rem;font-family:inherit;outline:none;">' +
+        '<option value="">Selecciona un servicio</option>' +
+        '<optgroup label="🩺 Consultas"><option>🩺 Consulta General</option><option>🔬 Consulta Especializada</option></optgroup>' +
+        '<optgroup label="💉 Prevención"><option>💉 Vacunación</option><option>🪱 Desparasitación</option></optgroup>' +
+        '<optgroup label="✂️ Estética"><option>✂️ Estética Canina</option><option>🛁 Baño y Secado</option></optgroup>' +
+        '<optgroup label="🔬 Diagnóstico"><option>🩻 Radiografía</option><option>📡 Ecografía</option><option>🧪 Laboratorio</option></optgroup>' +
+        '<optgroup label="🏥 Cirugías"><option>✂️ Esterilización</option><option>🏥 Cirugía General</option></optgroup>' +
+        '<optgroup label="🚑 Urgencias"><option>🚨 Urgencia</option><option>🏨 Hospitalización</option></optgroup>' +
+        '</select></div>' +
+        '<div style="display:flex;flex-direction:column;gap:.25rem;"><label style="font-size:.78rem;font-weight:600;">Fecha</label>' +
+        '<div id="mpFechasGrid" style="display:flex;flex-wrap:wrap;gap:.35rem;">'+fechas+'</div>' +
+        '<span id="sc-fecha-err" style="font-size:.73rem;color:#e53935;"></span></div>' +
+        '<div id="mpHorasWrap" style="display:none;flex-direction:column;gap:.25rem;"><label style="font-size:.78rem;font-weight:600;">Horario</label>' +
+        '<div id="mpHorasGrid" style="display:flex;flex-wrap:wrap;gap:.3rem;"></div>' +
+        '<span id="sc-hora-err" style="font-size:.73rem;color:#e53935;"></span></div>' +
+        '<button type="submit" style="display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.72rem;border-radius:10px;background:#1565c0;color:#fff;border:none;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;">📅 Confirmar Cita</button>' +
+        '<div id="sc-msg" style="text-align:center;font-size:.8rem;min-height:.8rem;"></div></form>';
+    }
+  };
+
+  var MP_SEL_FECHA = null, MP_SEL_HORA = null;
+  var MP_HORARIOS = ['8:00','8:30','9:00','9:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00'];
+  var MP_OCUPADOS = {0:[1,4,7],1:[0,3,9],2:[2,5,11],3:[1,6,10],4:[0,4,8]};
+
+  function abrirMP(modo) {
+    MP_MODO = modo;
+    var panel   = document.getElementById('mpPanel');
+    var overlay = document.getElementById('mpOverlay');
+    var title   = document.getElementById('mpTitle');
+    var sub     = document.getElementById('mpSub');
+    var body    = document.getElementById('mpBody');
+    var sess    = localStorage.getItem('macott_session');
+
+    if (modo === 'login') {
+      if (sess) {
+        var u = JSON.parse(sess);
+        title.textContent = u.nombre || 'Mi cuenta';
+        sub.textContent   = 'En línea ·  bienvenido/a';
+        body.innerHTML    = MP_TEMPLATES.usuario(u);
+      } else {
+        title.textContent = 'Mascott';
+        sub.textContent   = 'Inicia sesión para continuar';
+        body.innerHTML    = MP_TEMPLATES.login();
+      }
+    } else {
+      // cita
+      if (sess) {
+        title.textContent = 'Agendar Cita';
+        sub.textContent   = 'Completa los datos para reservar';
+        body.innerHTML    = MP_TEMPLATES.cita();
+      } else {
+        title.textContent = 'Inicia sesión';
+        sub.textContent   = 'Necesitas cuenta para agendar';
+        body.innerHTML    = MP_TEMPLATES.loginParaCita();
+      }
+    }
+
+    panel.style.display   = 'flex';
+    overlay.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function cerrarMP() {
+    document.getElementById('mpPanel').style.display   = 'none';
+    document.getElementById('mpOverlay').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  function mpTab(btn, formId) {
+    // Cambiar estilos de tabs
+    btn.parentElement.querySelectorAll('button').forEach(function(b) {
+      b.style.background = 'none'; b.style.color = '#666';
+    });
+    btn.style.background = '#1565c0'; btn.style.color = '#fff';
+    // Mostrar form correcto
+    var login = document.getElementById('mpFormLogin');
+    var reg   = document.getElementById('mpFormReg');
+    if (login) login.style.display = formId === 'mpFormLogin' ? 'flex' : 'none';
+    if (reg)   reg.style.display   = formId === 'mpFormReg'   ? 'flex' : 'none';
+  }
+
+  function mpToggle(inputId, btn) {
+    var inp = document.getElementById(inputId);
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    btn.textContent = inp.type === 'password' ? '👁' : '🙈';
+  }
+
+  function mpLogin(e) {
+    e.preventDefault();
+    var email = document.getElementById('mp-email').value.trim().toLowerCase();
+    var pass  = document.getElementById('mp-pass').value;
+    var msg   = document.getElementById('mp-login-msg');
+    msg.style.cssText = ''; msg.textContent = '';
+    var usuarios = JSON.parse(localStorage.getItem('macott_usuarios') || '[]');
+    var user = usuarios.find(function(u) { return u.email === email && u.password === pass; });
+    if (user) {
+      localStorage.setItem('macott_session', JSON.stringify(user));
+      msg.style.cssText = 'color:#2e7d32;background:#e8f5e9;padding:.5rem;border-radius:8px;';
+      msg.textContent = '✅ ¡Bienvenido/a ' + user.nombre + '!';
+      var btnL = document.getElementById('btnLogin');
+      if (btnL) btnL.querySelector('span').textContent = user.nombre;
+      setTimeout(function() {
+        if (MP_MODO === 'cita') { abrirMP('cita'); }
+        else { abrirMP('login'); }
+      }, 800);
+    } else {
+      msg.style.cssText = 'color:#c62828;background:#ffebee;padding:.5rem;border-radius:8px;';
+      msg.textContent = '❌ Correo o contraseña incorrectos.';
+    }
+  }
+
+  function mpRegistro(e) {
+    e.preventDefault();
+    var nombre = document.getElementById('mp-nombre').value.trim();
+    var email  = document.getElementById('mp-reg-email').value.trim().toLowerCase();
+    var pass   = document.getElementById('mp-reg-pass').value;
+    var msg    = document.getElementById('mp-reg-msg');
+    msg.style.cssText = ''; msg.textContent = '';
+    if (!nombre || !email || pass.length < 6) {
+      msg.style.cssText = 'color:#c62828;background:#ffebee;padding:.5rem;border-radius:8px;';
+      msg.textContent = '❌ Completa todos los campos (mínimo 6 caracteres).'; return;
+    }
+    var usuarios = JSON.parse(localStorage.getItem('macott_usuarios') || '[]');
+    if (usuarios.find(function(u) { return u.email === email; })) {
+      msg.style.cssText = 'color:#c62828;background:#ffebee;padding:.5rem;border-radius:8px;';
+      msg.textContent = '❌ Ya existe una cuenta con ese correo.'; return;
+    }
+    var apellido = document.getElementById('mp-apellido') ? document.getElementById('mp-apellido').value.trim() : '';
+    var u = { nombre: nombre, apellido: apellido, email: email, password: pass };
+    usuarios.push(u);
+    localStorage.setItem('macott_usuarios', JSON.stringify(usuarios));
+    localStorage.setItem('macott_session', JSON.stringify(u));
+    msg.style.cssText = 'color:#2e7d32;background:#e8f5e9;padding:.5rem;border-radius:8px;';
+    msg.textContent = '✅ ¡Cuenta creada! Bienvenido/a ' + nombre + '.';
+    var btnL = document.getElementById('btnLogin');
+    if (btnL) btnL.querySelector('span').textContent = nombre;
+    setTimeout(function() {
+      if (MP_MODO === 'cita') { abrirMP('cita'); }
+      else { abrirMP('login'); }
+    }, 900);
+  }
+
+  function mpLogout() {
+    localStorage.removeItem('macott_session');
+    var btnL = document.getElementById('btnLogin');
+    if (btnL) btnL.querySelector('span').textContent = 'Mi cuenta';
+    abrirMP('login');
+  }
+
+  function mpSelFecha(btn, idx) {
+    document.querySelectorAll('.mp-fecha').forEach(function(b) {
+      b.style.borderColor = '#dde1e7'; b.style.background = '#fff';
+    });
+    btn.style.borderColor = '#1565c0'; btn.style.background = '#e3f2fd';
+    MP_SEL_FECHA = idx;
+    document.getElementById('sc-fecha-err').textContent = '';
+    // Construir horas
+    var grid = document.getElementById('mpHorasGrid');
+    var wrap = document.getElementById('mpHorasWrap');
+    grid.innerHTML = ''; MP_SEL_HORA = null;
+    var ocu = MP_OCUPADOS[idx % 5] || [];
+    MP_HORARIOS.forEach(function(h, i) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.textContent = h;
+      b.style.cssText = 'padding:.32rem .6rem;border:1.5px solid #dde1e7;border-radius:7px;background:#fff;cursor:pointer;font-size:.75rem;font-weight:600;font-family:inherit;';
+      if (ocu.includes(i)) { b.style.opacity='.3'; b.disabled=true; b.style.textDecoration='line-through'; }
+      else {
+        b.onclick = function() {
+          document.querySelectorAll('#mpHorasGrid button').forEach(function(x){ x.style.background='#fff'; x.style.color='#1a1a1a'; x.style.borderColor='#dde1e7'; });
+          b.style.background='#1565c0'; b.style.color='#fff'; b.style.borderColor='#1565c0';
+          MP_SEL_HORA = h;
+          document.getElementById('sc-hora-err').textContent = '';
+        };
+      }
+      grid.appendChild(b);
+    });
+    wrap.style.display = 'flex';
+  }
+
+  function mpConfirmarCita(e) {
+    e.preventDefault();
+    var nombre   = document.getElementById('sc-nombre').value.trim();
+    var mascota  = document.getElementById('sc-mascota').value.trim();
+    var servicio = document.getElementById('sc-servicio').value;
+    var msg = document.getElementById('sc-msg');
+    var ok = true;
+    if (!nombre || !mascota || !servicio) { msg.style.cssText='color:#c62828;background:#ffebee;padding:.5rem;border-radius:8px;'; msg.textContent='❌ Completa nombre, mascota y servicio.'; ok=false; }
+    if (MP_SEL_FECHA===null) { document.getElementById('sc-fecha-err').textContent='Selecciona una fecha.'; ok=false; }
+    if (!MP_SEL_HORA) { document.getElementById('sc-hora-err').textContent='Selecciona un horario.'; ok=false; }
+    if (!ok) return;
+    var btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled=true; btn.textContent='⏳ Enviando...';
+    setTimeout(function() {
+      msg.style.cssText='color:#2e7d32;background:#e8f5e9;padding:.5rem;border-radius:8px;';
+      msg.textContent='✅ ¡Cita confirmada! '+nombre+' · '+servicio+' · '+MP_SEL_HORA;
+      btn.disabled=false; btn.innerHTML='📅 Confirmar Cita';
+      MP_SEL_FECHA=null; MP_SEL_HORA=null;
+    }, 900);
+  }
+
+  // Cerrar al hacer clic en overlay
+  document.getElementById('mpOverlay').addEventListener('click', cerrarMP);
+
+  // Tecla Escape
+  document.addEventListener('keydown', function(e) { if(e.key==='Escape') cerrarMP(); });
+
+  // Conectar botón "Mi cuenta"
+  document.getElementById('btnLogin').addEventListener('click', function() { abrirMP('login'); });
+
+  // Si hay sesión activa al cargar → actualizar botón
+  (function() {
+    var sess = localStorage.getItem('macott_session');
+    if (!sess) return;
+    try {
+      var u = JSON.parse(sess);
+      var btn = document.getElementById('btnLogin');
+      if (btn) btn.querySelector('span').textContent = u.nombre || 'Mi cuenta';
+    } catch(e) {}
+  })();
+  </script>
 
   <script src="../js/inicio.js"></script>
 </body>
