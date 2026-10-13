@@ -141,8 +141,7 @@ body {
   padding: 2.5rem 2rem;
   box-shadow: 0 24px 64px rgba(0,0,0,.3);
   animation: cardIn .5s ease;
-  max-height: 90vh;
-  overflow-y: auto;
+  /* Sin altura máxima ni scroll interno — la tarjeta crece con el contenido */
 }
 @keyframes cardIn {
   from { opacity: 0; transform: translateY(24px); }
@@ -418,5 +417,4 @@ form {
 }
 
 
-/* === Extraído de HTML === */
-body{ visibility:hidden }
+/* Fin de estilos */

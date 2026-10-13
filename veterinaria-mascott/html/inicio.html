@@ -17,7 +17,12 @@
 </head>
 <body>
 
-  <!-- SPLASH: pantalla de carga que aparece solo la primera vez -->
+  <!-- =============================================
+    SPLASH - Pantalla de carga
+    CSS: inicio.css → .splash-oculto, .splash-inner, .splash-logo
+    JS:  inicio.js  → sección "SPLASH"
+    Solo aparece la primera vez. El JS la oculta después de 1.8 seg.
+  ============================================= -->
   <div id="splash" class="splash-oculto">
     <div class="splash-inner">
       <img src="../img/logo.png" alt="Mascott" class="splash-logo"/>
@@ -26,7 +31,11 @@
     </div>
   </div>
 
-  <!-- BARRA SUPERIOR: dirección, horario y teléfono de urgencias -->
+  <!-- =============================================
+    BARRA SUPERIOR - Información de contacto
+    CSS: inicio.css → .topbar-strip, .topbar-strip-inner, .topbar-sep
+    Responsive: en celular se apila en columna (ver @media 600px en inicio.css)
+  ============================================= -->
   <div class="topbar-strip">
     <div class="topbar-strip-inner">
       <span>📍 Calle 15 #9-54, Sogamoso, Boyacá</span>
@@ -37,7 +46,13 @@
     </div>
   </div>
 
-  <!-- NAVBAR: barra de navegación fija arriba -->
+  <!-- =============================================
+    NAVBAR - Barra de navegación principal
+    CSS: inicio.css → .navbar, .navbar-inner, .navbar-logo, .navbar-search
+         .navbar-links, .navbar-actions, .navbar-burger, .navbar-cats
+    JS:  inicio.js  → sección "NAVBAR"
+    Responsive: en celular aparece el botón hamburguesa (ver @media 900px)
+  ============================================= -->
   <header class="navbar" id="navbar">
     <div class="navbar-inner">
 
@@ -47,7 +62,9 @@
         <span>Mascott</span>
       </a>
 
-      <!-- Buscador: al escribir muestra resultados de servicios y productos -->
+      <!-- Buscador: al escribir muestra resultados debajo
+           CSS: inicio.css → .navbar-search, .search-results, .search-item
+           JS:  inicio.js  → sección "BUSCADOR DEL NAVBAR" (al final del archivo) -->
       <div class="navbar-search">
         <i class="fa-solid fa-magnifying-glass"></i>
         <input type="search" id="navSearchInput" placeholder="Buscar servicios, productos..." aria-label="Buscar" autocomplete="off"/>
