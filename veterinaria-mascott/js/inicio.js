@@ -1,14 +1,12 @@
-﻿// ===== SPLASH (solo una vez por sesión) =====
+﻿// ===== SPLASH: pantalla de carga (solo aparece la primera vez) =====
 (function() {
   const splash = document.getElementById('splash');
   if (!splash) return;
-  // Si ya se mostró antes, ocúltalo inmediatamente sin animación
   if (sessionStorage.getItem('mascott_splash_shown')) {
     splash.style.display = 'none';
     return;
   }
-  // Primera vez: mostrarlo y luego ocultarlo
-  splash.style.display = '';
+  splash.style.display = 'flex';
   setTimeout(() => {
     splash.classList.add('hide');
     setTimeout(() => {

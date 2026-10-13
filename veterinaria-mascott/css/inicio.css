@@ -833,3 +833,49 @@ button { font-family:inherit; }
   letter-spacing: .8px;
   background: var(--gris-bg);
 }
+
+
+/* ── Clases que reemplazan los colores inline del HTML ── */
+
+/* Splash: oculto por defecto, el JS lo muestra si es la primera visita */
+.splash-oculto { display: none; }
+
+/* Colores de fondo de las categorías visuales */
+.cat-azul    { background: #e3f2fd; }
+.cat-naranja { background: #fff3e0; }
+.cat-morado  { background: #f3e5f5; }
+.cat-rosado  { background: #fce4ec; }
+
+/* Colores de fondo de las tarjetas de servicios */
+.serv-azul   { background: linear-gradient(135deg, #e3f2fd, #bbdefb); }
+.serv-naranja{ background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
+.serv-morado { background: linear-gradient(135deg, #f3e5f5, #e1bee7); }
+.serv-cian   { background: linear-gradient(135deg, #e0f7fa, #b2ebf2); }
+.serv-rosado { background: linear-gradient(135deg, #fce4ec, #f8bbd0); }
+.serv-rojo   { background: linear-gradient(135deg, #ffebee, #ffcdd2); }
+
+/* Mapa: sin borde y con esquinas redondeadas */
+.mapa-iframe {
+  border: 0;
+  border-radius: 12px;
+  display: block;
+}
+
+/* Dirección en el footer */
+.footer-dir {
+  margin-top: .5rem;
+  opacity: .6;
+  font-size: .82rem;
+}
+
+/* Línea guía de accesibilidad: oculta por defecto */
+.guia-line-oculta {
+  display: none;
+  position: fixed;
+  left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #1565c0, #1976d2);
+  pointer-events: none;
+  z-index: 8888;
+  box-shadow: 0 0 12px rgba(21, 101, 192, .5);
+}

@@ -1,42 +1,24 @@
 ﻿<!DOCTYPE html>
 <html lang="es">
 <head>
-  <!-- Codificación de caracteres y configuración para móviles -->
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-  <!-- Título e información para motores de búsqueda -->
   <title>Clínica Veterinaria Mascott | Sogamoso, Boyacá</title>
   <meta name="description" content="30 años cuidando perros y gatos en Sogamoso. Laboratorio propio, rayos X, ecografía, cirugía y hospitalización."/>
-  
-  <!-- Ícono de la pestaña del navegador -->
   <link rel="icon" href="../img/logo.png"/>
-
-  <!-- Fuente tipográfica Inter desde Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
-
-  <!-- Librería de íconos Font Awesome (para los íconos del navbar, chatbot, etc.) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous"/>
-
-  <!-- Estilos principales de la página de inicio -->
+  <!-- Estilos: inicio.css = página principal | chatbot.css = chatbot flotante | accesibilidad.css = panel accesibilidad -->
   <link rel="stylesheet" href="../css/inicio.css"/>
-
-  <!-- Estilos del chatbot flotante -->
   <link rel="stylesheet" href="../css/chatbot.css"/>
-
-  <!-- Estilos del panel de accesibilidad (tamaño texto, modo oscuro, etc.) -->
   <link rel="stylesheet" href="../css/accesibilidad.css"/>
 </head>
 <body>
 
-  <!-- ══════════════════════════════════════════
-       PANTALLA DE CARGA (SPLASH)
-       Aparece solo la primera vez que se entra.
-       Se oculta sola después de 1.8 segundos.
-  ══════════════════════════════════════════ -->
-  <div id="splash" style="display:none">
+  <!-- SPLASH: pantalla de carga que aparece solo la primera vez -->
+  <div id="splash" class="splash-oculto">
     <div class="splash-inner">
       <img src="../img/logo.png" alt="Mascott" class="splash-logo"/>
       <p class="splash-title">MASC<span>OTT</span></p>
@@ -44,10 +26,7 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════
-       BARRA SUPERIOR DE INFORMACIÓN
-       Muestra dirección, horario y teléfono de urgencias.
-  ══════════════════════════════════════════ -->
+  <!-- BARRA SUPERIOR: dirección, horario y teléfono de urgencias -->
   <div class="topbar-strip">
     <div class="topbar-strip-inner">
       <span>📍 Calle 15 #9-54, Sogamoso, Boyacá</span>
@@ -58,29 +37,25 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════
-       BARRA DE NAVEGACIÓN PRINCIPAL (NAVBAR)
-       Contiene: logo, buscador, links, botones y categorías.
-       Es fija (sticky) y se queda arriba al hacer scroll.
-  ══════════════════════════════════════════ -->
+  <!-- NAVBAR: barra de navegación fija arriba -->
   <header class="navbar" id="navbar">
     <div class="navbar-inner">
 
-      <!-- Logo de la clínica — lleva al inicio de la página -->
+      <!-- Logo -->
       <a href="#inicio" class="navbar-logo">
         <img src="../img/logo.png" alt="Mascott"/>
         <span>Mascott</span>
       </a>
 
-      <!-- Caja de búsqueda — filtra servicios y productos al escribir -->
+      <!-- Buscador: al escribir muestra resultados de servicios y productos -->
       <div class="navbar-search">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="search" id="navSearchInput" placeholder="Buscar servicios, productos..." aria-label="Buscar en la página" autocomplete="off"/>
-        <!-- Resultados desplegables -->
+        <input type="search" id="navSearchInput" placeholder="Buscar servicios, productos..." aria-label="Buscar" autocomplete="off"/>
+        <!-- Lista de resultados (se llena con JavaScript) -->
         <div class="search-results" id="searchResults" hidden></div>
       </div>
 
-      <!-- Links de navegación hacia las secciones de la página -->
+      <!-- Links de navegación -->
       <nav class="navbar-links" id="navbarLinks" role="navigation" aria-label="Menú principal">
         <a href="#inicio">Inicio</a>
         <a href="#servicios">Servicios</a>
@@ -90,35 +65,29 @@
         <a href="#contacto">Contacto</a>
       </nav>
 
-      <!-- Botones de acción: agendar cita, iniciar sesión y tienda -->
+      <!-- Botones: agendar cita, iniciar sesión y tienda -->
       <div class="navbar-actions">
-
-        <!-- Botón agendar cita: abre el mini panel de citas -->
         <button class="btn-cita nav-btn-cita" id="btnCitaNav">
           <i class="fa-solid fa-calendar-days"></i>
           <span>Agendar Cita</span>
         </button>
-
-        <!-- Botón iniciar sesión / mi cuenta: abre el mini panel de login -->
         <button class="nav-icon-btn" id="btnLogin" aria-label="Mi cuenta">
           <i class="fa-regular fa-user"></i>
           <span>Iniciar sesión</span>
         </button>
-
-        <!-- Link directo a la tienda de productos -->
         <a href="tienda-productos.html" class="nav-icon-btn" aria-label="Tienda">
           <i class="fa-solid fa-cart-shopping"></i>
           <span>Tienda</span>
         </a>
       </div>
 
-      <!-- Botón hamburguesa para abrir el menú en móviles -->
+      <!-- Botón hamburguesa (solo visible en celular) -->
       <button class="navbar-burger" id="navbarBurger" aria-label="Menú" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
     </div>
 
-    <!-- Barra de categorías de servicios (debajo del navbar principal) -->
+    <!-- Categorías de servicios debajo del navbar -->
     <nav class="navbar-cats" id="navbarCats" aria-label="Categorías">
       <div class="navbar-cats-inner">
         <a href="#servicios"><i class="fa-solid fa-stethoscope"></i> Consultas</a>
@@ -129,52 +98,31 @@
         <a href="#servicios"><i class="fa-solid fa-heart-pulse"></i> Cirugías</a>
         <a href="#servicios"><i class="fa-solid fa-house-medical"></i> Hospitalización</a>
         <a href="tienda-productos.html"><i class="fa-solid fa-store"></i> Tienda</a>
-        <!-- Urgencias resaltada en naranja -->
         <a href="#ubicacion" class="cat-urgencias"><i class="fa-solid fa-truck-medical"></i> Urgencias 24h</a>
       </div>
     </nav>
   </header>
 
-  <!-- ══════════════════════════════════════════
-       CONTENIDO PRINCIPAL DE LA PÁGINA
-  ══════════════════════════════════════════ -->
+  <!-- CONTENIDO PRINCIPAL -->
   <main id="main-content">
 
-    <!-- ══════════════════════════════════════════
-         SECCIÓN HERO (BANNER PRINCIPAL)
-         Primera sección visible. Tiene fondo con imagen,
-         el mensaje principal y la tarjeta de disponibilidad.
-    ══════════════════════════════════════════ -->
+    <!-- HERO: banner principal con imagen de fondo y tarjeta de disponibilidad -->
     <section class="hero" id="inicio">
-      <!-- Imagen de fondo del hero -->
       <div class="hero-bg"></div>
-      <!-- Capa oscura encima de la imagen para que el texto sea legible -->
       <div class="hero-overlay"></div>
-
       <div class="hero-inner">
 
-        <!-- Texto principal y botones del hero -->
+        <!-- Texto y botones del hero -->
         <div class="hero-content">
-          <!-- Etiqueta de premio/nominación -->
           <div class="hero-tag">🏆 Nominada Mejor Clínica Veterinaria 2024 · 2025 · 2026</div>
-
-          <!-- Título principal -->
           <h1>Cuidamos a tu<br/><strong>mascota</strong> con amor</h1>
-
-          <!-- Descripción corta -->
           <p>30 años de experiencia en Sogamoso. Más de 8 médicos veterinarios, laboratorio propio, rayos X, ecografía y hospitalización en una sola sede.</p>
-
-          <!-- Botones de llamada a la acción -->
           <div class="hero-btns">
-            <!-- Abre el mini panel de citas -->
             <button class="btn-cita btn-hero-cita" id="btnCitaHero">
               <i class="fa-solid fa-calendar-days"></i> Agendar Cita
             </button>
-            <!-- Lleva a la sección de servicios -->
             <a href="#servicios" class="btn-hero-outline">Ver servicios</a>
           </div>
-
-          <!-- Chips informativos de servicios clave -->
           <div class="hero-chips">
             <span><i class="fa-solid fa-flask"></i> Laboratorio propio</span>
             <span><i class="fa-solid fa-x-ray"></i> Rayos X y ecografía</span>
@@ -183,34 +131,25 @@
           </div>
         </div>
 
-        <!-- Tarjeta flotante con disponibilidad de la clínica -->
+        <!-- Tarjeta con disponibilidad (horario, dirección y estado abierto/cerrado) -->
         <div class="hero-card">
-          <!-- Encabezado de la tarjeta: logo, fecha próxima cita y punto de estado -->
           <div class="hcard-header">
             <img src="../img/logo.png" alt="Mascott" class="hcard-logo"/>
             <div>
               <p class="hcard-title">Próxima cita</p>
-              <!-- Fecha calculada por JS automáticamente -->
               <p class="hcard-date" id="heroFecha">Cargando…</p>
             </div>
-            <!-- Punto verde/rojo que indica si está abierto ahora -->
+            <!-- El JS cambia este punto a verde (abierto) o rojo (cerrado) -->
             <span class="hcard-open-badge" id="estadoBadge">●</span>
           </div>
-
-          <!-- Lista de información: horario, dirección y estado -->
           <ul class="hcard-list">
             <li><i class="fa-solid fa-clock"></i><span>Lun–Sáb · 8:00 am – 8:30 pm</span></li>
             <li><i class="fa-solid fa-location-dot"></i><span>Calle 15 #9-54, Sogamoso</span></li>
-            <!-- El estado (abierto/cerrado) lo actualiza el JS -->
             <li><i class="fa-solid fa-phone"></i><span id="estadoClinica">(+57) 311 456 9768</span></li>
           </ul>
-
-          <!-- Botón para reservar — abre el mini panel de citas -->
           <button class="hcard-btn" id="btnCitaCard">
             <i class="fa-solid fa-calendar-check"></i> Reservar ahora
           </button>
-
-          <!-- Link directo a WhatsApp -->
           <a href="https://wa.me/573114569768" target="_blank" rel="noopener" class="hcard-wa">
             <i class="fa-brands fa-whatsapp"></i> Escribir por WhatsApp
           </a>
@@ -219,13 +158,9 @@
       </div>
     </section>
 
-    <!-- ══════════════════════════════════════════
-         BARRA DE ESTADÍSTICAS
-         Números animados que cuentan al hacer scroll.
-    ══════════════════════════════════════════ -->
+    <!-- ESTADÍSTICAS: números animados que cuentan al hacer scroll -->
     <section class="stats-bar">
       <div class="stats-bar-inner">
-        <!-- data-target es el número al que llega la animación -->
         <div class="stat-item">
           <strong class="stat-num" data-target="30">0</strong><span>+</span>
           <p>Años en Sogamoso</p>
@@ -245,55 +180,49 @@
       </div>
     </section>
 
-    <!-- ══════════════════════════════════════════
-         SECCIÓN CATEGORÍAS VISUALES
-         Íconos grandes para navegar rápido a cada servicio.
-    ══════════════════════════════════════════ -->
+    <!-- CATEGORÍAS: íconos grandes para ir rápido a cada servicio -->
     <section class="cats-section">
       <div class="cats-inner">
         <h2 class="section-title">¿Qué necesita tu mascota hoy?</h2>
         <div class="cats-grid">
+          <!-- Cada tarjeta usa una clase de color definida en inicio.css -->
           <a href="#servicios" class="cat-card">
-            <div class="cat-card-ico" style="background:#e3f2fd">🩺</div>
+            <div class="cat-card-ico cat-azul">🩺</div>
             <span>Consulta</span>
           </a>
           <a href="#servicios" class="cat-card">
-            <div class="cat-card-ico" style="background:#fff3e0">💉</div>
+            <div class="cat-card-ico cat-naranja">💉</div>
             <span>Vacunación</span>
           </a>
           <a href="#servicios" class="cat-card">
-            <div class="cat-card-ico" style="background:#e3f2fd">✂️</div>
+            <div class="cat-card-ico cat-azul">✂️</div>
             <span>Estética</span>
           </a>
           <a href="#servicios" class="cat-card">
-            <div class="cat-card-ico" style="background:#f3e5f5">🔬</div>
+            <div class="cat-card-ico cat-morado">🔬</div>
             <span>Laboratorio</span>
           </a>
           <a href="#servicios" class="cat-card">
-            <div class="cat-card-ico" style="background:#e3f2fd">🩻</div>
+            <div class="cat-card-ico cat-azul">🩻</div>
             <span>Rayos X</span>
           </a>
           <a href="#servicios" class="cat-card">
-            <div class="cat-card-ico" style="background:#fff3e0">🏥</div>
+            <div class="cat-card-ico cat-naranja">🏥</div>
             <span>Cirugías</span>
           </a>
           <a href="#servicios" class="cat-card">
-            <div class="cat-card-ico" style="background:#e3f2fd">🏨</div>
+            <div class="cat-card-ico cat-azul">🏨</div>
             <span>Hospitalización</span>
           </a>
           <a href="tienda-productos.html" class="cat-card">
-            <div class="cat-card-ico" style="background:#fce4ec">🛒</div>
+            <div class="cat-card-ico cat-rosado">🛒</div>
             <span>Tienda</span>
           </a>
         </div>
       </div>
     </section>
 
-    <!-- ══════════════════════════════════════════
-         SECCIÓN SERVICIOS
-         Tarjetas con los 8 servicios principales.
-         La clase "reveal" hace que aparezcan con animación al hacer scroll.
-    ══════════════════════════════════════════ -->
+    <!-- SERVICIOS: tarjetas con los 8 servicios principales -->
     <section class="section bg-grey" id="servicios">
       <div class="section-inner">
         <div class="section-head">
@@ -302,9 +231,9 @@
         </div>
         <div class="services-grid">
 
-          <!-- Cada tarjeta tiene: imagen decorativa, título, descripción y botón de agendar -->
+          <!-- La clase "reveal" hace que la tarjeta aparezca con animación al hacer scroll -->
           <article class="serv-card reveal">
-            <div class="serv-card-img" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb)">🩺</div>
+            <div class="serv-card-img serv-azul">🩺</div>
             <div class="serv-card-body">
               <h3>Consulta General</h3>
               <p>Valoración clínica completa y seguimiento. Sin cita, por orden de llegada.</p>
@@ -313,7 +242,7 @@
           </article>
 
           <article class="serv-card reveal">
-            <div class="serv-card-img" style="background:linear-gradient(135deg,#fff3e0,#ffe0b2)">💉</div>
+            <div class="serv-card-img serv-naranja">💉</div>
             <div class="serv-card-body">
               <h3>Vacunación</h3>
               <p>Esquemas completos para cachorros y adultos, con carné y recordatorios.</p>
@@ -322,7 +251,7 @@
           </article>
 
           <article class="serv-card reveal">
-            <div class="serv-card-img" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb)">✂️</div>
+            <div class="serv-card-img serv-azul">✂️</div>
             <div class="serv-card-body">
               <h3>Estética Canina</h3>
               <p>Baño medicado, corte de raza, limpieza de oídos y corte de uñas.</p>
@@ -331,7 +260,7 @@
           </article>
 
           <article class="serv-card reveal">
-            <div class="serv-card-img" style="background:linear-gradient(135deg,#f3e5f5,#e1bee7)">🔬</div>
+            <div class="serv-card-img serv-morado">🔬</div>
             <div class="serv-card-body">
               <h3>Laboratorio Propio</h3>
               <p>Cuadro hemático, química sanguínea, uroanálisis. Resultados el mismo día.</p>
@@ -340,7 +269,7 @@
           </article>
 
           <article class="serv-card reveal">
-            <div class="serv-card-img" style="background:linear-gradient(135deg,#e0f7fa,#b2ebf2)">🩻</div>
+            <div class="serv-card-img serv-cian">🩻</div>
             <div class="serv-card-body">
               <h3>Rayos X y Ecografía</h3>
               <p>Diagnóstico de fracturas, tórax, abdomen y órganos internos.</p>
@@ -349,7 +278,7 @@
           </article>
 
           <article class="serv-card reveal">
-            <div class="serv-card-img" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb)">🏥</div>
+            <div class="serv-card-img serv-azul">🏥</div>
             <div class="serv-card-body">
               <h3>Cirugías</h3>
               <p>Tejidos blandos, ortopedia, esterilizaciones, odontología y oftalmología.</p>
@@ -358,7 +287,7 @@
           </article>
 
           <article class="serv-card reveal">
-            <div class="serv-card-img" style="background:linear-gradient(135deg,#fce4ec,#f8bbd0)">🏨</div>
+            <div class="serv-card-img serv-rosado">🏨</div>
             <div class="serv-card-body">
               <h3>Hospitalización</h3>
               <p>Internación con vigilancia permanente y reportes para la familia.</p>
@@ -367,11 +296,11 @@
           </article>
 
           <article class="serv-card reveal">
-            <div class="serv-card-img" style="background:linear-gradient(135deg,#ffebee,#ffcdd2)">🚨</div>
+            <div class="serv-card-img serv-rojo">🚨</div>
             <div class="serv-card-body">
               <h3>Urgencias 24h</h3>
               <p>Atención de emergencias toda la noche. Llámanos antes de venir.</p>
-              <!-- Este servicio llama directamente, no agenda cita -->
+              <!-- Urgencias llama directo, no abre el formulario de citas -->
               <a href="tel:+573114569768" class="serv-btn">Llamar ahora →</a>
             </div>
           </article>
@@ -380,10 +309,7 @@
       </div>
     </section>
 
-    <!-- ══════════════════════════════════════════
-         BANNER DE URGENCIAS
-         Franja roja destacada con botones de llamada y WhatsApp.
-    ══════════════════════════════════════════ -->
+    <!-- BANNER URGENCIAS: franja roja con botones de llamada y WhatsApp -->
     <section class="urgencia-banner">
       <div class="urgencia-inner">
         <div class="urgencia-ico">🚨</div>
@@ -402,10 +328,7 @@
       </div>
     </section>
 
-    <!-- ══════════════════════════════════════════
-         SECCIÓN PRODUCTOS DESTACADOS
-         Vista rápida de productos de la tienda.
-    ══════════════════════════════════════════ -->
+    <!-- PRODUCTOS DESTACADOS: vista rápida de la tienda -->
     <section class="section" id="productos">
       <div class="section-inner">
         <div class="section-head">
@@ -471,11 +394,7 @@
       </div>
     </section>
 
-    <!-- ══════════════════════════════════════════
-         SECCIÓN PROCESO "TU VISITA"
-         4 pasos explicando cómo funciona una visita.
-         Fondo verde oscuro para destacarla.
-    ══════════════════════════════════════════ -->
+    <!-- PROCESO: 4 pasos que explican cómo funciona una visita -->
     <section class="section bg-verde" id="proceso">
       <div class="section-inner">
         <div class="section-head center-head">
@@ -507,10 +426,7 @@
       </div>
     </section>
 
-    <!-- ══════════════════════════════════════════
-         SECCIÓN RESEÑAS DE CLIENTES
-         Opiniones reales de Google con calificación verificada.
-    ══════════════════════════════════════════ -->
+    <!-- RESEÑAS: opiniones reales de Google -->
     <section class="section" id="resenas">
       <div class="section-inner">
         <div class="section-head">
@@ -553,10 +469,7 @@
       </div>
     </section>
 
-    <!-- ══════════════════════════════════════════
-         SECCIÓN UBICACIÓN Y HORARIO
-         Tabla de horarios + mapa de Google embebido.
-    ══════════════════════════════════════════ -->
+    <!-- UBICACIÓN: horario de atención + mapa de Google -->
     <section class="section bg-grey" id="ubicacion">
       <div class="section-inner">
         <div class="section-head">
@@ -565,7 +478,7 @@
         </div>
         <div class="ubicacion-grid">
 
-          <!-- Columna izquierda: horarios y botones de contacto -->
+          <!-- Horario y botones de contacto -->
           <div class="horario-box">
             <h3>Horario de atención</h3>
             <table class="horario-tabla">
@@ -573,7 +486,6 @@
               <tr><td>Sábado</td><td>8:00 – 20:30</td></tr>
               <tr><td>Domingo</td><td>10:00 – 12:00</td></tr>
             </table>
-            <!-- Aviso de urgencias fuera de horario -->
             <div class="urgencia-chip">🚨 Urgencias 24h · Lunes a Sábado</div>
             <div class="ubicacion-btns">
               <a href="tel:+573114569768" class="btn-cita">📞 Llamar</a>
@@ -581,13 +493,13 @@
             </div>
           </div>
 
-          <!-- Columna derecha: mapa interactivo de Google Maps -->
+          <!-- Mapa de Google Maps embebido -->
           <div class="map-box">
             <iframe
+              class="mapa-iframe"
               title="Ubicación Clínica Veterinaria Mascott"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3976.3!2d-72.9322!3d5.7167!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e6a5c!2sCalle+15+%239-54%2C+Sogamoso!5e0!3m2!1ses!2sco!4v1"
               width="100%" height="360"
-              style="border:0;border-radius:12px;display:block"
               allowfullscreen loading="lazy">
             </iframe>
           </div>
@@ -596,14 +508,10 @@
       </div>
     </section>
 
-    <!-- ══════════════════════════════════════════
-         PIE DE PÁGINA (FOOTER)
-         Links de navegación, contacto y redes sociales.
-    ══════════════════════════════════════════ -->
+    <!-- FOOTER: pie de página con links y contacto -->
     <footer class="footer">
       <div class="footer-inner">
 
-        <!-- Marca / logo del footer -->
         <div class="footer-brand">
           <img src="../img/logo.png" alt="Mascott" width="40" height="40"/>
           <div>
@@ -612,7 +520,6 @@
           </div>
         </div>
 
-        <!-- Columnas de links -->
         <div class="footer-cols">
           <div>
             <h4>Servicios</h4>
@@ -634,49 +541,34 @@
             <a href="tel:+573114569768">📞 (57) 311 456 9768</a>
             <a href="https://wa.me/573114569768" target="_blank" rel="noopener">💬 WhatsApp</a>
             <a href="mailto:contacto@mascott.com">✉️ contacto@mascott.com</a>
-            <p style="margin-top:.5rem;opacity:.6;font-size:.82rem">Calle 15 #9-54<br/>Sogamoso, Boyacá</p>
+            <p class="footer-dir">Calle 15 #9-54<br/>Sogamoso, Boyacá</p>
           </div>
         </div>
 
       </div>
-      <!-- Línea inferior de derechos de autor -->
       <div class="footer-bottom">
         <p>© 2026 Clínica Veterinaria Mascott · Sogamoso, Boyacá</p>
       </div>
     </footer>
 
-  </main><!-- fin del contenido principal -->
+  </main>
 
-  <!-- ══════════════════════════════════════════
-       BOTÓN FLOTANTE DE WHATSAPP
-       Aparece fijo en la esquina inferior derecha.
-       Siempre visible para contacto rápido.
-  ══════════════════════════════════════════ -->
-  <a href="https://wa.me/573114569768" target="_blank" rel="noopener"
-     class="fab-wa" aria-label="Contactar por WhatsApp">
+  <!-- BOTÓN FLOTANTE DE WHATSAPP: siempre visible en la esquina inferior derecha -->
+  <a href="https://wa.me/573114569768" target="_blank" rel="noopener" class="fab-wa" aria-label="Contactar por WhatsApp">
     <i class="fa-brands fa-whatsapp"></i>
   </a>
 
-  <!-- ══════════════════════════════════════════
-       CHATBOT FLOTANTE
-       Botón que abre/cierra la ventana del asistente virtual.
-  ══════════════════════════════════════════ -->
-  <!-- Botón para abrir el chat -->
+  <!-- CHATBOT FLOTANTE -->
   <button class="chat-fab" id="chatFab" aria-label="Abrir chat" aria-expanded="false">
     <i class="fa-regular fa-comment-dots"></i>
-    <!-- Punto rojo de notificación que aparece después de 3 segundos -->
     <span class="chat-notif" id="chatNotif">1</span>
   </button>
 
-  <!-- Ventana del chat -->
   <div class="chat-window" id="chatWindow" hidden role="dialog" aria-label="Chat de soporte">
-
-    <!-- Encabezado azul del chat con nombre y estado -->
     <div class="chat-header">
       <div class="chat-header-info">
         <div class="chat-avatar-wrap">
           <div class="chat-avatar">🐾</div>
-          <!-- Punto verde que indica que el bot está en línea -->
           <span class="chat-online-dot"></span>
         </div>
         <div>
@@ -684,14 +576,9 @@
           <p class="chat-header-status">En línea · responde al instante</p>
         </div>
       </div>
-      <!-- Botón para cerrar el chat -->
       <button class="chat-close" id="chatClose" aria-label="Cerrar chat">✕</button>
     </div>
-
-    <!-- Área de mensajes (se llena dinámicamente con JS) -->
     <div class="chat-body" id="chatBody" role="log" aria-live="polite"></div>
-
-    <!-- Botones de sugerencias rápidas -->
     <div class="chat-sugerencias" id="chatSugerencias">
       <button class="chat-sug" data-q="¿Cuáles son los servicios?">🩺 Servicios</button>
       <button class="chat-sug" data-q="¿Cuál es el horario?">🕐 Horario</button>
@@ -700,26 +587,16 @@
       <button class="chat-sug" data-q="¿Dónde están ubicados?">📍 Ubicación</button>
       <button class="chat-sug" data-q="¿Atienden urgencias?">🚨 Urgencias</button>
     </div>
-
-    <!-- Caja de texto para escribir preguntas -->
     <div class="chat-footer">
       <input type="text" class="chat-input" id="chatInput" placeholder="Escribe tu pregunta..." autocomplete="off"/>
       <button class="chat-send" id="chatSend" aria-label="Enviar mensaje">
         <i class="fa-solid fa-paper-plane"></i>
       </button>
     </div>
+  </div>
 
-  </div><!-- fin chatbot -->
-
-  <!-- ══════════════════════════════════════════
-       PANEL DE ACCESIBILIDAD
-       Permite cambiar tamaño de texto, modo oscuro, etc.
-       Se abre con el botón de silla de ruedas (♿).
-  ══════════════════════════════════════════ -->
-  <!-- Botón para abrir el panel de accesibilidad -->
+  <!-- PANEL DE ACCESIBILIDAD: permite cambiar tamaño de texto, modo oscuro, etc. -->
   <button class="acc-toggle-btn" id="accToggleBtn" aria-label="Opciones de accesibilidad">♿</button>
-
-  <!-- Panel de opciones de accesibilidad -->
   <div class="acc-panel" id="accPanel" role="dialog" aria-label="Panel de accesibilidad" hidden>
     <div class="acc-panel-header">
       <div class="acc-header-left">
@@ -731,8 +608,6 @@
       </div>
       <button class="acc-close" id="accClose">✕</button>
     </div>
-
-    <!-- Control de tamaño de texto -->
     <div class="acc-section">
       <p class="acc-label">🔠 Tamaño de texto</p>
       <div class="acc-font-controls" role="group">
@@ -742,36 +617,23 @@
         <button class="acc-font-btn acc-font-btn-big" id="accFontInc">A+</button>
       </div>
     </div>
-
-    <!-- Opciones visuales: contraste, modo oscuro, subrayar links, etc. -->
     <div class="acc-section">
       <p class="acc-label">🎨 Visual</p>
       <div class="acc-opts-grid">
-        <button class="acc-opt" id="accContraste" role="switch" aria-checked="false">
-          <span class="acc-opt-icon">◑</span><span class="acc-opt-label">Alto contraste</span><span class="acc-opt-pill">OFF</span>
-        </button>
-        <button class="acc-opt" id="accOscuro" role="switch" aria-checked="false">
-          <span class="acc-opt-icon">🌙</span><span class="acc-opt-label">Modo oscuro</span><span class="acc-opt-pill">OFF</span>
-        </button>
-        <button class="acc-opt" id="accLinks" role="switch" aria-checked="false">
-          <span class="acc-opt-icon">🔗</span><span class="acc-opt-label">Subrayar links</span><span class="acc-opt-pill">OFF</span>
-        </button>
-        <button class="acc-opt" id="accAnimaciones" role="switch" aria-checked="false">
-          <span class="acc-opt-icon">⏸️</span><span class="acc-opt-label">Sin animaciones</span><span class="acc-opt-pill">OFF</span>
-        </button>
-        <button class="acc-opt" id="accGuia" role="switch" aria-checked="false">
-          <span class="acc-opt-icon">📏</span><span class="acc-opt-label">Guía lectura</span><span class="acc-opt-pill">OFF</span>
-        </button>
+        <button class="acc-opt" id="accContraste" role="switch" aria-checked="false"><span class="acc-opt-icon">◑</span><span class="acc-opt-label">Alto contraste</span><span class="acc-opt-pill">OFF</span></button>
+        <button class="acc-opt" id="accOscuro"    role="switch" aria-checked="false"><span class="acc-opt-icon">🌙</span><span class="acc-opt-label">Modo oscuro</span><span class="acc-opt-pill">OFF</span></button>
+        <button class="acc-opt" id="accLinks"     role="switch" aria-checked="false"><span class="acc-opt-icon">🔗</span><span class="acc-opt-label">Subrayar links</span><span class="acc-opt-pill">OFF</span></button>
+        <button class="acc-opt" id="accAnimaciones" role="switch" aria-checked="false"><span class="acc-opt-icon">⏸️</span><span class="acc-opt-label">Sin animaciones</span><span class="acc-opt-pill">OFF</span></button>
+        <button class="acc-opt" id="accGuia"      role="switch" aria-checked="false"><span class="acc-opt-icon">📏</span><span class="acc-opt-label">Guía lectura</span><span class="acc-opt-pill">OFF</span></button>
       </div>
     </div>
-
-    <!-- Botón para restablecer todas las opciones a los valores originales -->
     <button class="acc-reset" id="accReset">↺ Restablecer</button>
   </div>
 
-  <!-- Línea guía de lectura (se mueve con el mouse cuando está activa) -->
-  <div id="guiaLine" aria-hidden="true" style="display:none;position:fixed;left:0;right:0;height:3px;background:linear-gradient(90deg,#1565c0,#1976d2);pointer-events:none;z-index:8888;box-shadow:0 0 12px rgba(26,107,60,.5);"></div>
+  <!-- Línea guía de lectura (se mueve con el mouse cuando está activa en accesibilidad) -->
+  <div id="guiaLine" class="guia-line-oculta" aria-hidden="true"></div>
 
+  <!-- JavaScript principal: inicio.js maneja splash, navbar, chatbot, citas, accesibilidad y buscador -->
   <script src="../js/inicio.js"></script>
 
 </body>
