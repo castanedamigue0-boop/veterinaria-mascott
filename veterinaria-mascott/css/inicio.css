@@ -199,9 +199,12 @@ button { font-family:inherit; }
 
 /* ── HERO ── */
 .hero {
-  position:relative; overflow:hidden;
-  min-height:520px;
-  display:flex; align-items:center;
+  position: relative; overflow: hidden;
+  /* min-height usa vh para adaptarse a cualquier pantalla */
+  min-height: 90vh;
+  display: flex; align-items: center;
+  /* padding-top extra para que el navbar fijo no tape el contenido */
+  padding-top: 130px;
 }
 .hero-bg {
   position:absolute; inset:0;
@@ -718,38 +721,161 @@ button { font-family:inherit; }
 .services-grid .serv-card:nth-child(8){transition-delay:.4s}
 
 /* ── RESPONSIVE ── */
-@media (max-width:1024px) {
-  .cats-grid { grid-template-columns:repeat(4,1fr); }
-  .ubicacion-grid { grid-template-columns:1fr; }
+/* =============================================
+   RESPONSIVE - Medidas relativas para pantallas
+   Se usan % y rem en lugar de px fijos.
+
+   Puntos de corte:
+   - 1024px → tablet grande
+   - 900px  → tablet / celular mediano
+   - 600px  → celular pequeño
+   - 400px  → celular muy pequeño
+   ============================================= */
+
+/* --- Tablet grande (hasta 1024px) --- */
+@media (max-width: 1024px) {
+  /* Categorías visuales: 4 columnas en lugar de 8 */
+  .cats-grid { grid-template-columns: repeat(4, 1fr); }
+
+  /* Ubicación: mapa debajo del horario */
+  .ubicacion-grid { grid-template-columns: 1fr; }
+
+  /* Footer: 2 columnas en lugar de 3 */
+  .footer-cols { grid-template-columns: 1fr 1fr; }
 }
-@media (max-width:900px) {
-  .navbar-search { display:none; }
-  .navbar-burger { display:flex; }
-  .nav-btn-cita { display:none; }
-  .navbar-cats-inner a span { display:none; }
-  .navbar-cats-inner a { padding:.5rem .65rem; }
-  .hero-inner { flex-direction:column; padding:2.5rem 1.5rem; }
-  .hero-card { width:100%; max-width:380px; }
-  .stats-bar-inner .stat-item { width:50%; border-right:none; border-bottom:1px solid rgba(255,255,255,.2); }
-  .stats-bar-inner .stat-item:nth-last-child(-n+2) { border-bottom:none; }
-  .cats-grid { grid-template-columns:repeat(4,1fr); }
-  .proceso-grid { grid-template-columns:1fr 1fr; }
-  .section { padding:3rem 1.25rem; }
-  .urgencia-inner { flex-direction:column; }
+
+/* --- Tablet / Celular mediano (hasta 900px) --- */
+@media (max-width: 900px) {
+
+  /* NAVBAR: ocultar buscador y mostrar hamburguesa */
+  .navbar-search   { display: none; }
+  .navbar-burger   { display: flex; }
+  .nav-btn-cita    { display: none; } /* botón "Agendar Cita" se oculta, queda en el menú */
+  .navbar-inner    { padding: 0 1rem; height: 58px; }
+
+  /* Menú desplegable en móvil */
+  .navbar-links {
+    display: none;
+    flex-direction: column;
+    position: fixed;
+    top: 58px; left: 0; right: 0;
+    background: #fff;
+    border-bottom: 1px solid var(--gris-borde);
+    padding: 1rem;
+    gap: .25rem;
+    z-index: 899;
+    box-shadow: 0 4px 16px rgba(0,0,0,.08);
+  }
+  .navbar-links.open { display: flex; }
+  .navbar-links a { padding: .75rem 1rem; border-radius: 8px; font-size: .95rem; }
+
+  /* Categorías: mostrar solo íconos (sin texto) */
+  .navbar-cats-inner a { padding: .5rem .7rem; font-size: .75rem; }
+
+  /* HERO: apilar en columna */
+  .hero-inner { flex-direction: column; padding: 5rem 1.25rem 2.5rem; gap: 1.5rem; }
+  .hero-content { text-align: center; }
+  .hero-btns    { justify-content: center; }
+  .hero-chips   { justify-content: center; }
+  .hero-card    { width: 100%; max-width: 100%; }
+
+  /* STATS: 2 por fila */
+  .stats-bar-inner .stat-item {
+    width: 50%;
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,.2);
+  }
+  .stats-bar-inner .stat-item:nth-last-child(-n+2) { border-bottom: none; }
+
+  /* Categorías visuales: 4 columnas */
+  .cats-grid { grid-template-columns: repeat(4, 1fr); }
+
+  /* Servicios: 2 columnas */
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Productos: 2 columnas */
+  .products-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Proceso: 2 columnas */
+  .proceso-grid { grid-template-columns: 1fr 1fr; }
+
+  /* Urgencias: apilar en columna */
+  .urgencia-inner { flex-direction: column; text-align: center; }
+  .urgencia-actions { justify-content: center; }
+
+  /* Secciones: menos padding lateral */
+  .section { padding: 3rem 1.25rem; }
+  .section-inner { padding: 0; }
+
+  /* Footer: 1 columna */
+  .footer-inner { flex-direction: column; gap: 1.5rem; padding: 2rem 1.25rem; }
+  .footer-cols  { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
 }
-@media (max-width:600px) {
-  .navbar-cats-inner { gap:0; }
-  .cats-grid { grid-template-columns:repeat(2,1fr); }
-  .proceso-grid { grid-template-columns:1fr; }
-  .stats-bar-inner .stat-item { width:100%; }
-  .topbar-strip-inner { flex-direction:column; gap:.25rem; text-align:center; }
-  .topbar-sep { display:none; }
-  .form-row-2 { grid-template-columns:1fr; }
-  .hero-btns { flex-direction:column; }
+
+/* --- Celular pequeño (hasta 600px) --- */
+@media (max-width: 600px) {
+
+  /* BARRA SUPERIOR: apilar info en columna */
+  .topbar-strip-inner { flex-direction: column; gap: .2rem; text-align: center; font-size: .72rem; }
+  .topbar-sep { display: none; }
+
+  /* NAVBAR: más compacto */
+  .navbar-inner { padding: 0 .75rem; height: 54px; }
+  .navbar-logo span { font-size: 1.1rem; }
+  .navbar-logo img  { width: 30px; height: 30px; }
+  .navbar-cats-inner a { padding: .45rem .55rem; font-size: .7rem; }
+
+  /* HERO: fuente más pequeña */
+  .hero-content h1 { font-size: clamp(1.6rem, 7vw, 2.2rem); }
+  .hero-content p  { font-size: .9rem; }
+  .hero-btns { flex-direction: column; align-items: stretch; }
+  .btn-cita, .btn-hero-outline { text-align: center; justify-content: center; }
+  .hero-chips { gap: .35rem; }
+  .hero-chips span { font-size: .72rem; padding: .3rem .65rem; }
+
+  /* STATS: 1 por fila */
+  .stats-bar-inner .stat-item { width: 100%; border-bottom: 1px solid rgba(255,255,255,.2); }
+  .stats-bar-inner .stat-item:last-child { border-bottom: none; }
+
+  /* CATEGORÍAS: 2 columnas */
+  .cats-grid { grid-template-columns: repeat(2, 1fr); gap: .6rem; }
+
+  /* SERVICIOS: 1 columna */
+  .services-grid { grid-template-columns: 1fr; }
+
+  /* PRODUCTOS: 1 columna */
+  .products-grid { grid-template-columns: 1fr; }
+
+  /* PROCESO: 1 columna */
+  .proceso-grid { grid-template-columns: 1fr; }
+
+  /* Formularios: 1 columna */
+  .form-row-2 { grid-template-columns: 1fr; }
+
+  /* FOOTER: 1 columna */
+  .footer-cols { grid-template-columns: 1fr; }
+  .footer-inner { padding: 1.75rem 1rem; }
+
+  /* Reseñas: 1 columna */
+  .reviews-grid { grid-template-columns: 1fr; }
 }
-@media (prefers-reduced-motion:reduce) {
-  *, *::before, *::after { animation-duration:.01ms!important; transition-duration:.01ms!important; }
-  .reveal { opacity:1; transform:none; }
+
+/* --- Celular muy pequeño (hasta 400px) --- */
+@media (max-width: 400px) {
+  .navbar-cats-inner { gap: 0; }
+  .navbar-cats-inner a { padding: .4rem .4rem; font-size: .65rem; }
+  .cats-grid { grid-template-columns: repeat(2, 1fr); gap: .4rem; }
+  .hero-card { border-radius: 12px; }
+  .stats-bar { padding: 1.25rem .75rem; }
+}
+
+/* --- Preferencia del sistema: sin animaciones --- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+  .reveal { opacity: 1; transform: none; }
 }
 
 

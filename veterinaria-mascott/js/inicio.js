@@ -158,7 +158,10 @@ if (citaOverlay) {
   modals['modalCita'] = citaOverlay;
 }
 
-// btnLogin → manejado por el mini panel en el HTML
+// ── Botón "Iniciar sesión": lleva a la página de login ──
+document.getElementById('btnLogin')?.addEventListener('click', () => {
+  window.location.href = 'login-registro.html';
+});
 
 // Sesión activa → cambiar botón
 (function() {
