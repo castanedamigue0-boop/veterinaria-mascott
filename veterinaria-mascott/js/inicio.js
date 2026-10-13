@@ -461,3 +461,128 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('../js/servicio-offline.js').catch(() => {});
   });
 }
+
+
+// ===== BUSCADOR DEL NAVBAR =====
+(function() {
+  const input   = document.getElementById('navSearchInput');
+  const results = document.getElementById('searchResults');
+  if (!input || !results) return;
+
+  // Base de datos de búsqueda — servicios y secciones de la página
+  const DATA = [
+    // Servicios
+    { name:'Consulta General',        cat:'Servicio',  ico:'🩺', bg:'#e3f2fd', href:'#servicios' },
+    { name:'Consulta Especializada',  cat:'Servicio',  ico:'🔬', bg:'#f3e5f5', href:'#servicios' },
+    { name:'Vacunación',              cat:'Servicio',  ico:'💉', bg:'#fff3e0', href:'#servicios' },
+    { name:'Desparasitación',         cat:'Servicio',  ico:'🪱', bg:'#e8f5e9', href:'#servicios' },
+    { name:'Estética Canina',         cat:'Servicio',  ico:'✂️', bg:'#e3f2fd', href:'#servicios' },
+    { name:'Baño y Secado',           cat:'Servicio',  ico:'🛁', bg:'#e0f7fa', href:'#servicios' },
+    { name:'Laboratorio Clínico',     cat:'Servicio',  ico:'🔬', bg:'#f3e5f5', href:'#servicios' },
+    { name:'Rayos X',                 cat:'Servicio',  ico:'🩻', bg:'#e3f2fd', href:'#servicios' },
+    { name:'Ecografía',               cat:'Servicio',  ico:'📡', bg:'#e8f5e9', href:'#servicios' },
+    { name:'Cirugía General',         cat:'Servicio',  ico:'🏥', bg:'#e3f2fd', href:'#servicios' },
+    { name:'Esterilización',          cat:'Servicio',  ico:'✂️', bg:'#e3f2fd', href:'#servicios' },
+    { name:'Hospitalización',         cat:'Servicio',  ico:'🏨', bg:'#fce4ec', href:'#servicios' },
+    { name:'Urgencias 24 horas',      cat:'Servicio',  ico:'🚨', bg:'#ffebee', href:'#ubicacion' },
+    // Productos
+    { name:'Alimento Premium',        cat:'Producto',  ico:'🦴', bg:'#fff3e0', href:'tienda-productos.html' },
+    { name:'Kit de Grooming',         cat:'Producto',  ico:'🧴', bg:'#e3f2fd', href:'tienda-productos.html' },
+    { name:'Medicamentos',            cat:'Producto',  ico:'💊', bg:'#fce4ec', href:'tienda-productos.html' },
+    { name:'Juguetes y Accesorios',   cat:'Producto',  ico:'🎾', bg:'#e8f5e9', href:'tienda-productos.html' },
+    { name:'Royal Canin',             cat:'Producto',  ico:'🦴', bg:'#fff3e0', href:'tienda-productos.html' },
+    { name:'Antiparasitarios',        cat:'Producto',  ico:'💊', bg:'#fce4ec', href:'tienda-productos.html' },
+    // Páginas / secciones
+    { name:'Inicio',                  cat:'Página',    ico:'🏠', bg:'#e3f2fd', href:'#inicio' },
+    { name:'Nuestros Servicios',      cat:'Sección',   ico:'🩺', bg:'#e3f2fd', href:'#servicios' },
+    { name:'Tienda Online',           cat:'Sección',   ico:'🛒', bg:'#fce4ec', href:'tienda-productos.html' },
+    { name:'Reseñas de clientes',     cat:'Sección',   ico:'⭐', bg:'#fff9c4', href:'#resenas' },
+    { name:'Dónde estamos / Mapa',    cat:'Sección',   ico:'📍', bg:'#e8f5e9', href:'#ubicacion' },
+    { name:'Contacto',                cat:'Sección',   ico:'📞', bg:'#e3f2fd', href:'#contacto' },
+    { name:'Agendar Cita',            cat:'Acción',    ico:'📅', bg:'#e3f2fd', href:'#' },
+    { name:'Mi cuenta / Iniciar sesión', cat:'Cuenta', ico:'👤', bg:'#f3e5f5', href:'login-registro.html' },
+    { name:'Panel de usuario',        cat:'Cuenta',    ico:'🎛️', bg:'#e3f2fd', href:'panel-usuario.html' },
+  ];
+
+  // Función que resalta el texto que coincide con la búsqueda
+  function highlight(text, query) {
+    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
+  }
+
+  // Función que busca y muestra los resultados
+  function search(query) {
+    query = query.trim();
+    if (!query) { results.hidden = true; return; }
+
+    const q = query.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const encontrados = DATA.filter(item => {
+      const n = item.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const c = item.cat.toLowerCase();
+      return n.includes(q) || c.includes(q);
+    });
+
+    if (!encontrados.length) {
+      results.innerHTML = `<div class="search-empty">😕 Sin resultados para "<strong>${query}</strong>"</div>`;
+      results.hidden = false;
+      return;
+    }
+
+    // Agrupar por categoría
+    const grupos = {};
+    encontrados.forEach(item => {
+      if (!grupos[item.cat]) grupos[item.cat] = [];
+      grupos[item.cat].push(item);
+    });
+
+    let html = '';
+    Object.keys(grupos).forEach(cat => {
+      html += `<div class="search-group-label">${cat}</div>`;
+      grupos[cat].forEach(item => {
+        const isAnchor = item.href.startsWith('#');
+        html += `
+          <${isAnchor ? 'a href="'+item.href+'"' : 'a href="'+item.href+'"'} class="search-item">
+            <div class="search-item-ico" style="background:${item.bg}">${item.ico}</div>
+            <div class="search-item-info">
+              <div class="search-item-name">${highlight(item.name, query)}</div>
+              <div class="search-item-cat">${item.cat}</div>
+            </div>
+          </a>`;
+      });
+    });
+
+    results.innerHTML = html;
+    results.hidden = false;
+
+    // Al hacer clic en un resultado, cerrar el buscador
+    results.querySelectorAll('.search-item').forEach(el => {
+      el.addEventListener('click', () => {
+        input.value = '';
+        results.hidden = true;
+      });
+    });
+  }
+
+  // Escuchar lo que el usuario escribe
+  input.addEventListener('input', () => search(input.value));
+
+  // Tecla Escape cierra los resultados
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { results.hidden = true; input.blur(); }
+  });
+
+  // Clic fuera del buscador cierra los resultados
+  document.addEventListener('click', e => {
+    if (!input.closest('.navbar-search').contains(e.target)) {
+      results.hidden = true;
+    }
+  });
+
+  // Tecla Enter va al primer resultado
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const first = results.querySelector('.search-item');
+      if (first) { first.click(); }
+    }
+  });
+})();

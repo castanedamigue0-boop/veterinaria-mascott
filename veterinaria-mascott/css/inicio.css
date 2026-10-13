@@ -751,3 +751,85 @@ button { font-family:inherit; }
   *, *::before, *::after { animation-duration:.01ms!important; transition-duration:.01ms!important; }
   .reveal { opacity:1; transform:none; }
 }
+
+
+/* ── Buscador con resultados desplegables ── */
+.navbar-search {
+  position: relative; /* necesario para que los resultados se posicionen bien */
+}
+.search-results {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0; right: 0;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.14);
+  border: 1px solid var(--gris-borde);
+  z-index: 999;
+  overflow: hidden;
+  max-height: 360px;
+  overflow-y: auto;
+}
+.search-results[hidden] { display: none; }
+
+/* Cada resultado individual */
+.search-item {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .75rem 1rem;
+  cursor: pointer;
+  transition: background var(--t);
+  text-decoration: none;
+  color: var(--text);
+}
+.search-item:hover { background: var(--azul-lite); }
+
+/* Ícono del resultado */
+.search-item-ico {
+  font-size: 1.5rem;
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+/* Texto del resultado */
+.search-item-info { flex: 1; min-width: 0; }
+.search-item-name {
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.search-item-cat {
+  font-size: .75rem;
+  color: var(--muted);
+}
+/* Texto resaltado que coincide con la búsqueda */
+.search-item-name mark {
+  background: #fff9c4;
+  color: var(--text);
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+/* Mensaje cuando no hay resultados */
+.search-empty {
+  padding: 1.25rem 1rem;
+  text-align: center;
+  font-size: .88rem;
+  color: var(--muted);
+}
+
+/* Separador de categoría dentro de los resultados */
+.search-group-label {
+  padding: .5rem 1rem .25rem;
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--azul);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  background: var(--gris-bg);
+}
