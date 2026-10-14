@@ -1,66 +1,140 @@
-﻿// ===== FIREBASE CONFIG =====
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+﻿// =============================================
+// BASE DE DATOS — Conexión con el backend Django
+// Todas las peticiones van al servidor Django.
+// Nunca se guardan contraseñas en el navegador.
+// =============================================
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDhKqLIRubiPLeXwhoKyLvVTG8PNJZbRl4",
-  authDomain: "veterinaria-mascott.firebaseapp.com",
-  projectId: "veterinaria-mascott",
-  storageBucket: "veterinaria-mascott.firebasestorage.app",
-  messagingSenderId: "607015321799",
-  appId: "1:607015321799:web:29944f85e3529266977ee2"
-};
+// URL base del servidor Django
+const API_URL = 'http://127.0.0.1:8000';
 
-const app = initializeApp(firebaseConfig);
-const db  = getFirestore(app);
+// ─────────────────────────────────────────
+// FUNCIÓN AUXILIAR — Petición fetch con CSRF
+// Django requiere el token CSRF en todas las
+// peticiones POST para evitar ataques.
+// ─────────────────────────────────────────
+async function apiFetch(endpoint, opciones = {}) {
+  // Obtener el token CSRF de la cookie
+  const csrfToken = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('csrftoken='))
+    ?.split('=')[1] || '';
 
-// ===== USUARIOS =====
-export async function crearUsuario(data) {
-  await setDoc(doc(db, 'usuarios', data.email), data);
+  const config = {
+    credentials: 'include',         // enviar cookies de sesión
+    headers: {
+      'Content-Type':  'application/json',
+      'X-CSRFToken':   csrfToken,    // token de seguridad
+    },
+    ...opciones,
+  };
+
+  const respuesta = await fetch(`${API_URL}${endpoint}`, config);
+  const datos     = await respuesta.json();
+
+  if (!respuesta.ok && !datos.ok) {
+    throw new Error(datos.error || 'Error en el servidor.');
+  }
+  return datos;
 }
 
-export async function obtenerUsuario(email) {
-  const snap = await getDoc(doc(db, 'usuarios', email));
-  return snap.exists() ? snap.data() : null;
+// ─────────────────────────────────────────
+// AUTENTICACIÓN
+// ─────────────────────────────────────────
+
+// Iniciar sesión — devuelve { ok, nombre, email, esAdmin }
+export async function iniciarSesion(email, password) {
+  return await apiFetch('/api/login/', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+  });
 }
 
-export async function actualizarUsuario(email, data) {
-  await setDoc(doc(db, 'usuarios', email), data, { merge: true });
+// Registrar cuenta nueva — devuelve { ok, nombre, email }
+export async function registrarUsuario(nombre, apellido, email, password, telefono = '') {
+  return await apiFetch('/api/registro/', {
+    method: 'POST',
+    body: JSON.stringify({ nombre, apellido, email, password, telefono }),
+  });
 }
 
-export async function obtenerTodosUsuarios() {
-  const snap = await getDocs(collection(db, 'usuarios'));
-  return snap.docs.map(d => d.data());
+// Cerrar sesión
+export async function cerrarSesion() {
+  return await apiFetch('/api/logout/');
 }
 
-export async function agregarNotificacion(email, msg) {
-  const user = await obtenerUsuario(email);
-  if (!user) return;
-  const notifs = user.notificaciones || [];
-  notifs.unshift({ msg, fecha: new Date().toLocaleString('es-CO'), leida: false });
-  await setDoc(doc(db, 'usuarios', email), { notificaciones: notifs }, { merge: true });
+// Verificar si hay sesión activa — devuelve { autenticado, nombre, email }
+export async function verificarSesion() {
+  return await apiFetch('/api/sesion/');
 }
 
-// ===== DOCTORES =====
-export async function obtenerDoctores() {
-  const snap = await getDocs(collection(db, 'doctores'));
-  return snap.docs.map(d => d.data());
-}
-export async function obtenerDoctor(id) {
-  const snap = await getDoc(doc(db, 'doctores', id));
-  return snap.exists() ? snap.data() : null;
-}
-export async function actualizarDoctor(id, data) {
-  await setDoc(doc(db, 'doctores', id), data, { merge: true });
-}
-export async function crearDoctor(data) {
-  await setDoc(doc(db, 'doctores', data.id), data);
+// ─────────────────────────────────────────
+// CITAS
+// ─────────────────────────────────────────
+
+// Obtener las citas del usuario autenticado
+export async function obtenerCitas() {
+  return await apiFetch('/api/citas/');
 }
 
-// ===== SESION LOCAL =====
-export function setSession(user) { localStorage.setItem('macott_session', JSON.stringify(user)); }
-export function getSession()     { return JSON.parse(localStorage.getItem('macott_session') || 'null'); }
-export function clearSession()   { localStorage.removeItem('macott_session'); }
-export function setDoctorSession(doc) { localStorage.setItem('macott_doctor', JSON.stringify(doc)); }
-export function getDoctorSession()    { return JSON.parse(localStorage.getItem('macott_doctor') || 'null'); }
-export function clearDoctorSession()  { localStorage.removeItem('macott_doctor'); }
+// Crear una cita nueva
+export async function crearCita(mascota, servicio, fecha, hora, notas = '') {
+  return await apiFetch('/api/citas/crear/', {
+    method: 'POST',
+    body: JSON.stringify({ mascota, servicio, fecha, hora, notas }),
+  });
+}
+
+// Obtener horas ya ocupadas para una fecha
+export async function obtenerHorasOcupadas(fecha) {
+  return await apiFetch(`/api/citas/horarios/?fecha=${fecha}`);
+}
+
+// ─────────────────────────────────────────
+// MASCOTAS
+// ─────────────────────────────────────────
+
+// Obtener las mascotas del usuario autenticado
+export async function obtenerMascotas() {
+  return await apiFetch('/api/mascotas/');
+}
+
+// Registrar una mascota nueva
+export async function crearMascota(nombre, especie, raza = '', edad = null) {
+  return await apiFetch('/api/mascotas/crear/', {
+    method: 'POST',
+    body: JSON.stringify({ nombre, especie, raza, edad }),
+  });
+}
+
+// ─────────────────────────────────────────
+// PRODUCTOS
+// ─────────────────────────────────────────
+
+// Obtener productos activos de la tienda
+export async function obtenerProductos() {
+  return await apiFetch('/api/productos/');
+}
+
+// ─────────────────────────────────────────
+// SESIÓN LOCAL (solo para UI, sin datos sensibles)
+// Guarda solo el nombre del usuario para
+// mostrar en el botón del navbar.
+// ─────────────────────────────────────────
+
+export function setSession(user) {
+  // Solo guarda nombre y email — nunca la contraseña
+  sessionStorage.setItem('mascott_user', JSON.stringify({
+    nombre:  user.nombre,
+    email:   user.email,
+    esAdmin: user.esAdmin || false,
+  }));
+}
+
+export function getSession() {
+  const data = sessionStorage.getItem('mascott_user');
+  return data ? JSON.parse(data) : null;
+}
+
+export function clearSession() {
+  sessionStorage.removeItem('mascott_user');
+}
