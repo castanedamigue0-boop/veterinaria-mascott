@@ -1,0 +1,155 @@
+﻿<mxfile host="65bd71144e">
+    <diagram id="Clases-Mascott" name="Diagrama de Clases">
+        <mxGraphModel dx="1580" dy="889" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="U" value="Usuario" style="swimlane;fontStyle=1;align=center;startSize=30;fontSize=13;fillColor=#1565C0;fontColor=#ffffff;strokeColor=#0d47a1;" parent="1" vertex="1">
+                    <mxGeometry x="560" y="40" width="260" height="260" as="geometry"/>
+                </mxCell>
+                <mxCell id="UA" value="- id: Entero&#10;- nombre_usuario: Texto&#10;- correo: Texto&#10;- contrasena_hash: Texto&#10;- nombre: Texto&#10;- apellido: Texto&#10;- es_admin: Booleano&#10;- es_veterinario: Booleano&#10;- notificaciones: Lista&#10;- ultima_notif: FechaHora" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="U" vertex="1">
+                    <mxGeometry y="30" width="260" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="UM" value="+ verificar_contrasena(): bool&#10;+ cambiar_contrasena(): void&#10;+ tiene_permiso(): bool" style="text;strokeColor=#006EAF;fillColor=#1ba1e2;align=left;verticalAlign=top;spacingLeft=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontColor=#ffffff;" parent="U" vertex="1">
+                    <mxGeometry y="180" width="260" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="MA" value="Mascota" style="swimlane;fontStyle=1;align=center;startSize=30;fontSize=13;fillColor=#2e7d32;fontColor=#ffffff;strokeColor=#1b5e20;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="390" width="250" height="230" as="geometry"/>
+                </mxCell>
+                <mxCell id="MAA" value="- id: Entero&#10;- dueno: Usuario (CE)&#10;- nombre: Texto&#10;- especie: Texto&#10;- raza: Texto&#10;- edad: Entero&#10;- peso: Decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="MA" vertex="1">
+                    <mxGeometry y="30" width="250" height="155" as="geometry"/>
+                </mxCell>
+                <mxCell id="MAM" value="+ __str__(): Texto" style="text;strokeColor=#005700;fillColor=#008a00;align=left;verticalAlign=top;spacingLeft=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontColor=#ffffff;" parent="MA" vertex="1">
+                    <mxGeometry y="185" width="250" height="45" as="geometry"/>
+                </mxCell>
+                <mxCell id="CI" value="Cita" style="swimlane;fontStyle=1;align=center;startSize=30;fontSize=13;fillColor=#42125C;fontColor=#ffffff;strokeColor=#4a148c;" parent="1" vertex="1">
+                    <mxGeometry x="560" y="390" width="260" height="265" as="geometry"/>
+                </mxCell>
+                <mxCell id="CIA" value="- id: Entero&#10;- usuario: Usuario (CE)&#10;- mascota: Texto&#10;- servicio: Texto&#10;- fecha: Fecha&#10;- hora: Texto&#10;- notas: Texto&#10;- estado: Texto" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="CI" vertex="1">
+                    <mxGeometry y="30" width="260" height="185" as="geometry"/>
+                </mxCell>
+                <mxCell id="CIM" value="+ __str__(): Texto&#10;«pendiente/confirmada/cancelada»" style="text;strokeColor=#3700CC;fillColor=#4A005E;align=left;verticalAlign=top;spacingLeft=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontColor=#ffffff;" parent="CI" vertex="1">
+                    <mxGeometry y="215" width="260" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="PR" value="Producto" style="swimlane;fontStyle=1;align=center;startSize=30;fontSize=13;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="960" y="390" width="250" height="295" as="geometry"/>
+                </mxCell>
+                <mxCell id="PRA" value="- id: Entero&#10;- nombre: Texto&#10;- descripcion: Texto&#10;- precio: Decimal&#10;- costo: Decimal&#10;- categoria: Texto&#10;- imagen_url: Texto&#10;- activo: Booleano" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="PR" vertex="1">
+                    <mxGeometry y="30" width="250" height="215" as="geometry"/>
+                </mxCell>
+                <mxCell id="PRM" value="+ stock_bajo(): bool&#10;+ __str__(): Texto" style="text;strokeColor=#C73500;fillColor=#fa6800;align=left;verticalAlign=top;spacingLeft=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontColor=#000000;" parent="PR" vertex="1">
+                    <mxGeometry y="245" width="250" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="CC" value="ConsultaClinica" style="swimlane;fontStyle=1;align=center;startSize=30;fontSize=13;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="730" width="260" height="320" as="geometry"/>
+                </mxCell>
+                <mxCell id="CCA" value="- id: Entero&#10;- mascota: Mascota (CE)&#10;- veterinario: Usuario (CE)&#10;- cita: Cita (CE)&#10;- fecha: FechaHora&#10;- motivo: Texto&#10;- peso: Decimal&#10;- temperatura: Decimal&#10;- frecuencia_cardiaca: Entero&#10;- diagnostico: Texto&#10;- tratamiento: Texto" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="CC" vertex="1">
+                    <mxGeometry y="30" width="260" height="245" as="geometry"/>
+                </mxCell>
+                <mxCell id="CCM" value="+ __str__(): Texto&#10;«solo veterinarios - VM-76»" style="text;align=left;verticalAlign=top;spacingLeft=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="CC" vertex="1">
+                    <mxGeometry y="275" width="260" height="45" as="geometry"/>
+                </mxCell>
+                <mxCell id="VA" value="Vacunacion" style="swimlane;fontStyle=1;align=center;startSize=30;fontSize=13;fillColor=#1565c0;fontColor=#ffffff;strokeColor=#0d47a1;" parent="1" vertex="1">
+                    <mxGeometry x="380" y="730" width="250" height="265" as="geometry"/>
+                </mxCell>
+                <mxCell id="VAA" value="- id: Entero&#10;- mascota: Mascota (CE)&#10;- veterinario: Usuario (CE)&#10;- vacuna: Texto&#10;- tipo: Texto&#10;- lote: Texto&#10;- fecha: Fecha&#10;- proxima_dosis: Fecha" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="VA" vertex="1">
+                    <mxGeometry y="30" width="250" height="185" as="geometry"/>
+                </mxCell>
+                <mxCell id="VAM" value="+ __str__(): Texto&#10;«vacuna / desparasitante»" style="text;strokeColor=#001DBC;fillColor=#0050ef;align=left;verticalAlign=top;spacingLeft=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontColor=#ffffff;" parent="VA" vertex="1">
+                    <mxGeometry y="215" width="250" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="PV" value="Proveedor" style="swimlane;fontStyle=1;align=center;startSize=30;fontSize=13;fillColor=#4527a0;fontColor=#ffffff;strokeColor=#311b92;" parent="1" vertex="1">
+                    <mxGeometry x="700" y="730" width="250" height="295" as="geometry"/>
+                </mxCell>
+                <mxCell id="PVA" value="- id: Entero&#10;- razon_social: Texto&#10;- nit: Texto (único)&#10;- contacto: Texto&#10;- telefono: Texto&#10;- correo: Texto (único)&#10;- direccion: Texto&#10;- dias_credito: Entero&#10;- dias_entrega: Entero&#10;- activo: Booleano" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="PV" vertex="1">
+                    <mxGeometry y="30" width="250" height="215" as="geometry"/>
+                </mxCell>
+                <mxCell id="PVM" value="+ __str__(): Texto&#10;«VM-77»" style="text;strokeColor=#3700CC;fillColor=#6a00ff;align=left;verticalAlign=top;spacingLeft=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontColor=#ffffff;" parent="PV" vertex="1">
+                    <mxGeometry y="245" width="250" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="OC" value="OrdenCompra" style="swimlane;fontStyle=1;align=center;startSize=30;fontSize=13;fillColor=#c62828;fontColor=#ffffff;strokeColor=#b71c1c;" parent="1" vertex="1">
+                    <mxGeometry x="1210" y="890" width="260" height="330" as="geometry"/>
+                </mxCell>
+                <mxCell id="OCA" value="- id: Entero&#10;- proveedor: Proveedor (CE)&#10;- creado_por: Usuario (CE)&#10;- fecha: Fecha&#10;- entrega_estimada: Fecha&#10;- forma_pago: Texto&#10;- subtotal: Decimal&#10;- iva: Decimal&#10;- total: Decimal&#10;- estado: Texto&#10;- motivo_anulacion: Texto" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="OC" vertex="1">
+                    <mxGeometry y="30" width="260" height="255" as="geometry"/>
+                </mxCell>
+                <mxCell id="OCM" value="+ __str__(): Texto&#10;«pendiente/recibida/anulada - VM-78»" style="text;strokeColor=#6F0000;fillColor=#a20025;align=left;verticalAlign=top;spacingLeft=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontColor=#ffffff;" parent="OC" vertex="1">
+                    <mxGeometry y="285" width="260" height="45" as="geometry"/>
+                </mxCell>
+                <mxCell id="RE" value="Receta" style="swimlane;fontStyle=1;align=center;startSize=30;fontSize=13;fillColor=#d80073;fontColor=#ffffff;strokeColor=#A50040;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="1140" width="250" height="215" as="geometry"/>
+                </mxCell>
+                <mxCell id="REA" value="- id: Entero&#10;- consulta: ConsultaClinica (CE)&#10;- medicamento: Texto&#10;- dosis: Texto&#10;- frecuencia: Texto&#10;- dias: Entero&#10;- indicaciones: Texto" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="RE" vertex="1">
+                    <mxGeometry y="30" width="250" height="145" as="geometry"/>
+                </mxCell>
+                <mxCell id="REM" value="+ __str__(): Texto" style="text;strokeColor=#A50040;fillColor=#d80073;align=left;verticalAlign=top;spacingLeft=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontColor=#ffffff;" parent="RE" vertex="1">
+                    <mxGeometry y="175" width="250" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="ST" value="Stock" style="swimlane;fontStyle=1;align=center;startSize=30;fontSize=13;fillColor=#008a00;fontColor=#ffffff;strokeColor=#005700;" parent="1" vertex="1">
+                    <mxGeometry x="1260" y="390" width="250" height="215" as="geometry"/>
+                </mxCell>
+                <mxCell id="STA" value="- id: Entero&#10;- producto: Producto (CE)&#10;- cantidad_actual: Entero&#10;- cantidad_minima: Entero&#10;- cantidad_maxima: Entero&#10;- ubicacion: Texto&#10;- ultima_actualizacion: FechaHora" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="ST" vertex="1">
+                    <mxGeometry y="30" width="250" height="145" as="geometry"/>
+                </mxCell>
+                <mxCell id="STM" value="+ stock_bajo(): bool&#10;+ __str__(): Texto&#10;«control de inventario»" style="text;strokeColor=#005700;fillColor=#008a00;align=left;verticalAlign=top;spacingLeft=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontColor=#ffffff;" parent="ST" vertex="1">
+                    <mxGeometry y="175" width="250" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="R11" value="1:1" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;strokeColor=#558b2f;fontColor=#558b2f;fontStyle=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="PR" target="ST" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="R1" value="posee (1..N)" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;strokeColor=#2e7d32;fontColor=#2e7d32;fontStyle=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="U" target="MA" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="R2" value="agenda (1..N)" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;strokeColor=#6a1b9a;fontColor=#6a1b9a;fontStyle=1;" parent="1" source="U" target="CI" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="R3" value="notificaciones" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;strokeColor=#546e7a;fontColor=#546e7a;fontStyle=3;dashed=1;" parent="1" source="U" target="U" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="900" y="160"/>
+                            <mxPoint x="900" y="185"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="R4" value="atiende (1..N)" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;strokeColor=#00695c;fontColor=#00695c;fontStyle=1;dashed=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.3;entryDx=0;entryDy=0;" parent="1" source="U" target="CC" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="R5" value="crea (1..N)" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;strokeColor=#c62828;fontColor=#c62828;fontStyle=1;fontSize=11;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.2;entryDx=0;entryDy=0;" parent="1" source="U" target="OC" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="910" y="222"/>
+                            <mxPoint x="910" y="860"/>
+                            <mxPoint x="1150" y="860"/>
+                            <mxPoint x="1150" y="956"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="R6" value="tiene (1..N)" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;strokeColor=#00695c;fontColor=#00695c;fontStyle=1;" parent="1" source="MA" target="CC" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="R7" value="recibe (1..N)" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;strokeColor=#1565c0;fontColor=#1565c0;fontStyle=1;" parent="1" source="MA" target="VA" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="R8" value="prescribe (1..N)" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;strokeColor=#e65100;fontColor=#e65100;fontStyle=1;" parent="1" source="CC" target="RE" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="R9" value="vincula (0..1)" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;strokeColor=#6a1b9a;fontColor=#6a1b9a;fontStyle=1;dashed=1;" parent="1" source="CI" target="CC" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="R10" value="recibe (1..N)" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;strokeColor=#c62828;fontColor=#c62828;fontStyle=1;" parent="1" source="PV" target="OC" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="R12" value="contiene productos (N:M)" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;strokeColor=#f57f17;fontColor=#f57f17;fontStyle=1;" parent="1" source="PR" target="OC" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="R13" value="suministra (N:M)" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;strokeColor=#4527a0;fontColor=#4527a0;fontStyle=1;" parent="1" source="PV" target="PR" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1180" y="910"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
