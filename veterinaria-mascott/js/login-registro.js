@@ -162,7 +162,18 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
     }
 
     // ── 3. ¿ES CLIENTE? ────────────────────────────────────────────
-    const user = await obtenerUsuario(email);
+    // Primero busca en Firebase, luego en localStorage como respaldo
+    let user = null;
+    try {
+      user = await obtenerUsuario(email);
+    } catch(e) {}
+
+    // Si no está en Firebase, busca en localStorage (usuarios creados desde el mini panel)
+    if (!user) {
+      const localUsers = JSON.parse(localStorage.getItem('macott_usuarios') || '[]');
+      user = localUsers.find(u => u.email === email);
+    }
+
     if (!user || user.password !== pass) {
       msg.className = 'form-msg error';
       msg.textContent = '❌ Correo o contraseña incorrectos.';
@@ -170,7 +181,9 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
       return;
     }
 
+    // Guardar sesión en ambos sistemas para que funcione en toda la app
     setSession({ nombre: user.nombre, apellido: user.apellido, email: user.email, tel: user.tel });
+    localStorage.setItem('macott_session', JSON.stringify({ nombre: user.nombre, email: user.email }));
     msg.className = 'form-msg success';
     msg.textContent = `✅ ¡Bienvenido/a ${user.nombre}!`;
     const redirect = sessionStorage.getItem('macott_redirect');
@@ -210,19 +223,39 @@ document.getElementById('registerForm').addEventListener('submit', async e => {
   btn.disabled = true; btn.textContent = 'Creando cuenta...';
 
   try {
-    const existe = await obtenerUsuario(email);
+    // Verificar si ya existe en Firebase o localStorage
+    let existe = null;
+    try { existe = await obtenerUsuario(email); } catch(e) {}
+    if (!existe) {
+      const localUsers = JSON.parse(localStorage.getItem('macott_usuarios') || '[]');
+      existe = localUsers.find(u => u.email === email) || null;
+    }
+
     if (existe) {
       msg.className = 'form-msg error';
       msg.textContent = '❌ Ya existe una cuenta con ese correo.';
       btn.disabled = false; btn.textContent = 'Crear cuenta';
       return;
     }
-    await crearUsuario({
+
+    const nuevoUsuario = {
       nombre, apellido, email, password: pass, tel,
       citas:[], mascotas:[], carrito:[], pedidos:[],
       fechaRegistro: new Date().toISOString()
-    });
+    };
+
+    // Guardar en Firebase
+    try { await crearUsuario(nuevoUsuario); } catch(e) {}
+
+    // Guardar también en localStorage para que funcione sin Firebase
+    const localUsers = JSON.parse(localStorage.getItem('macott_usuarios') || '[]');
+    localUsers.push(nuevoUsuario);
+    localStorage.setItem('macott_usuarios', JSON.stringify(localUsers));
+
+    // Guardar sesión en ambos sistemas
     setSession({ nombre, apellido, email, tel });
+    localStorage.setItem('macott_session', JSON.stringify({ nombre, email }));
+
     msg.className = 'form-msg success';
     msg.textContent = `✅ ¡Cuenta creada! Bienvenido/a ${nombre}...`;
     const redirect = sessionStorage.getItem('macott_redirect');

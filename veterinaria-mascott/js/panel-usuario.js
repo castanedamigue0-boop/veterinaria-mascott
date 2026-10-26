@@ -1,14 +1,41 @@
 ﻿import { obtenerUsuario, actualizarUsuario, getSession, clearSession, obtenerTodosUsuarios } from '../js/base-de-datos.js';
 
 // ===== SESION =====
-const session = getSession();
+// Lee sesión de Firebase O de localStorage (mini panel del inicio)
+let session = getSession();
+if (!session) {
+  const local = localStorage.getItem('macott_session');
+  if (local) {
+    try { session = JSON.parse(local); } catch(e) {}
+  }
+}
 if (!session) { window.location.href = '../html/login-registro.html'; }
 
 let userData = null;
 
 async function cargarUsuario() {
-  userData = await obtenerUsuario(session.email);
-  if (!userData) { window.location.href = '../html/login-registro.html'; return; }
+  // Intentar cargar desde Firebase
+  try {
+    userData = await obtenerUsuario(session.email);
+  } catch(e) {}
+
+  // Si no está en Firebase, construir userData desde localStorage
+  if (!userData) {
+    const localUsers = JSON.parse(localStorage.getItem('macott_usuarios') || '[]');
+    const localUser  = localUsers.find(u => u.email === session.email);
+    if (localUser) {
+      userData = localUser;
+    } else {
+      // Crear userData mínimo desde la sesión
+      userData = {
+        nombre:   session.nombre   || 'Usuario',
+        apellido: session.apellido || '',
+        email:    session.email    || '',
+        tel:      session.tel      || '',
+        citas:[], mascotas:[], carrito:[], pedidos:[], notificaciones:[]
+      };
+    }
+  }
   if (!userData.citas)          userData.citas          = [];
   if (!userData.mascotas)       userData.mascotas       = [];
   if (!userData.carrito)        userData.carrito        = [];
@@ -229,7 +256,11 @@ dashOverlay.addEventListener('click', () => {
 });
 
 // ===== LOGOUT =====
-function logout() { clearSession(); window.location.href = '../html/inicio.html'; }
+function logout() {
+  clearSession();
+  localStorage.removeItem('macott_session');
+  window.location.href = '../html/inicio.html';
+}
 document.getElementById('btnLogout').addEventListener('click', logout);
 document.getElementById('btnLogoutTop').addEventListener('click', logout);
 
