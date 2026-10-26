@@ -1,28 +1,45 @@
-﻿import { obtenerUsuario, actualizarUsuario, getSession, clearSession, obtenerTodosUsuarios } from '../js/base-de-datos.js';
+﻿// =============================================
+// PANEL USUARIO — sin Firebase, solo localStorage
+// =============================================
 
-// ===== SESION =====
-// Lee sesión de Firebase O de localStorage (mini panel del inicio)
-let session = getSession();
-if (!session) {
-  const local = localStorage.getItem('macott_session');
-  if (local) {
-    try { session = JSON.parse(local); } catch(e) {}
-  }
+// Helpers de sesión
+function getSession()      { try { return JSON.parse(localStorage.getItem('macott_session')); } catch(e) { return null; } }
+function clearSession()    { localStorage.removeItem('macott_session'); }
+function getUsuarios()     { try { return JSON.parse(localStorage.getItem('macott_usuarios') || '[]'); } catch(e) { return []; } }
+function saveUsuarios(arr) { localStorage.setItem('macott_usuarios', JSON.stringify(arr)); }
+
+function guardarUserData() {
+  if (!userData) return;
+  const usuarios = getUsuarios();
+  const idx = usuarios.findIndex(u => u.email === userData.email);
+  if (idx >= 0) { usuarios[idx] = userData; }
+  else { usuarios.push(userData); }
+  saveUsuarios(usuarios);
 }
-if (!session) { window.location.href = '../html/login-registro.html'; }
+
+// ── Verificar sesión ──
+const session = getSession();
+if (!session || session.rol === 'doctor' || session.rol === 'admin') {
+  window.location.href = '../html/login-registro.html';
+}
 
 let userData = null;
 
 async function cargarUsuario() {
-  // Intentar cargar desde Firebase
-  try {
-    userData = await obtenerUsuario(session.email);
-  } catch(e) {}
+  // Buscar usuario en localStorage
+  const usuarios = getUsuarios();
+  userData = usuarios.find(u => u.email === session.email);
 
-  // Si no está en Firebase, construir userData desde localStorage
+  // Si no existe crear uno básico desde la sesión
   if (!userData) {
-    const localUsers = JSON.parse(localStorage.getItem('macott_usuarios') || '[]');
-    const localUser  = localUsers.find(u => u.email === session.email);
+    userData = {
+      nombre:   session.nombre   || 'Usuario',
+      apellido: session.apellido || '',
+      email:    session.email    || '',
+      tel:      session.tel      || '',
+      citas: [], mascotas: [], carrito: [], pedidos: [], notificaciones: []
+    };
+  }
     if (localUser) {
       userData = localUser;
     } else {
@@ -49,7 +66,7 @@ async function cargarUsuario() {
 }
 
 async function guardarUsuario() {
-  await actualizarUsuario(session.email, userData);
+  guardarUserData();
 }
 
 // ===== CATALOGO =====
