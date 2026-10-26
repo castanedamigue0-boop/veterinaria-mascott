@@ -1,18 +1,4 @@
-﻿// Verificar sesión admin (nuevo sistema)
-(function() {
-  try {
-    const s = JSON.parse(localStorage.getItem('macott_session') || 'null');
-    if (s && s.rol === 'admin') {
-      localStorage.setItem('macott_admin', 'true'); // compatibilidad
-      return;
-    }
-  } catch(e) {}
-  // Verificar sistema antiguo
-  if (localStorage.getItem('macott_admin') !== 'true') {
-    window.location.href = '../html/login-registro.html';
-  }
-})();
-// ===== EMAILJS — CONFIGURACIÓN =====
+﻿// ===== EMAILJS — CONFIGURACIÓN =====
 var EMAILJS_SERVICE  = 'service_fw1q099';
 var EMAILJS_TEMPLATE = 'template_1ibh7nj';
 

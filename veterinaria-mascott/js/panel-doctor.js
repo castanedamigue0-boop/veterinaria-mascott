@@ -1,19 +1,4 @@
-﻿// Verificar sesión doctor (nuevo sistema)
-(function() {
-  try {
-    const s = JSON.parse(localStorage.getItem('macott_session') || 'null');
-    if (s && s.rol === 'doctor') {
-      // Compatibilidad con sistema antiguo
-      localStorage.setItem('macott_doctor', JSON.stringify(s));
-      return;
-    }
-  } catch(e) {}
-  // Verificar sistema antiguo
-  if (!localStorage.getItem('macott_doctor')) {
-    window.location.href = '../html/login-registro.html';
-  }
-})();
-import {
+﻿import {
   obtenerTodosUsuarios, actualizarUsuario,
   getDoctorSession, clearDoctorSession, actualizarDoctor
 } from '../js/base-de-datos.js';

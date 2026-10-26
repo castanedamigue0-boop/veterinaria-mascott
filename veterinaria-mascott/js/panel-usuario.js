@@ -1,47 +1,14 @@
-﻿// =============================================
-// PANEL USUARIO — sin Firebase, solo localStorage
-// =============================================
+﻿import { obtenerUsuario, actualizarUsuario, getSession, clearSession, obtenerTodosUsuarios } from '../js/base-de-datos.js';
 
-// Helpers de sesión
-function getSession()      { try { return JSON.parse(localStorage.getItem('macott_session')); } catch(e) { return null; } }
-function clearSession()    { localStorage.removeItem('macott_session'); }
-function getUsuarios()     { try { return JSON.parse(localStorage.getItem('macott_usuarios') || '[]'); } catch(e) { return []; } }
-function saveUsuarios(arr) { localStorage.setItem('macott_usuarios', JSON.stringify(arr)); }
-
-function guardarUserData() {
-  if (!userData) return;
-  const usuarios = getUsuarios();
-  const idx = usuarios.findIndex(u => u.email === userData.email);
-  if (idx >= 0) { usuarios[idx] = userData; }
-  else { usuarios.push(userData); }
-  saveUsuarios(usuarios);
-}
-
-// ── Verificar sesión ──
+// ===== SESION =====
 const session = getSession();
-if (!session || session.rol === 'doctor' || session.rol === 'admin') {
-  window.location.href = '../html/login-registro.html';
-}
+if (!session) { window.location.href = '../html/login-registro.html'; }
 
 let userData = null;
 
 async function cargarUsuario() {
-  // Buscar usuario en localStorage
-  const usuarios = getUsuarios();
-  userData = usuarios.find(u => u.email === session.email);
-
-  // Si no existe, crear uno básico desde la sesión
-  if (!userData) {
-    userData = {
-      nombre:   session.nombre   || 'Usuario',
-      apellido: session.apellido || '',
-      email:    session.email    || '',
-      tel:      session.tel      || '',
-      citas: [], mascotas: [], carrito: [], pedidos: [], notificaciones: []
-    };
-  }
-
-  // Asegurar que todos los arrays existen
+  userData = await obtenerUsuario(session.email);
+  if (!userData) { window.location.href = '../html/login-registro.html'; return; }
   if (!userData.citas)          userData.citas          = [];
   if (!userData.mascotas)       userData.mascotas       = [];
   if (!userData.carrito)        userData.carrito        = [];
@@ -55,7 +22,7 @@ async function cargarUsuario() {
 }
 
 async function guardarUsuario() {
-  guardarUserData();
+  await actualizarUsuario(session.email, userData);
 }
 
 // ===== CATALOGO =====
@@ -262,11 +229,7 @@ dashOverlay.addEventListener('click', () => {
 });
 
 // ===== LOGOUT =====
-function logout() {
-  clearSession();
-  localStorage.removeItem('macott_session');
-  window.location.href = '../html/inicio.html';
-}
+function logout() { clearSession(); window.location.href = '../html/inicio.html'; }
 document.getElementById('btnLogout').addEventListener('click', logout);
 document.getElementById('btnLogoutTop').addEventListener('click', logout);
 
