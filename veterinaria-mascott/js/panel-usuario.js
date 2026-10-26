@@ -30,7 +30,7 @@ async function cargarUsuario() {
   const usuarios = getUsuarios();
   userData = usuarios.find(u => u.email === session.email);
 
-  // Si no existe crear uno básico desde la sesión
+  // Si no existe, crear uno básico desde la sesión
   if (!userData) {
     userData = {
       nombre:   session.nombre   || 'Usuario',
@@ -40,19 +40,8 @@ async function cargarUsuario() {
       citas: [], mascotas: [], carrito: [], pedidos: [], notificaciones: []
     };
   }
-    if (localUser) {
-      userData = localUser;
-    } else {
-      // Crear userData mínimo desde la sesión
-      userData = {
-        nombre:   session.nombre   || 'Usuario',
-        apellido: session.apellido || '',
-        email:    session.email    || '',
-        tel:      session.tel      || '',
-        citas:[], mascotas:[], carrito:[], pedidos:[], notificaciones:[]
-      };
-    }
-  }
+
+  // Asegurar que todos los arrays existen
   if (!userData.citas)          userData.citas          = [];
   if (!userData.mascotas)       userData.mascotas       = [];
   if (!userData.carrito)        userData.carrito        = [];
